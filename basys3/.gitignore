@@ -1,0 +1,8 @@
+*.cache
+*.hw
+*.ioplanning
+*.ip_user_files
+*.runs
+*.sim
+*.gen
+*.dcp

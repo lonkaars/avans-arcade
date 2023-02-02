@@ -1,0 +1,109 @@
+@media print {
+	@page {
+		size: A4;
+		margin: 1in;
+
+		@bottom-center {
+			content: counter(page);
+		}
+	}
+
+	html, body {
+		width: 100%;
+		margin: 0;
+		padding: 0;
+		overflow: visible;
+
+		font-family: "TeX Gyre Schola";
+		font-size: 11pt;
+	}
+
+	a {
+		text-decoration: none;
+		color: unset;
+		font-style: italic;
+	}
+
+	pre, code {
+		font-family: "JetBrainsMono Nerd Font";
+		font-size: 9pt;
+	}
+
+	figure {
+		text-align: center;
+	}
+
+	figcaption, p {
+		text-align: justify;
+		text-justify: auto;
+		hyphens: auto;
+	}
+
+	figcaption {
+		display: inline-block;
+		counter-increment: fig;
+	}
+
+	figcaption::before {
+		content: "Figure " counter(fig) ": ";
+	}
+
+	table {
+		border-collapse: collapse;
+		border-style: solid;
+		border-width: 0.7pt 0;
+		border-color: black;
+		margin: 1rem auto;
+	}
+
+	th, td {
+		padding: 2pt 6pt;
+	}
+
+	th {
+		border-bottom: 1pt solid black;
+	}
+
+	.docintro {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		margin: 0;
+	}
+
+	.docintro .left,
+	.docintro .right {
+		display: block;
+	}
+
+	.docintro .right {
+		text-align: right;
+	}
+
+	.pagebr {
+		break-before: page;
+	}
+
+	nav ol {
+		counter-reset: item;
+		list-style-type: none;
+	}
+
+	nav li {
+		position: relative;
+		counter-increment: item;
+	}
+
+	nav li::before {
+		position: absolute;
+		transform: translateX(-100%) translateX(-5pt);
+		left: 0;
+		content: attr(heading-num-fix);
+	}
+
+	img {
+		max-width: 13cm;
+		display: block;
+		margin: 0 auto;
+	}
+}

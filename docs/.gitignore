@@ -1,0 +1,5 @@
+*.html
+*.toc
+*.con
+*.pdf
+gen/paged.polyfill.js
