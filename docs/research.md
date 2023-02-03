@@ -1,3 +1,59 @@
+# Graphics
+
+Even though the STM32 is a relatively powerful microcontroller, it will likely
+not be fast enough for running game logic, sound logic and a graphics processor
+on it's single CPU core. To minimize the risk of overloading the STM32
+processor, all graphics processing and compositing will be outsourced to a
+custom PPU implemented on the Basys 3 FPGA.
+
+Because we're creating a sidescrolling 2D platformer, we don't need a very
+complicated graphics processor. We also lack any knowledge about how
+'real-world' graphics processors work, so we're basing our design on a product
+closest to our target result, the NES.
+
+## NES graphics
+
+The NES has a separate coprocessor chip designed to generate video signals
+called the RP2C02, which is manufactured by Ricoh. This chip has a lot of
+features, some of which we don't need for our game. Here's a quick rundown of
+this chip's features and limitations:
+
+- composite output at 256x224 @ 60Hz (NTSC) or 256x240 @ 50Hz (PAL)
+- 256 tiles per tilemap (with 8x8 tiles)
+- 2 tilemaps
+- 4 palettes per sprite with 64 possible colors
+- 512x480 background palette with scrolling
+- background scrolling splits
+- 64 total sprites on screen (8 per scanline)
+- sprites can be drawn before or after the background layer
+- PPU control using DMA
+- 8K character memory (tilemaps)
+- 2K nametable memory
+- 256B object attribute memory (OAM)
+- tiles can be flipped using OAM
+- no frame buffer
+
+## Custom PPU
+
+Here's a list of features our PPU should have:
+<!-- TODO: expand list with PPU spreadsheet -->
+
+- 256x240 @ 60Hz VGA output
+- single tilemap with room for 2048 tiles of 8x8 pixels
+- 8 colors per palette, with 4096 possible colors (12-bit color depth)
+- 512x480 background palette with scrolling
+- **NO** background scrolling splits
+- 128 total sprites on screen (**NO** scanline sprite limit)
+- sprites are always drawn on top of the background layer
+- PPU control using DMA (dual-port asynchronous RAM)
+- tiles can be flipped using OAM
+- no frame buffer
+- vertical and horizontal sync output
+
+[nesppuspecs]: https://www.copetti.org/writings/consoles/nes/
+[nesppudocs]: https://www.nesdev.org/wiki/PPU_programmer_reference
+[nesppupinout]: https://www.nesdev.org/wiki/PPU_pinout
+
 # Generating audio signals
 
 In order to generate sound for this project, a few posibilities exist (see chapters below)
