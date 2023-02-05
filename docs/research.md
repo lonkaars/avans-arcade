@@ -20,35 +20,159 @@ this chip's features and limitations:
 
 - composite output at 256x224 @ 60Hz (NTSC) or 256x240 @ 50Hz (PAL)
 - 256 tiles per tilemap (with 8x8 tiles)
-- 2 tilemaps
+- 2 tilemaps (pattern tables)
 - 4 palettes per sprite with 64 possible colors
-- 512x480 background palette with scrolling
+- 512x480 background canvas with scrolling
 - background scrolling splits
-- 64 total sprites on screen (8 per scanline)
+- 64 total sprites on screen (max 8 per scanline)
 - sprites can be drawn before or after the background layer
 - PPU control using DMA
 - 8K character memory (tilemaps)
-- 2K nametable memory
+- 2K nametable memory (OAM for background tiles)
 - 256B object attribute memory (OAM)
 - tiles can be flipped using OAM
 - no frame buffer
+
+### Usage
+
+The NES PPU has a lot of capabilities, so here's a quick run-down of how the
+PPU is used by games to produce pictures.
+
+On boot, the NES copies the contents of the so-called CHR-ROM (in game
+cartridge) into the PPU's pattern tables. The NES has two 256-tile tilemaps
+called the pattern tables which store all sprites in the game. By modifying the
+nametable memory directly, the game can control which tile, and which palette
+will be used for any given tile on the background layer. Because the background
+layer only displays tiles in a fixed grid, the nametable memory area is not
+very big.
+
+The same process happens for the foreground sprites, though these can each be
+positioned using screen coordinates, and don't have to conform to any grid. The
+NES also has some limitations on how many sprites can be drawn and how many
+palettes can be used. An important note is that the first color of any palette
+used on any foreground sprite, is treated as the transparency color. Our PPU
+also copies this behavior.
+
+The following is a small section of pseudocode, depicting a program that will
+display a triangle moving in a circle:
+
+```c
+unsigned frame = 0;
+
+void setup() {
+  // copy character rom to PPU
+  memcpy(CHR, PPU->CHR, 0x8000);
+  // character rom contains a sprite of a triangle at index 0
+
+  // set palette index 0 to have 4 random colors
+  PAL[0] = (palette) {
+    PALETTE_COLOR_25,
+    PALETTE_COLOR_F3,
+    PALETTE_COLOR_00,
+    PALETTE_COLOR_3D,
+  };
+  // copy palette data to PPU
+  memcpy(PAL, PPU->PAL, 0x40);
+}
+
+void loop() {
+  frame++; // increment frame counter
+
+  OAM[0] = (sprite) {
+    .x = sin(frame) * 20 + 10, // calculate circle position using frame counter
+    .y = cos(frame) * 20 + 10, // calculate circle position using frame counter
+    .pattern_index = 0, // triangle sprite
+    .palette_index = 0, // palette 0 (see setup)
+    .attributes = PPU_FX_FLIP_H | PPU_FX_FLIP_V, // flip horizontally and vertically
+  };
+
+  memcpy(OAM, PPU->OAM, 0x100); // update PPU with local copy of OAM
+}
+
+int main() {
+  setup();
+  while(1) loop();
+}
+```
 
 ## Custom PPU
 
 Here's a list of features our PPU should have:
 <!-- TODO: expand list with PPU spreadsheet -->
 
-- 256x240 @ 60Hz VGA output
-- single tilemap with room for 2048 tiles of 8x8 pixels
+- 256x224 @ 60Hz VGA output
+- single tilemap with room for 1024 tiles of 16x16 pixels
 - 8 colors per palette, with 4096 possible colors (12-bit color depth)
-- 512x480 background palette with scrolling
-- **NO** background scrolling splits
-- 128 total sprites on screen (**NO** scanline sprite limit)
+- 512x448 background canvas with scrolling
+- NO background scrolling splits
+- 128 total sprites on screen (NO scanline sprite limit)
 - sprites are always drawn on top of the background layer
 - PPU control using DMA (dual-port asynchronous RAM)
-- tiles can be flipped using OAM
+- tiles can be flipped using FAM or BAM
 - no frame buffer
 - vertical and horizontal sync output
+
+Notable differences:
+
+- NES nametable equivalent is called BAM (background attribute register)
+- NES OAM equivalent is called FAM (foreground attribute register)
+- No scanline sprite limit  
+  
+  Unless not imposing any sprite limit makes the hardware implementation
+  impossible, or much more difficult, this is a restriction that will likely
+  lead to frustrating debugging sessions, so will not be replicated in our
+  custom PPU.
+- Sprites are 16x16
+  
+  Most NES games already tile multiple 8x8 tiles together into "metatiles" to
+  create the illusion of larger sprites. This was likely done to save on memory
+  costs as RAM was expensive in the '80s, but since we're running on an FPGA
+  cost is irrelevant.
+- Single 1024 sprite tilemap shared between foreground and background sprites
+  
+  The NES OAM registers contain a bit to select which tilemap to use (of two),
+  which effectively expands each tile's index address by one byte. Instead of
+  creating the illusion of two separate memory areas for tiles, having one
+  large tilemap seems like a more sensible solution to indexed tiles.
+- 8 total palettes, with 8 colors each
+  
+  More colors is better. Increasing the total palette count is a very memory
+  intensive operation, while increaing the palette color count is likely slower
+  when looking up color values for each pixel on real hardware.
+- Sprites can be positioned paritally off-screen on all screen edges using only
+  the offset bits in the FAM register
+  
+  The NES has a separate PPUMASK register to control special color effects, and
+  to shift sprites off the left and top screen edges, as the sprite offsets
+  count from 0. Our PPU's FAM sprite offset bits count from -15, so the sprite
+  can shift past the top and left screen edges, as well as the standard bottom
+  and right edges.
+- No status line register, only V-sync and H-sync outputs are supplied back to
+  CPU
+  
+  The NES status line register contains some handy lines, such as a buggy
+  status line for reaching the max sprite count per scanline, and a status line
+  for detecting collisions between background and foreground sprites. Our PPU
+  doesn't have a scanline limit, and all hitbox detection is done in software.
+  Software hacks involving swapping tiles during a screen draw cycle can still
+  be achieved by counting the V-sync and H-sync pulses using interrupts.
+- No background scrolling splits
+  
+  This feature allows only part of the background canvas to be scrolled, while
+  another portion stays still. This was used to draw HUD elements on the
+  background layer for displaying things like health bars or score counters.
+  Since we are working with a higher foreground sprite limit, we'll use regular
+  foreground sprites to display HUD elements.
+- Sprites are always drawn on top of the background layer
+  
+  Our game doesn't need this capability for any visual effects. Leaving this
+  feature out will lead to a simpler hardware design
+
+### Hardware design schematics
+
+![PPU top-level design](../assets/ppu-level-1.svg)
+
+![PPU level 2 design](../assets/ppu-level-2.svg)
 
 [nesppuspecs]: https://www.copetti.org/writings/consoles/nes/
 [nesppudocs]: https://www.nesdev.org/wiki/PPU_programmer_reference
