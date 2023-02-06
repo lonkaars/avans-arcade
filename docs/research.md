@@ -177,6 +177,7 @@ Notable differences:
 [nesppuspecs]: https://www.copetti.org/writings/consoles/nes/
 [nesppudocs]: https://www.nesdev.org/wiki/PPU_programmer_reference
 [nesppupinout]: https://www.nesdev.org/wiki/PPU_pinout
+[custompputimings]: https://docs.google.com/spreadsheets/d/1MU6K4c4PtMR_JXIpc3I0ZJdLZNnoFO7G2P3olCz6LSc/edit?usp=sharing
 
 # Generating audio signals
 
