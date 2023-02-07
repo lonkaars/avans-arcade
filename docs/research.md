@@ -172,12 +172,86 @@ Notable differences:
 
 ![PPU top-level design](../assets/ppu-level-1.svg)
 
-![PPU level 2 design](../assets/ppu-level-2.svg)
+Important notes:
+
+- The STM32 receives 'feedback' lines from the PPU. These are mirrors of the
+  VSYNC and HSYNC lines from the VGA signal generator. These lines can be used
+  to trigger interrupts for counting frames, and to make sure no read/write
+  conflicts occur for protected memory regions in the PPU.
+- The STM32 can enable and reset the PPU. These lines will also be connected to
+  physical buttons on the FPGA.
+- The STM32 uses direct memory access to control the PPU.
+
+![PPU level 2 design (data flows from top to bottom)](../assets/ppu-level-2.svg)
+
+Important notes:
+
+- The pixel fetch logic is pipelined in 3 stages:
+  1. - (Foreground sprite info) calculate if foreground sprite exists at current pixel using FAM register
+     - (Background sprite info) get background sprite info from BAM register
+  2. - (Sprite render) calculate pixel to read from TMM based on sprite info
+  3. - (Compositor) get pixel with 'highest' priority (pick first foreground
+     sprite with non-transparent color at current pixel in order, fallback to
+     background)
+     - (Palette lookup) lookup palette color using palette register
+     - (VGA signal generator) output real color to VGA signal generator
+- The pipeline takes 5 clock ticks in total. About 18 are available during each
+  pixel. For optimal display compatibility, the output color signal should be
+  stable before 50% of the pixel clock pulse width (9 clock ticks).
+- RAM regions mentioned that don't have a block right of the PPU RAM bus in
+  this graphic, are stored in and exposed by the component that mentions the
+  memory region.
+- Each foreground sprite render component holds its own sprite data copy from
+  the RAM in it's own cache memory. The cache updates are fetched during the
+  VBLANK time between each frame.
+- Since the "sprite info" and "sprite render" steps are fundamentally different
+  for the foreground and background layer, these components will be combined
+  into one for each layer respectively. They are separated in the above diagram
+  for pipeline stage illustration.
+- The pipeline stages with two clock cycles contain an address set and memory
+  read step.
+- The palette lookup component has separate memory that is connected to the PPU
+  RAM bus for read/write access.
+
+### Registers
+
+|Address range    |Alias|Description|
+|-----------------|-----|-----------|
+|`0x0000`-`0x0000`|TMM  |[tilemap memory][TMM]|
+|`0x0000`-`0x0000`|BAM  |[background attribute memory][BAM]|
+|`0x0000`-`0x0000`|FAM  |[foreground attribute memory][FAM]|
+|`0x0000`-`0x0000`|PAL  |[palettes][PAL]|
+|`0x0000`-`0x0000`|BAX  |[background auxiliary memory][BAX]|
+
+[TMM]: #tilemap-memory
+#### Tilemap memory
+
+- TODO: list format
+
+[BAM]: #background-attribute-memory
+#### Background attribute memory
+
+- TODO: list format
+
+[FAM]: #foreground-attribute-memory
+#### Foreground attribute memory
+
+- TODO: list format
+
+[PAL]: #palettes
+#### Palettes
+
+- TODO: list format
+
+[BAX]: #background-auxiliary-memory
+#### Background auxiliary memory
+
+- background scrolling
 
 [nesppuspecs]: https://www.copetti.org/writings/consoles/nes/
 [nesppudocs]: https://www.nesdev.org/wiki/PPU_programmer_reference
 [nesppupinout]: https://www.nesdev.org/wiki/PPU_pinout
-[custompputimings]: https://docs.google.com/spreadsheets/d/1MU6K4c4PtMR_JXIpc3I0ZJdLZNnoFO7G2P3olCz6LSc/edit?usp=sharing
+[custompputimings]: https://docs.google.com/spreadsheets/d/1MU6K4c4PtMR_JXIpc3I0ZJdLZNnoFO7G2P3olCz6LSc
 
 # Generating audio signals
 
