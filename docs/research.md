@@ -170,6 +170,8 @@ Notable differences:
 
 ### Hardware design schematics
 
+#### Top (level 1)
+
 ![PPU top-level design](../assets/ppu-level-1.svg)
 
 Important notes:
@@ -182,46 +184,75 @@ Important notes:
   physical buttons on the FPGA.
 - The STM32 uses direct memory access to control the PPU.
 
+#### Level 2
+
 ![PPU level 2 design (data flows from top to bottom)](../assets/ppu-level-2.svg)
 
 Important notes:
 
-- The pixel fetch logic is pipelined in 3 stages:
-  1. - (Foreground sprite info) calculate if foreground sprite exists at current pixel using FAM register
+- The pixel fetch logic is pipelined in 5 stages:
+  1. - (Foreground sprite info) calculate if foreground sprite exists at
+     current pixel using FAM register
      - (Background sprite info) get background sprite info from BAM register
-  2. - (Sprite render) calculate pixel to read from TMM based on sprite info
-  3. - (Compositor) get pixel with 'highest' priority (pick first foreground
+  3. - (Sprite render) calculate pixel to read from TMM based on sprite info
+  5. - (Compositor) get pixel with 'highest' priority (pick first foreground
      sprite with non-transparent color at current pixel in order, fallback to
      background)
      - (Palette lookup) lookup palette color using palette register
      - (VGA signal generator) output real color to VGA signal generator
+- The pipeline stages with two clock cycles contain an address set and memory
+  read step.
 - The pipeline takes 5 clock ticks in total. About 18 are available during each
   pixel. For optimal display compatibility, the output color signal should be
   stable before 50% of the pixel clock pulse width (9 clock ticks).
-- RAM regions mentioned that don't have a block right of the PPU RAM bus in
-  this graphic, are stored in and exposed by the component that mentions the
-  memory region.
-- Each foreground sprite render component holds its own sprite data copy from
-  the RAM in it's own cache memory. The cache updates are fetched during the
-  VBLANK time between each frame.
 - Since the "sprite info" and "sprite render" steps are fundamentally different
   for the foreground and background layer, these components will be combined
   into one for each layer respectively. They are separated in the above diagram
   for pipeline stage illustration.
-- The pipeline stages with two clock cycles contain an address set and memory
-  read step.
-- The palette lookup component has separate memory that is connected to the PPU
-  RAM bus for read/write access.
+- The BAX, FAM, and PAL registers are implemented in the component that
+  directly accesses them, but are exposed to the PPU RAM bus for writing.
+- Each foreground sprite render component holds its own sprite data copy from
+  the RAM in it's own cache memory. The cache updates are fetched during the
+  VBLANK time between each frame.
+
+#### Level 3
+
+This diagram has several flaws, but a significant amount of time has already
+been spent on these, so they are highlighted here instead of being fixed.
+
+![PPU level 3 design](../assets/ppu-level-3.svg)
+
+Flaws:
+
+- Pipeline stages 1-4 aren't properly connected in this diagram, see level 2
+  notes for proper functionality
+- The global RESET input resets all PPU RAM, but isn't connected to all RAM
+  ports
+- All DATA inputs on the same line as an ADDR output are connections to a
+  memory component. Not all of these are connected in the diagram, though they
+  should be.
+
+Important notes:
+
+- The background sprite and foreground sprite component internally share some
+  components for coordinate transformations
+- The foreground sprite component is only shown once here, but is cloned for
+  each foreground sprite the PPU allows.
+- The CIDX lines between the sprite and compositor components is shared by all
+  sprite components, and is such tri-state. A single sprite component outputs a
+  CIDX signal based on the \*EN signal from the compositor.
+- All DATA and ADDR lines are shared between all RAM ports. WEN inputs are
+  controlled by the address decoder.
 
 ### Registers
 
-|Address range    |Alias|Description|
-|-----------------|-----|-----------|
-|`0x0000`-`0x0000`|TMM  |[tilemap memory][TMM]|
-|`0x0000`-`0x0000`|BAM  |[background attribute memory][BAM]|
-|`0x0000`-`0x0000`|FAM  |[foreground attribute memory][FAM]|
-|`0x0000`-`0x0000`|PAL  |[palettes][PAL]|
-|`0x0000`-`0x0000`|BAX  |[background auxiliary memory][BAX]|
+|Address|Size (bytes)|Alias|Description|
+|-|-|-|-|
+|`0x00000`|`0x00000`|TMM  |[tilemap memory][TMM]|
+|`0x00000`|`0x00000`|BAM  |[background attribute memory][BAM]|
+|`0x00000`|`0x00000`|FAM  |[foreground attribute memory][FAM]|
+|`0x00000`|`0x00000`|PAL  |[palettes][PAL]|
+|`0x00000`|`0x00000`|BAX  |[background auxiliary memory][BAX]|
 
 [TMM]: #tilemap-memory
 #### Tilemap memory
