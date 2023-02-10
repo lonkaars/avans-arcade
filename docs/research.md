@@ -100,7 +100,7 @@ int main() {
 Here's a list of features our PPU should have:
 <!-- TODO: expand list with PPU spreadsheet -->
 
-- 256x224 @ 60Hz VGA output
+- 320x240 @ 60Hz VGA output
 - single tilemap with room for 1024 tiles of 16x16 pixels
 - 8 colors per palette, with 4096 possible colors (12-bit color depth)
 - 512x448 background canvas with scrolling
@@ -116,6 +116,11 @@ Notable differences:
 
 - NES nametable equivalent is called BAM (background attribute register)
 - NES OAM equivalent is called FAM (foreground attribute register)
+- 320x240 @ 60Hz output
+  
+  Since we're using VGA, we can't use custom resolutions without an
+  upscaler/downscaler. This resolution was chosen because it's exactly half of
+  the lowest standard VGA resolution 640x480.
 - No scanline sprite limit  
   
   Unless not imposing any sprite limit makes the hardware implementation
@@ -176,13 +181,22 @@ Notable differences:
 
 Important notes:
 
-- The STM32 receives 'feedback' lines from the PPU. These are mirrors of the
-  VSYNC and HSYNC lines from the VGA signal generator. These lines can be used
-  to trigger interrupts for counting frames, and to make sure no read/write
-  conflicts occur for protected memory regions in the PPU.
-- The STM32 can enable and reset the PPU. These lines will also be connected to
-  physical buttons on the FPGA.
+- The STM32 can reset the PPU. This line will also be connected to a physical
+  button on the FPGA.
 - The STM32 uses direct memory access to control the PPU.
+- The PPU's native resolution is 320x240. It works in this resolution as if it
+  is a valid VGA signal. The STM32 is also only aware of this resolution. This
+  resolution is referred to as "tiny" resolution. Because VGA-compatible LCD's
+  likely don't support this resolution due to low clock speed, a built-in
+  pixel-perfect 2X upscaler is chained after the PPU's "tiny" output. This
+  means that the display sees the resolution as 640x480, but the PPU and STM32
+  only work in 320x240.
+- The STM32 receives the TVSYNC and THSYNC lines from the PPU. These are the
+  VSYNC and HSYNC lines from the tiny VGA signal generator. These lines can be
+  used to trigger interrupts for counting frames, and to make sure no
+  read/write conflicts occur for protected memory regions in the PPU.
+- NVSYNC, NHSYNC and the RGB signals refer to the output of the native VGA
+  signal generator.
 
 #### Level 2
 
@@ -194,8 +208,8 @@ Important notes:
   1. - (Foreground sprite info) calculate if foreground sprite exists at
      current pixel using FAM register
      - (Background sprite info) get background sprite info from BAM register
-  3. - (Sprite render) calculate pixel to read from TMM based on sprite info
-  5. - (Compositor) get pixel with 'highest' priority (pick first foreground
+  2. - (Sprite render) calculate pixel to read from TMM based on sprite info
+  3. - (Compositor) get pixel with 'highest' priority (pick first foreground
      sprite with non-transparent color at current pixel in order, fallback to
      background)
      - (Palette lookup) lookup palette color using palette register
