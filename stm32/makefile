@@ -72,7 +72,7 @@ OBJS += lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_rcc.o \
 OBJS += idle_task_static_memory.o
 OBJS += main.o
 
-.PHONY: flash clean
+.PHONY: flash clean format
 
 $(TARGET).bin: $(TARGET).elf
 	$(OC) -O binary $< $@
@@ -96,9 +96,13 @@ $(TARGET).elf: $(OBJS)
 flash: $(TARGET).bin
 	st-flash --reset write $(TARGET).bin 0x08000000
 
-compile_commands: clean
+compile_commands.json: clean
 	compiledb make -Bn
 	../scripts/compiledb-full-path-mingw.sh compile_commands.json
+
+format:
+	clang-format -i $(SRCS)
+	clang-tidy --fix-errors $(SRCS)
 
 clean:
 	$(RM) $(TARGET).bin $(TARGET).elf $(OBJS)
