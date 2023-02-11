@@ -3,6 +3,7 @@ define(`docname',
 	       NAME, `pve', `Pakket van eisen',
 	       NAME, `research', `Research document',
 	       NAME, `design', `Design document',
+	       NAME, `gameplay', `Game design document',
 				 `UNKNOWN???'))dnl
 
 <!DOCTYPE html>
