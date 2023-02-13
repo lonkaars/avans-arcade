@@ -124,3 +124,23 @@ internal names. All enemies deal 1 HP damage per hit.
 - Medium-high score bonus
 - Was on NOS Jeugdjournaal once
 
+# Concept (Bjorn)
+
+## General gameplay
+
+the game has simularities with Gallica. The game wil have de following gameplay
+
+- Area is in space
+- In the area there are astroids and hostile aliens
+- Player controls a spaceship
+- Player can shoot lasers to the astroids and the aliens
+- If player hits meteor it gets destroyed
+- Powerup has a 5% chance to drop
+- If player hits alien player gets points
+- Highest score will be displayed
+- In the main menu the player can chose to play coop or solo 
+
+The game which able to for fill all the requirements for the project but has also a lot of extra potential features for the game. For example adding special power ups which would give the player extra abilities. It will also be able to have bonuses like double points which give you twice more points then normal. In the coop mode there will be more enemies to shoot down to make it more difficult. 
+
+
+
