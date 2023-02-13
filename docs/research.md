@@ -346,3 +346,60 @@ It is usefull to generate a few different types of signals like:
 - sine waves
 - sawtooth waves
 - random noise 
+
+# level editing
+For the project retro game-level design is an important part to make the game alive. That’s why research is needed to look for different ways of designing a retro game.
+There are a lot of ways to make a 2d level but because where using an microcontroller and an FPGA the options are limited. That’s, why the first subject, is pictures. secondly, indexes and lastly software sources.
+
+## pictures
+if a level is made there is a possibility that it can be exported as a picture. You can use that picture format and decode it in the microcontroller then send it to the FPGA that sends that data through the VGA. the problem with this method is that a lot of data is needed to save a whole level (640 * 480 pixels) but different formats can have a large impact. For a better reference picture below.
+![pictureFormating](../assets/pictureFormatting.PNG)
+
+### PNG
+PNG (Portable Network Graphics) is a lossless image compression format. Resulting in high-quality images that preserve all of the original data. Additionally, PNG supports a wider range of color depths, including 24-bit RGB and 32-bit RGBA (which includes an alpha channel for transparency), making it well-suited for images with a large number of colors or images that require transparency.
+### BMP
+BMP is a simple, uncompressed image format that provides good performance and easy access to pixel data. It's a good choice for applications where memory usage is not a concern and quick read times are important.
+### TIFF
+TIFF (Tagged Image File Format) is a flexible, adaptable file format for handling images and data within a single file, by including the header tags (size, definition, image-data arrangement, applied image compression) defining the image's geometry. TIFF supports a wide range of color depths, including black and white, grayscale, and full color (24-bit RGB and 32-bit RGBA), and is commonly used in printing, pre-press, desktop publishing, and professional photography. Unlike PNG, TIFF does not have built-in support for lossless compression and is typically used for high-quality, high-resolution images that need to be edited or processed in some way.
+### TGA 
+TGA is a lossless image format that supports a wide range of features, including alpha channels, gamma correction, and RLE compression. It's a good choice for applications where image quality is a priority and memory usage is not a concern.
+### JPEG
+JPEG (Joint Photographic Experts Group) is a commonly used image compression format that uses lossy compression to reduce the file size of digital images. It is well-suited for compressing photographic images and images with smooth color gradients, but may not perform as well with images that have sharp transitions or large areas of solid color. JPEG is widely used for images on the web, as well as for digital photos, because of its efficient compression and support for a wide range of color depths, including 8-bit grayscale and 24-bit RGB.
+
+### decode API
+To make sure there is a way of decoding the picture data I found an API that could handle it. MagickCore API is a low-level interface between the C programming language and the ImageMagick image processing libraries. 
+[imagemagick](https://imagemagick.org/script/magick-core.php "imagemagick")
+
+### conclusion
+In conclusion do i think that BMP is the best choice. But there are a lot of ways for using a picture format in a project but our main problem with using pictures is that a lot of memory is needed to save the data. Additionally, the time to make a decode function could be significant and complicated because the color depth plays a big part and understanding the API can take a lot of time that’s why this option is not ideal.
+
+## indexes
+indexes is another way of using tiles and colors at a 2d level. With this method, you have a fixed color palette for example 4 colors and a fixed total of tiles. different tiles have numbers going from 0 to N meaning total tiles available and colors going from 0 to N. 
+![indexes](../assets/indexes.PNG)
+
+in the picture, you can have a better understanding of how indexes work.
+### Data
+the color palette is saved on the FPGA with the different tiles. While the microcontroller makes the levels and sends the indexed tiles to the FPGA.
+![wokringBehindIndexes](../assets/indexesWorking.PNG)
+
+### conclusion
+This method of creating levels splits the memory between the FPGA and the microcontroller. Additionally, the complexity behind the program is smaller while still giving a lot of freedom with level creation.
+
+# Software sources
+There are a lot of ways of creating tiles and sprites for pixel art. Underneath is a representation of my findings. For making 2d maps is Tiled the program that is going to be used in our project
+
+
+| Name          | Link                                                             |Cost  |Level/pixel Art   |
+|---------------|------------------------------------------------------------------|------|------------------|
+| Tiled         | https://www.mapeditor.org/                                       |No    | level creation   |
+| pyxeledit     | https://pyxeledit.com/about.php                                  |Yes   | level creation   |
+| Pixel Mapper  | https://manual.avolites.com/docs/effects/pixel-mapper-examples/  |No    | level creation   |
+| PixelPet      | https://github.com/Prof9/PixelPet                                |No    | level creation   |
+| tilemap-studio| https://github.com/Rangi42/tilemap-studio                        |No    | level creation   |
+| 10 pixel arts | https://blog.felgo.com/game-resources/make-pixel-art-online      |No    | pixel art        |
+| piskel        | https://www.piskelapp.com/                                       |No    | pixel art        |
+| GIMP          | https://www.gimp.org/downloads/thanks.html                       |No    | pixel art        |
+| lospec        | https://apps.lospec.com/pixel-editor/                            |No    | pixel art        |
+| Asesprite     | https://www.aseprite.org/                                        |Yes   | pixel art        |
+
+

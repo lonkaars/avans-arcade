@@ -1,3 +1,22 @@
+# concept (Niels)
+I personally didn't have a massive idea for a game. I was thinking of a multiplayer shooter-type game with inspirations of tanks, asteroids, and Mario.
+
+## USP
+my unique selling point of the game is multiplayer. if you think that most of the grade is decided by which game is the most fun then I think a key part of that is multiplayer. having fun and playing together can make a game more easily fun.
+
+## inspiration
+As I said before comes my inspiration from a few games. the first one is tanks. It’s a shooter where you can play multiplayer and break the environment in a retro game. The second game that gave me inspiration is asteroids. the physics and shooting make this game interesting. Additionally, this game could also be multiplayer. Finally is Mario, Mario is mostly the storyline and the way it’s played. 
+
+## technical challenges and gameplay
+the technical challenges for my idea of a game are:
+- storage
+- art
+- gameplay
+- controlling the champions
+
+### gameplay
+the gameplay isn't really outlined but my idea works like this. where you have different levels each representing the difficulty of the level. for example, if a level begins light and turns darker indicating a boss monster is coming. the players have both guns they fire at enemies and bricks which can be destroyed. the key part of my idea is that multiplayer is key where you have to work together to defeat the monsters. Additionally, at some levels, both players need to stay at a certain position on a map to complete a level sort of like a puzzle to give it more difficulty.
+
 # Concept (Loek)
 
 ## General gameplay
