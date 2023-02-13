@@ -351,7 +351,7 @@ It is usefull to generate a few different types of signals like:
 For the project retro game-level design is an important part to make the game alive. That’s why research is needed to look for different ways of designing a retro game.
 There are a lot of ways to make a 2d level but because where using an microcontroller and an FPGA the options are limited. That’s, why the first subject, is pictures. secondly, indexes and lastly software sources.
 
-## pictures
+## pictures 
 if a level is made there is a possibility that it can be exported as a picture. You can use that picture format and decode it in the microcontroller then send it to the FPGA that sends that data through the VGA. the problem with this method is that a lot of data is needed to save a whole level (640 * 480 pixels) but different formats can have a large impact. For a better reference picture below.
 ![pictureFormating](../assets/pictureFormatting.PNG)
 
