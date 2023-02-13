@@ -1,4 +1,5 @@
 # concept (Niels)
+
 I personally didn't have a massive idea for a game. I was thinking of a multiplayer shooter-type game with inspirations of tanks, asteroids, and Mario.
 
 ## USP
@@ -21,6 +22,13 @@ the gameplay isn't really outlined but my idea works like this. where you have d
 
 ## General gameplay
 
+You play as a mage who has long lost his trusty wand. Having been separated
+from your *twig* for some time, you've become proficient in the rapid use of
+simple spells. You use these spells to defeat foes and minibosses that ward the
+dangerous path you take to recover your *spell stick*. After battling your way
+through all sorts of dangerous levels, you find your *incantation baton*, which
+you then use to fight the final boss.
+
 - Platformer (similar platformer mechanics to Cuphead)
 - Focus on gameplay instead of story
 - Medium length levels
@@ -39,15 +47,15 @@ the gameplay isn't really outlined but my idea works like this. where you have d
 
 ![rough sketch of the game protagonist](../assets/sketch-player.jpg "medium")
 
-- Small guy with a hood and Fall guys eyes
+- Small guy with a hood and "Fall guys" eyes
 - Actions
   - Jump (primary action button)
-  - Dash/attack (secondary action button) (upgradable -> [shop][shop])
+  - Dash/attack (secondary action button) (upgradable -> [shop][loek-shop])
   - Movement (D-pad)
   - Shooting (D-pad) (automatic rapid fire when holding direction)
 - Temporarily invulnerable when taking damage (with flashing animation like in
   Super Mario Bros.)
-- 5 HP (by default) (upgradable -> [shop][shop])
+- 5 HP (by default) (upgradable -> [shop][loek-shop])
 
 ## Level design
 
@@ -72,7 +80,7 @@ the gameplay isn't really outlined but my idea works like this. where you have d
 - Vertical levels can either flow from top to bottom, or bottom to top
 - Small sections of backtracking are allowed in the top to bottom vertical flow
 
-[shop]: #checkpoint-room-shop
+[loek-shop]: #checkpoint-room-shop
 ### Checkpoint room (shop)
 
 ![checkpoint room](../assets/sketch-checkpoints.jpg)
@@ -106,6 +114,12 @@ the gameplay isn't really outlined but my idea works like this. where you have d
 - E: enemy
 - 1: primary action
 - 2: secondary action
+
+In the above level, possible actions the player can perform are drawn using
+dashed lines, with actions being indicated using the action button markers. The
+levels are medium-difficulty platforming levels, with enemies that block the
+way. The player can choose to take extra time to defeat all the enemies before
+jumping to a platform, or to jump while shooting.
 
 ## Enemy types
 
@@ -142,4 +156,36 @@ internal names. All enemies deal 1 HP damage per hit.
 - 1 HP
 - Medium-high score bonus
 - Was on NOS Jeugdjournaal once
+
+## Later additions (converging)
+
+- New Super Mario Bros. Wii-style co-op multiplayer (with ability to throw your
+  friends) (Niels)
+  - Shared HP between both players
+  - Pick up other player by pressing secondary action button while standing
+    still
+  - Throw picked up player by pressing secondary action button again (also
+    works while moving)
+  - Easter eggs that are only reachable by throwing and dashing in sequence
+    (Loek)
+- The player character is a mage, instead of some random armed guy (Joshua)
+- General storyline based on the idea that the player is a mage (Joshua) whose
+  wand is lost (Loek)
+
+## Technical implications
+
+- Graphics
+  - There needs to be at least a separate foreground layer and background layer
+    to make sure enemies and interactive elements appear in the right order on
+    screen
+  - Not too many enemies can be on screen at once
+  - Large levels need to be buffered and/or paged
+  - Physically large minibosses require a lot of foreground sprites
+  - **Screen wiping** transitions require hacky workarounds and/or lots of
+    sprites to display properly (fix by using palette dimming transition)
+- Processing power
+  - Hitbox checking might need to be optimized using screen chunks due to the
+    (possibly) large amount of on-screen enemies at once
+  - Sound and GPU instructions will need to be streamed 'continuously', so the
+    game loop can't take up 100% CPU time
 
