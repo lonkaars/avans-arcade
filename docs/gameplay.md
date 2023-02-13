@@ -18,6 +18,29 @@ the technical challenges for my idea of a game are:
 ### gameplay
 the gameplay isn't really outlined but my idea works like this. where you have different levels each representing the difficulty of the level. for example, if a level begins light and turns darker indicating a boss monster is coming. the players have both guns they fire at enemies and bricks which can be destroyed. the key part of my idea is that multiplayer is key where you have to work together to defeat the monsters. Additionally, at some levels, both players need to stay at a certain position on a map to complete a level sort of like a puzzle to give it more difficulty.
 
+# Concept tower destruction 2p (Frenk)
+
+I had an idea to make a tower destruction game where 2 players compete against each other.
+
+## usp
+The unique selling point of this game is to compete against another player to get the highest score. Playing a game together with someone adds more fun in an arcade setting in my opinion. Furthermore to beat a other player in a game adds a next level of fun.
+
+## inspiration
+The inspiration of this game comes from angry birds and tanks (2d sideview). The tanks game is not the old top view version but rather the newer side-scroll type where you could only move left and right and then had to shoot with physics in mind. The adreline of just getting missed or not was very appealing to me. Furthermore, angry birds relies on the same physics mechanics and seeing a whole tower getting destroyed looks good.
+
+## technische uitdagingen
+The technical challenges for my idea of a game are:
+- Physics
+- Gameplay
+- Scoring
+
+## gameplay
+The gameplay is as follows: 
+There are 2 players on screen. 1 to the left and 1 to the right. The can both move left and right between some borders. 
+In the middle there is a tower made of bricks or beams that are destructible. If this tower is below a certain height the tower grows again with a random pattern.
+To score points you have to destroy as much as possible of the tower. It is also possible to hit the other player to steal points. The goal in the end is to score as many points in a certain amount of time. Some block in the tower have a special ability. If these are destroyed it can unlock a new weapon; gives rapid fire or affect the enemy with a status effect
+
+
 # Concept (Loek)
 
 ## General gameplay
