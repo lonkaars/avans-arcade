@@ -334,3 +334,15 @@ Pulse-code modulation uses pre-sampled data to generate sounds. This causes a lo
 
 ## FPGA Circuit
 
+In order to create an audio signal using the FPGA we can use PWM to emulate an analog signal on an output. This makes it so that in theory any signal that would have been produceable with a sound chip can also be made with the FPGA.
+
+![Audio signal with PWM](../assets/audioPWM.svg)
+
+This figure shows an example signal (in blue), created by the FPGA. and the corosponding analog signal (in red).
+
+It is usefull to generate a few different types of signals like:
+- triangle waves
+- square waves
+- sine waves
+- sawtooth waves
+- random noise 
