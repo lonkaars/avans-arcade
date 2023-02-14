@@ -4,6 +4,7 @@ define(`docname',
 	       NAME, `research', `Research document',
 	       NAME, `design', `Design document',
 	       NAME, `gameplay', `Game design document',
+	       NAME, `architecture', `Architecture document',
 				 `UNKNOWN???'))dnl
 
 <!DOCTYPE html>

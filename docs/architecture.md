@@ -1,8 +1,18 @@
 # General system architecture
 
-<!-- TODO: top-level system architecture + context diagram -->
+![Top-down system architecture diagram](../assets/architecture-level-1.svg)
 
-## PPU
+Important notes:
+
+- Gamepad 2 is optionally connected
+- The PPU and APU are implemented on the FPGA
+- The game logic and PPU/APU control logic runs on the STM32 only
+
+# Game controllers
+
+# STM32 software
+
+# PPU
 
 Here's a list of features our PPU has:
 
@@ -79,9 +89,9 @@ Notable differences:
   Our game doesn't need this capability for any visual effects. Leaving this
   feature out will lead to a simpler hardware design
 
-### Hardware design schematics
+## Hardware design schematics
 
-#### Top (level 1)
+### Top (level 1)
 
 ![PPU top-level design](../assets/ppu-level-1.svg)
 
@@ -104,7 +114,7 @@ Important notes:
 - NVSYNC, NHSYNC and the RGB signals refer to the output of the native VGA
   signal generator.
 
-#### Level 2
+### Level 2
 
 ![PPU level 2 design (data flows from top to bottom)](../assets/ppu-level-2.svg)
 
@@ -135,7 +145,7 @@ Important notes:
   the RAM in it's own cache memory. The cache updates are fetched during the
   VBLANK time between each frame.
 
-#### Level 3
+### Level 3
 
 This diagram has several flaws, but a significant amount of time has already
 been spent on these, so they are highlighted here instead of being fixed.
@@ -162,11 +172,13 @@ Important notes:
   each foreground sprite the PPU allows.
 - The CIDX lines between the sprite and compositor components is shared by all
   sprite components, and is such tri-state. A single sprite component outputs a
-  CIDX signal based on the \*EN signal from the compositor.
+  CIDX signal based on the EN signal from the compositor.
 - All DATA and ADDR lines are shared between all RAM ports. WEN inputs are
   controlled by the address decoder.
 
-### Registers
+<!--
+
+## Registers
 
 |Address|Size (bytes)|Alias|Description|
 |-|-|-|-|
@@ -177,32 +189,36 @@ Important notes:
 |`0x00000`|`0x00000`|BAX  |[background auxiliary memory][BAX]|
 
 [TMM]: #tilemap-memory
-#### Tilemap memory
+### Tilemap memory
 
 - TODO: list format
 
 [BAM]: #background-attribute-memory
-#### Background attribute memory
+### Background attribute memory
 
 - TODO: list format
 
 [FAM]: #foreground-attribute-memory
-#### Foreground attribute memory
+### Foreground attribute memory
 
 - TODO: list format
 
 [PAL]: #palettes
-#### Palettes
+### Palettes
 
 - TODO: list format
 
 [BAX]: #background-auxiliary-memory
-#### Background auxiliary memory
+### Background auxiliary memory
 
 - background scrolling
+
+-->
 
 [nesppuspecs]: https://www.copetti.org/writings/consoles/nes/
 [nesppudocs]: https://www.nesdev.org/wiki/PPU_programmer_reference
 [nesppupinout]: https://www.nesdev.org/wiki/PPU_pinout
 [custompputimings]: https://docs.google.com/spreadsheets/d/1MU6K4c4PtMR_JXIpc3I0ZJdLZNnoFO7G2P3olCz6LSc
+
+# APU
 
