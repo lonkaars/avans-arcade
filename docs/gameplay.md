@@ -1,45 +1,89 @@
-# concept (Niels)
+# Concept (Niels)
 
-I personally didn't have a massive idea for a game. I was thinking of a multiplayer shooter-type game with inspirations of tanks, asteroids, and Mario.
+I personally didn't have a massive idea for a game. I was thinking of a
+multiplayer shooter-type game with inspirations of tanks, asteroids, and Mario.
 
 ## USP
-my unique selling point of the game is multiplayer. if you think that most of the grade is decided by which game is the most fun then I think a key part of that is multiplayer. having fun and playing together can make a game more easily fun.
 
-## inspiration
-As I said before comes my inspiration from a few games. the first one is tanks. It’s a shooter where you can play multiplayer and break the environment in a retro game. The second game that gave me inspiration is asteroids. the physics and shooting make this game interesting. Additionally, this game could also be multiplayer. Finally is Mario, Mario is mostly the storyline and the way it’s played. 
+my unique selling point of the game is multiplayer. if you think that most of
+the grade is decided by which game is the most fun then I think a key part of
+that is multiplayer. having fun and playing together can make a game more
+easily fun.
 
-## technical challenges and gameplay
+## Inspiration
+
+As I said before comes my inspiration from a few games. the first one is tanks.
+It’s a shooter where you can play multiplayer and break the environment in a
+retro game. The second game that gave me inspiration is asteroids. the physics
+and shooting make this game interesting. Additionally, this game could also be
+multiplayer. Finally is Mario, Mario is mostly the storyline and the way it’s
+played. 
+
+## Technical challenges
+
 the technical challenges for my idea of a game are:
+
 - storage
 - art
 - gameplay
 - controlling the champions
 
-### gameplay
-the gameplay isn't really outlined but my idea works like this. where you have different levels each representing the difficulty of the level. for example, if a level begins light and turns darker indicating a boss monster is coming. the players have both guns they fire at enemies and bricks which can be destroyed. the key part of my idea is that multiplayer is key where you have to work together to defeat the monsters. Additionally, at some levels, both players need to stay at a certain position on a map to complete a level sort of like a puzzle to give it more difficulty.
+## Gameplay
+
+The gameplay isn't really outlined but my idea works like this. where you have
+different levels each representing the difficulty of the level. for example, if
+a level begins light and turns darker indicating a boss monster is coming. the
+players have both guns they fire at enemies and bricks which can be destroyed.
+the key part of my idea is that multiplayer is key where you have to work
+together to defeat the monsters. Additionally, at some levels, both players
+need to stay at a certain position on a map to complete a level sort of like a
+puzzle to give it more difficulty.
 
 # Concept tower destruction 2p (Frenk)
 
-I had an idea to make a tower destruction game where 2 players compete against each other.
+I had an idea to make a tower destruction game where 2 players compete against
+each other.
 
-## usp
-The unique selling point of this game is to compete against another player to get the highest score. Playing a game together with someone adds more fun in an arcade setting in my opinion. Furthermore to beat a other player in a game adds a next level of fun.
+## USP
 
-## inspiration
-The inspiration of this game comes from angry birds and tanks (2d sideview). The tanks game is not the old top view version but rather the newer side-scroll type where you could only move left and right and then had to shoot with physics in mind. The adreline of just getting missed or not was very appealing to me. Furthermore, angry birds relies on the same physics mechanics and seeing a whole tower getting destroyed looks good.
+The unique selling point of this game is to compete against another player to
+get the highest score. Playing a game together with someone adds more fun in an
+arcade setting in my opinion. Furthermore to beat a other player in a game adds
+a next level of fun.
 
-## technische uitdagingen
+## Inspiration
+
+The inspiration of this game comes from angry birds and tanks (2d sideview).
+The tanks game is not the old top view version but rather the newer side-scroll
+type where you could only move left and right and then had to shoot with
+physics in mind. The adreline of just getting missed or not was very appealing
+to me. Furthermore, angry birds relies on the same physics mechanics and seeing
+a whole tower getting destroyed looks good.
+
+## Technical challenges
+
 The technical challenges for my idea of a game are:
+
 - Physics
 - Gameplay
 - Scoring
 
-## gameplay
-The gameplay is as follows: 
-There are 2 players on screen. 1 to the left and 1 to the right. The can both move left and right between some borders. 
-In the middle there is a tower made of bricks or beams that are destructible. If this tower is below a certain height the tower grows again with a random pattern.
-To score points you have to destroy as much as possible of the tower. It is also possible to hit the other player to steal points. The goal in the end is to score as many points in a certain amount of time. Some block in the tower have a special ability. If these are destroyed it can unlock a new weapon; gives rapid fire or affect the enemy with a status effect
+## Gameplay
 
+The gameplay is as follows: 
+
+There are 2 players on screen. 1 to the left and 1 to the right. The can both
+move left and right between some borders.
+
+In the middle there is a tower made of bricks or beams that are destructible.
+If this tower is below a certain height the tower grows again with a random
+pattern.
+
+To score points you have to destroy as much as possible of the tower. It is
+also possible to hit the other player to steal points. The goal in the end is
+to score as many points in a certain amount of time. Some block in the tower
+have a special ability. If these are destroyed it can unlock a new weapon;
+gives rapid fire or affect the enemy with a status effect
 
 # Concept (Loek)
 
@@ -216,7 +260,7 @@ internal names. All enemies deal 1 HP damage per hit.
 
 ## General gameplay
 
-the game has simularities with Gallica. The game wil have de following gameplay
+The game has simularities with Gallica. The game wil have de following gameplay
 
 - Area is in space
 - In the area there are astroids and hostile aliens
@@ -228,5 +272,10 @@ the game has simularities with Gallica. The game wil have de following gameplay
 - Highest score will be displayed
 - In the main menu the player can chose to play coop or solo 
 
-The game which able to for fill all the requirements for the project but has also a lot of extra potential features for the game. For example adding special power ups which would give the player extra abilities. It will also be able to have bonuses like double points which give you twice more points then normal. In the coop mode there will be more enemies to shoot down to make it more difficult. 
+The game which able to for fill all the requirements for the project but has
+also a lot of extra potential features for the game. For example adding special
+power ups which would give the player extra abilities. It will also be able to
+have bonuses like double points which give you twice more points then normal.
+In the coop mode there will be more enemies to shoot down to make it more
+difficult. 
 
