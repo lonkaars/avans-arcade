@@ -35,8 +35,8 @@ define(`docname',
 			esyscmd(`LANG="en_US.utf8" date "+%B %d, %Y"')
 		</span>
 		<span class="right">
-			Bjorn Martens <b>(???)</b><br/>
-			Frenk van de Nieuwegiessen <b>(???)</b><br/>
+			Bjorn Martens <b>(2187272)</b><br/>
+			Frenk van de Nieuwegiessen <b>(2162515)</b><br/>
 			Joshua Regnier <b>(2183008)</b><br/>
 			Loek Le Blansch <b>(2180996)</b><br/>
 			Niels Stunnebrink <b>(2184532)</b>
