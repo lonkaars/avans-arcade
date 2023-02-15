@@ -14,17 +14,17 @@ Important notes:
 
 The playable character has 4 actions that it can perform:
 
--	horizontal movement
+- horizontal movement
 - aiming
--	jump 
--	ability / use
+- jump 
+- ability / use
 
 To perform these action there will be 6 buttons for the user to use.
 
 A joystick is not needed for the movement because the movement is not complex, so button fulfill this. 
 The layout will be as follows:
  
-![Example controller layout](https://user-images.githubusercontent.com/17066065/219126294-b3fe11eb-e216-433a-9317-38f3e2ca4743.png)
+![Example controller layout](https://user-images.githubusercontent.com/17066065/219142627-4fde02c2-edfc-43c5-8a3b-dd739cb472aa.png)
 
 ## Input handling:
 
@@ -32,15 +32,15 @@ The hardware consist out of a microcontroller and a FPGA.
 The microcontroller will process the game logic.
 For this reason the input will be handled by the microcontroller as this will improve playability (stated in research).
 
-The controller will have four buttons, so 4 data pins are needed on the microcontroller plus a ground and 3.3V or 5V pin.
-In total there are 6 pins needed. 
-If the game is going to be played by 2 person, there are 4 more data pins needed so 8 data pins for both controllers.
+The controller will have six buttons, so six data pins are needed on the microcontroller plus a ground and 3.3V or 5V pin.
+In total there are eight pins needed. 
+If the game is going to be played by 2 persons, there are six more data pins needed so 8 data pins for both controllers.
 For data transfer between STM32 and FPGA there are 4 pins needed at maximum (SPI for instance). 
 The STM32 will be used and most STM32 boards have enough I/O pins for our needs. 
 The STM32 F030 and F091 provided by Avans both have 15 digital pins and 6 analog pins.
 The buttons will be connected as follows:
 
-![Logic lines between processor and controller](https://user-images.githubusercontent.com/17066065/219113354-cbda7776-bc95-4d1f-8eb9-364f7d4f1b8d.png)
+![Logic lines between processor and controller](https://user-images.githubusercontent.com/17066065/219143412-d6fb80b6-c5ab-4504-8151-864f6e4693a2.png)
 
 To implement the input in the game, the input should be checked at the start of each game cycle. In this case there are no interrupts needed.
 
@@ -51,11 +51,12 @@ The game engine will be designed to support 2D games. The engine will use a stat
 FSM is a useful tool for managing game states and transitions. A game can have many different states, such as a title screen, a level selection screen, a loading screen, and various gameplay states. Each state represents a particular configuration of the game, with different sets of variables, objects, and logic
 
 The state machine will be designed with the following states:
-1.	Initialization: The initialization state will be responsible for initializing all game-related variables and subsystems, including the FPGA-based picture processing unit.
-2.	Title Screen: The title screen state will display the game's title screen and wait for user input to start the game or access the options menu.
-3.	Options: The options state will allow the user to configure game settings, such as sound and graphics options.
-4.	Game Play: The game play state will be responsible for running the game logic and updating the game state.
-5.	Game Over: The game over state will display the game over screen and wait for user input to restart the game or return to the title screen.
+
+1. Initialization: The initialization state will be responsible for initializing all game-related variables and subsystems, including the FPGA-based picture processing unit.
+2. Title Screen: The title screen state will display the game's title screen and wait for user input to start the game or access the options menu.
+3. Options: The options state will allow the user to configure game settings, such as sound and graphics options.
+4. Game Play: The game play state will be responsible for running the game logic and updating the game state.
+5. Game Over: The game over state will display the game over screen and wait for user input to restart the game or return to the title screen.
 
 # PPU
 
@@ -275,6 +276,7 @@ The Audio Processing Unit (APU) is programmed on the FPGA, here it will produce 
 These signals will be generated using PWM, this allows a digital signal to act as an analog signal. Using this method it is theoretically possible to create all of the aforementioned signals.
 
 ![Audio signal with PWM](../assets/audioPWM.svg)
+
 This figure shows an example signal (in blue), created by the FPGA. and the corresponding analog signal (in red).
 
 # level design
