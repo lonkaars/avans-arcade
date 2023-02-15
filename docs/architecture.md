@@ -251,3 +251,17 @@ Important notes:
 
 # APU
 
+The Audio Processing Unit (APU) is programmed on the FPGA, here it will produce different signals on the audio output. These signals come in a few forms, as listed below.
+
+- triangle waves
+- square waves
+- sine waves
+- sawtooth waves
+- random noise 
+
+These signals will be generated using PWM, this allows a digital signal to act as an analog signal. Using this method it is theoretically possible to create all of the aforementioned signals.
+
+![Audio signal with PWM](../assets/audioPWM.svg)
+This figure shows an example signal (in blue), created by the FPGA. and the corresponding analog signal (in red).
+
+
