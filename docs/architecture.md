@@ -279,9 +279,17 @@ These signals will be generated using PWM, this allows a digital signal to act a
 
 This figure shows an example signal (in blue), created by the FPGA. and the corresponding analog signal (in red).
 
-# level design
-To create sprites the program to be used is aseprite,  aseprite exports their sprite palette and puts them in our 2d map editor. For creating 2d levels were using Tiled as our 2d map editor. With this software, we can create and export our maps with our preferred technique. indexes are the technique we’re using to export our levels from the microcontroller to the FPGA. Below you see a picture explaining what indexes are and how they are implemented.
+# Level design
 
-![Indexed color example](../assets/indexes.PNG)
+To create sprites the program to be used is aseprite, aseprite exports their
+sprite palette and puts them in our 2d map editor. For creating 2d levels were
+using Tiled as our 2d map editor. With this software, we can create and export
+our maps with our preferred technique. Indexed tilemaps are the technique we’re
+using to export our levels from the microcontroller to the FPGA.
 
-What kind of data type a specific index is and how large a number can go up to hasn't been decided yet. But I think it is going to be hexadecimal with around the size of 8 to 12 bits( two / three hexadecimal).
+![Indexed color (above) and indexed tilemaps (below)](../assets/indexes.PNG)
+
+To index tiles from the tilemap, 10 bits will be used for both the foreground
+and background layers of the PPU. This means that the global tilemap can fit up
+to 1024 tiles in total, each being 16x16 pixels (the example uses 4x4 tiles for
+illustration purposes).
