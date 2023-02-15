@@ -26,7 +26,7 @@ The layout will be as follows:
  
 ![Example controller layout](https://user-images.githubusercontent.com/17066065/219142627-4fde02c2-edfc-43c5-8a3b-dd739cb472aa.png)
 
-## Input handling:
+## Input handling
 
 The hardware consist out of a microcontroller and a FPGA.
 The microcontroller will process the game logic.
@@ -280,14 +280,16 @@ These signals will be generated using PWM, this allows a digital signal to act a
 This figure shows an example signal (in blue), created by the FPGA. and the corresponding analog signal (in red).
 
 In order to generate a audio signal from a note, we need a few things:
+
 - frequency
 - duration
 - amplitude
 
 optional:
+
 - envelope (ADSR)
 
-![ADSR envelope](https://commons.wikimedia.org/wiki/File:ADSR_parameter.svg)
+![ADSR envelope](https://upload.wikimedia.org/wikipedia/commons/e/ea/ADSR_parameter.svg)
 
 This image shows an advanced method of generating tones. In our case this is only an indication as to how it could be done, we will actually only be looking at the sustained tone part for simplicity sakes.
 In order to get the correct graph forms, some data points can be stored in a LUT (Look Up Table). This allows the saving of computation power at the cost of some ROM space.
