@@ -10,6 +10,35 @@ Important notes:
 
 # Game controllers
 
+## Input
+The playable character has 4 actions that it can perform:
+-	movement on the x-axis (left / right)
+-	jump 
+-	ability / use
+To perform these action there will be 4 buttons for the user to use.
+
+A joystick is not needed for the movement because the movement is not complex, so button fulfill this. 
+The layout will be as follows:
+ 
+![image](https://user-images.githubusercontent.com/17066065/219126294-b3fe11eb-e216-433a-9317-38f3e2ca4743.png)
+
+## Input handling:
+The hardware consist out of a microcontroller and a FPGA.
+The microcontroller will process the game logic.
+For this reason the input will be handled by the microcontroller as this will improve playability (stated in research).
+
+The controller will have four buttons, so 4 data pins are needed on the microcontroller plus a ground and 3.3V or 5V pin.
+In total there are 6 pins needed. 
+If the game is going to be played by 2 person, there are 4 more data pins needed so 8 data pins for both controllers.
+For data transfer between STM32 and FPHA there are 4 pins needed at maximum (SPI for instance). 
+The STM32 will be used and most STM32 boards have enough I/O pins for our needs. 
+The STM32 F030 and F091 provided by AVANS both have 15 digital pins and 6 analog pins.
+The buttons will be connected as follows:
+
+![image](https://user-images.githubusercontent.com/17066065/219113354-cbda7776-bc95-4d1f-8eb9-364f7d4f1b8d.png)
+
+To implement the input in the game, the input should be ckecked at the start of each game cycle. In this case there are no interupts needed.
+
 # STM32 software
 
 # PPU
