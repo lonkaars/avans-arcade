@@ -101,7 +101,7 @@ int main() {
 ```
 # Generating audio signals
 
-In order to generate sound for this project, a few posibilities exist (see chapters below)
+In order to generate sound for this project, a few possibilities exist (see chapters below)
 
 ## Sound chips
 
@@ -120,9 +120,9 @@ A sound chip is made to use digital, analog or mixed signals and produce a tone 
 | Texas Instruments  | [SN76489](https://en.wikipedia.org/wiki/SN76489 "SN76489")                                                    | 1980 | 4        | Yes         | N/A               |
 | Texas Instruments  | [Sega PSG (SN76496)](https://en.wikipedia.org/wiki/SN76496 "SN76496")                                         | 1982 | 4        | Yes         | N/A               | 
 
-This chart shows different audio chips that might have been used in retro consoles. While all of them aren't easily available anymore it is still interesting to take a close look at how these IC's (Intergrated Ciruit) work. 
+This chart shows different audio chips that might have been used in retro consoles. While all of them aren't easily available anymore it is still interesting to take a close look at how these IC's (Integrated Circuit) work. 
 
-Most chips work on one of two pricibles, this being either a "Programmable sound generator" or "Sound Chip"
+Most chips work on one of two crucibles, this being either a "Programmable sound generator" or "Sound Chip"
 
 
 ### Programmable sound generator (PSG)
@@ -139,9 +139,9 @@ In order to create an audio signal using the FPGA we can use PWM to emulate an a
 
 ![Audio signal with PWM](../assets/audioPWM.svg)
 
-This figure shows an example signal (in blue), created by the FPGA. and the corosponding analog signal (in red).
+This figure shows an example signal (in blue), created by the FPGA. and the corresponding analog signal (in red).
 
-It is usefull to generate a few different types of signals like:
+It is useful to generate a few different types of signals like:
 - triangle waves
 - square waves
 - sine waves
@@ -154,7 +154,7 @@ There are a lot of ways to make a 2d level but because where using an microcontr
 
 ## pictures 
 if a level is made there is a possibility that it can be exported as a picture. You can use that picture format and decode it in the microcontroller then send it to the FPGA that sends that data through the VGA. the problem with this method is that a lot of data is needed to save a whole level (640 * 480 pixels) but different formats can have a large impact. For a better reference picture below.
-![pictureFormating](../assets/pictureFormatting.PNG)
+![pictureFormatting](../assets/pictureFormatting.PNG)
 
 ### PNG
 PNG (Portable Network Graphics) is a lossless image compression format. Resulting in high-quality images that preserve all of the original data. Additionally, PNG supports a wider range of color depths, including 24-bit RGB and 32-bit RGBA (which includes an alpha channel for transparency), making it well-suited for images with a large number of colors or images that require transparency.
@@ -181,7 +181,7 @@ indexes is another way of using tiles and colors at a 2d level. With this method
 in the picture, you can have a better understanding of how indexes work.
 ### Data
 the color palette is saved on the FPGA with the different tiles. While the microcontroller makes the levels and sends the indexed tiles to the FPGA.
-![wokringBehindIndexes](../assets/indexesWorking.PNG)
+![workingBehindIndexes](../assets/indexesWorking.PNG)
 
 ### conclusion
 This method of creating levels splits the memory between the FPGA and the microcontroller. Additionally, the complexity behind the program is smaller while still giving a lot of freedom with level creation.
@@ -230,11 +230,11 @@ The FPGA code contains multiple entities.
 Data transfer between these entities takes at least one clock cycle.
 If there are multiple entities the delay will increase and decreases the playability of the game.
 
-## Conlcusion
+## Conclusion
 For gameplay reasons it is recommended to have the input handling as close as possible to the game logic unit.
 This will decrease the delay between the user-input and onscreen gameplay. 
 
-# Microcontroller FGPA communication
+# Microcontroller FPGA communication
 
 The hardware of the game consist out of a microcontroller(stm32) and a FPGA(basys3). The hardware components needs to communicate with each other. For this a protocol is needed.
 See table 1 for a comparison of possible protocols:
@@ -248,5 +248,5 @@ See table 1 for a comparison of possible protocols:
 There are only two devices that has to be connected. Complexity and master/slave amount are not relevant for this purpose. 
 If there are multiple entities the delay will increase and decreases the playability of the game.
 
-## Conlcusion
+## Conclusion
 It is recommended that SPI will be the communication protocol because of the data transfer speeds. The is a lot of data transfer between the microcontroller and FPGA.

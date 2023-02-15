@@ -30,14 +30,14 @@ For this reason the input will be handled by the microcontroller as this will im
 The controller will have four buttons, so 4 data pins are needed on the microcontroller plus a ground and 3.3V or 5V pin.
 In total there are 6 pins needed. 
 If the game is going to be played by 2 person, there are 4 more data pins needed so 8 data pins for both controllers.
-For data transfer between STM32 and FPHA there are 4 pins needed at maximum (SPI for instance). 
+For data transfer between STM32 and FPGA there are 4 pins needed at maximum (SPI for instance). 
 The STM32 will be used and most STM32 boards have enough I/O pins for our needs. 
-The STM32 F030 and F091 provided by AVANS both have 15 digital pins and 6 analog pins.
+The STM32 F030 and F091 provided by Avans both have 15 digital pins and 6 analog pins.
 The buttons will be connected as follows:
 
 ![image](https://user-images.githubusercontent.com/17066065/219113354-cbda7776-bc95-4d1f-8eb9-364f7d4f1b8d.png)
 
-To implement the input in the game, the input should be ckecked at the start of each game cycle. In this case there are no interupts needed.
+To implement the input in the game, the input should be checked at the start of each game cycle. In this case there are no interrupts needed.
 
 # STM32 software
 
@@ -87,9 +87,9 @@ Notable differences:
 - 8 total palettes, with 8 colors each
   
   More colors is better. Increasing the total palette count is a very memory
-  intensive operation, while increaing the palette color count is likely slower
+  intensive operation, while increasing the palette color count is likely slower
   when looking up color values for each pixel on real hardware.
-- Sprites can be positioned paritally off-screen on all screen edges using only
+- Sprites can be positioned partially off-screen on all screen edges using only
   the offset bits in the FAM register
   
   The NES has a separate PPUMASK register to control special color effects, and
