@@ -279,6 +279,29 @@ These signals will be generated using PWM, this allows a digital signal to act a
 
 This figure shows an example signal (in blue), created by the FPGA. and the corresponding analog signal (in red).
 
+In order to generate a audio signal from a note, we need a few things:
+- frequency
+- duration
+- amplitude
+
+optional:
+- envelope (ADSR)
+
+![ADSR envelope](https://commons.wikimedia.org/wiki/File:ADSR_parameter.svg)
+
+This image shows an advanced method of generating tones. In our case this is only an indication as to how it could be done, we will actually only be looking at the sustained tone part for simplicity sakes.
+In order to get the correct graph forms, some data points can be stored in a LUT (Look Up Table). This allows the saving of computation power at the cost of some ROM space.
+This only creates one type of sound at a set frequency and amplitude. The frequency of this tone can be altered by increasing the step size of the LUT. This allows the creation of higher frequency signals at a slight loss of precision.
+The following pseudo code is there to show an example of this:
+```c
+for (i = 0; i < toneLength; i++){
+  for (k = 0; k < sizeof(LUT); k += stepSize){
+    OUT = LUT[k];
+  }
+}
+```
+This output can then be converted to a PWM signal using known methods or existing solutions as described in the beginning of this chapter.
+
 # Level design
 
 To create sprites the program to be used is aseprite, aseprite exports their
