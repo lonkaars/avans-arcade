@@ -11,18 +11,23 @@ Important notes:
 # Game controllers
 
 ## Input
+
 The playable character has 4 actions that it can perform:
--	movement on the x-axis (left / right)
+
+-	horizontal movement
+- aiming
 -	jump 
 -	ability / use
-To perform these action there will be 4 buttons for the user to use.
+
+To perform these action there will be 6 buttons for the user to use.
 
 A joystick is not needed for the movement because the movement is not complex, so button fulfill this. 
 The layout will be as follows:
  
-![image](https://user-images.githubusercontent.com/17066065/219126294-b3fe11eb-e216-433a-9317-38f3e2ca4743.png)
+![Example controller layout](https://user-images.githubusercontent.com/17066065/219126294-b3fe11eb-e216-433a-9317-38f3e2ca4743.png)
 
 ## Input handling:
+
 The hardware consist out of a microcontroller and a FPGA.
 The microcontroller will process the game logic.
 For this reason the input will be handled by the microcontroller as this will improve playability (stated in research).
@@ -35,11 +40,12 @@ The STM32 will be used and most STM32 boards have enough I/O pins for our needs.
 The STM32 F030 and F091 provided by Avans both have 15 digital pins and 6 analog pins.
 The buttons will be connected as follows:
 
-![image](https://user-images.githubusercontent.com/17066065/219113354-cbda7776-bc95-4d1f-8eb9-364f7d4f1b8d.png)
+![Logic lines between processor and controller](https://user-images.githubusercontent.com/17066065/219113354-cbda7776-bc95-4d1f-8eb9-364f7d4f1b8d.png)
 
 To implement the input in the game, the input should be checked at the start of each game cycle. In this case there are no interrupts needed.
 
 # STM32 software
+
 The game engine will be designed to support 2D games. The engine will use a state machine to manage game states and transitions between them. The state machine will be implemented using a finite state machine (FSM) design pattern. The engine will also include support for handling user input, game logic, and sound.
 
 FSM is a useful tool for managing game states and transitions. A game can have many different states, such as a title screen, a level selection screen, a loading screen, and various gameplay states. Each state represents a particular configuration of the game, with different sets of variables, objects, and logic
@@ -50,8 +56,6 @@ The state machine will be designed with the following states:
 3.	Options: The options state will allow the user to configure game settings, such as sound and graphics options.
 4.	Game Play: The game play state will be responsible for running the game logic and updating the game state.
 5.	Game Over: The game over state will display the game over screen and wait for user input to restart the game or return to the title screen.
-
-
 
 # PPU
 
@@ -256,9 +260,6 @@ Important notes:
 
 -->
 
-[nesppuspecs]: https://www.copetti.org/writings/consoles/nes/
-[nesppudocs]: https://www.nesdev.org/wiki/PPU_programmer_reference
-[nesppupinout]: https://www.nesdev.org/wiki/PPU_pinout
 [custompputimings]: https://docs.google.com/spreadsheets/d/1MU6K4c4PtMR_JXIpc3I0ZJdLZNnoFO7G2P3olCz6LSc
 
 # APU

@@ -99,6 +99,11 @@ int main() {
   while(1) loop();
 }
 ```
+
+[nesppuspecs]: https://www.copetti.org/writings/consoles/nes/
+[nesppudocs]: https://www.nesdev.org/wiki/PPU_programmer_reference
+[nesppupinout]: https://www.nesdev.org/wiki/PPU_pinout
+
 # Generating audio signals
 
 In order to generate sound for this project, a few possibilities exist (see chapters below)
@@ -148,45 +153,66 @@ It is useful to generate a few different types of signals like:
 - sawtooth waves
 - random noise 
 
-# level editing
+# Level editing
 For the project retro game-level design is an important part to make the game alive. That’s why research is needed to look for different ways of designing a retro game.
 There are a lot of ways to make a 2d level but because where using an microcontroller and an FPGA the options are limited. That’s, why the first subject, is pictures. secondly, indexes and lastly software sources.
 
-## pictures 
-if a level is made there is a possibility that it can be exported as a picture. You can use that picture format and decode it in the microcontroller then send it to the FPGA that sends that data through the VGA. the problem with this method is that a lot of data is needed to save a whole level (640 * 480 pixels) but different formats can have a large impact. For a better reference picture below.
-![pictureFormatting](../assets/pictureFormatting.PNG)
+## Pictures 
+
+If a level is made there is a possibility that it can be exported as a picture.
+You can use that picture format and decode it in the microcontroller then send
+it to the FPGA that sends that data through the VGA. the problem with this
+method is that a lot of data is needed to save a whole level (640 * 480 pixels)
+but different formats can have a large impact. For a better reference picture
+below.
+
+![Level to screen data processing pipeline](../assets/pictureFormatting.PNG)
 
 ### PNG
+
 PNG (Portable Network Graphics) is a lossless image compression format. Resulting in high-quality images that preserve all of the original data. Additionally, PNG supports a wider range of color depths, including 24-bit RGB and 32-bit RGBA (which includes an alpha channel for transparency), making it well-suited for images with a large number of colors or images that require transparency.
+
 ### BMP
+
 BMP is a simple, uncompressed image format that provides good performance and easy access to pixel data. It's a good choice for applications where memory usage is not a concern and quick read times are important.
+
 ### TIFF
+
 TIFF (Tagged Image File Format) is a flexible, adaptable file format for handling images and data within a single file, by including the header tags (size, definition, image-data arrangement, applied image compression) defining the image's geometry. TIFF supports a wide range of color depths, including black and white, grayscale, and full color (24-bit RGB and 32-bit RGBA), and is commonly used in printing, pre-press, desktop publishing, and professional photography. Unlike PNG, TIFF does not have built-in support for lossless compression and is typically used for high-quality, high-resolution images that need to be edited or processed in some way.
+
 ### TGA 
+
 TGA is a lossless image format that supports a wide range of features, including alpha channels, gamma correction, and RLE compression. It's a good choice for applications where image quality is a priority and memory usage is not a concern.
+
 ### JPEG
+
 JPEG (Joint Photographic Experts Group) is a commonly used image compression format that uses lossy compression to reduce the file size of digital images. It is well-suited for compressing photographic images and images with smooth color gradients, but may not perform as well with images that have sharp transitions or large areas of solid color. JPEG is widely used for images on the web, as well as for digital photos, because of its efficient compression and support for a wide range of color depths, including 8-bit grayscale and 24-bit RGB.
 
-### decode API
+### Decode API
+
 To make sure there is a way of decoding the picture data I found an API that could handle it. MagickCore API is a low-level interface between the C programming language and the ImageMagick image processing libraries. 
 [imagemagick](https://imagemagick.org/script/magick-core.php "imagemagick")
 
-### conclusion
+### Conclusion
 In conclusion do i think that BMP is the best choice. But there are a lot of ways for using a picture format in a project but our main problem with using pictures is that a lot of memory is needed to save the data. Additionally, the time to make a decode function could be significant and complicated because the color depth plays a big part and understanding the API can take a lot of time that’s why this option is not ideal.
 
-## indexes
-indexes is another way of using tiles and colors at a 2d level. With this method, you have a fixed color palette for example 4 colors and a fixed total of tiles. different tiles have numbers going from 0 to N meaning total tiles available and colors going from 0 to N. 
-![indexes](../assets/indexes.PNG)
+## Indexes
+
+Indexes is another way of using tiles and colors at a 2d level. With this method, you have a fixed color palette for example 4 colors and a fixed total of tiles. different tiles have numbers going from 0 to N meaning total tiles available and colors going from 0 to N. 
+
+![Indexed color example](../assets/indexes.PNG)
 
 in the picture, you can have a better understanding of how indexes work.
 ### Data
 the color palette is saved on the FPGA with the different tiles. While the microcontroller makes the levels and sends the indexed tiles to the FPGA.
-![workingBehindIndexes](../assets/indexesWorking.PNG)
+![Functional model of indexed colors](../assets/indexesWorking.PNG)
 
-### conclusion
+### Conclusion
+
 This method of creating levels splits the memory between the FPGA and the microcontroller. Additionally, the complexity behind the program is smaller while still giving a lot of freedom with level creation.
 
 # Software sources
+
 There are a lot of ways of creating tiles and sprites for pixel art. Underneath is a representation of my findings. For making 2d maps is Tiled the program that is going to be used in our project
 
 
@@ -205,8 +231,11 @@ There are a lot of ways of creating tiles and sprites for pixel art. Underneath 
 
 
 # Input 
+
 The playable character has 4 actions that it can perform:
--	movement on the x-axis
+
+-	horizontal movement
+- aiming
 -	jump 
 -	ability / use
 
@@ -216,24 +245,28 @@ The actions can be done as follows:
 
 | Action | Button |	Joystick |
 | ------ | ------ | -------- |
-| Movement x-axis| 	x | x |
+| Movement | 	x | x |
+| Aiming | 	x | x |
 | Jump |	x	 |  |
 | Ability | 	x	|  |
 
 ## Handling
-A joystick requires an ac input port. 
-A button can use both a ac and dc input port.
-So the hardware needs to have both an ac input and a dc input, if a button and a joystick are used. 
-The input can be handled by either the FPGA(stm32) or microcontroller (STM32).
+
+A joystick requires an analog input port.
+A button can use either an analog or digital input port.
+So the hardware needs to have both an analog input and a digital input, if a button and a joystick are used. 
+The input can be handled by either the FPGA or microcontroller (STM32).
 The microcontroller has the possibility to run multiple task simultaneously if needed.
 The FPGA code contains multiple entities.
 Data transfer between these entities takes at least one clock cycle.
 If there are multiple entities the delay will increase and decreases the playability of the game.
 
 ## Conclusion
+
 For gameplay reasons it is recommended to have the input handling as close as possible to the game logic unit.
 This will decrease the delay between the user-input and onscreen gameplay. 
 
+<!-- we're using DMA to control the PPU and APU (?) and this section seems non-specific to the controller and input communication
 # Microcontroller FPGA communication
 
 The hardware of the game consist out of a microcontroller(stm32) and a FPGA(basys3). The hardware components needs to communicate with each other. For this a protocol is needed.
@@ -250,3 +283,4 @@ If there are multiple entities the delay will increase and decreases the playabi
 
 ## Conclusion
 It is recommended that SPI will be the communication protocol because of the data transfer speeds. The is a lot of data transfer between the microcontroller and FPGA.
+-->
