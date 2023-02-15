@@ -234,21 +234,21 @@ There are a lot of ways of creating tiles and sprites for pixel art. Underneath 
 
 The playable character has 4 actions that it can perform:
 
--	horizontal movement
+- horizontal movement
 - aiming
--	jump 
--	ability / use
+- jump 
+- ability / use
 
 To control these actions there has to be at least 4 inputs. 
 These can either be a button or joystick. 
 The actions can be done as follows:
 
-| Action | Button |	Joystick |
-| ------ | ------ | -------- |
-| Movement | 	x | x |
-| Aiming | 	x | x |
-| Jump |	x	 |  |
-| Ability | 	x	|  |
+| Action   | Button | Joystick |
+| -------- | ------ | -------- |
+| Movement | x      | x        |
+| Aiming   | x      | x        |
+| Jump     | x      |          |
+| Ability  | x      |          |
 
 ## Handling
 
@@ -271,12 +271,12 @@ This will decrease the delay between the user-input and onscreen gameplay.
 
 The hardware of the game consist out of a microcontroller(stm32) and a FPGA(basys3). The hardware components needs to communicate with each other. For this a protocol is needed.
 See table 1 for a comparison of possible protocols:
-| Protocol |	UART |	I2C	| SPI |
+| Protocol | UART | I2C | SPI |
 | -------- | ----- | ---- | --- |
-|Number of lines |	1/2 |	2 |	4 |
-|Duplex	| Half-duplex	| Half-duplex	| Full-duplex |
-|Data transfer speed |	Upto 5mbps | Upto 3.4Mbps – 5Mbps	| Default at 50Mbps. Upto 100Mbps |
-|Speed	| Slowest |	Faster than UART | Fastest |
+|Number of lines | 1/2 | 2 | 4 |
+|Duplex | Half-duplex | Half-duplex | Full-duplex |
+|Data transfer speed | Upto 5mbps | Upto 3.4Mbps – 5Mbps | Default at 50Mbps. Upto 100Mbps |
+|Speed | Slowest | Faster than UART | Fastest |
 
 There are only two devices that has to be connected. Complexity and master/slave amount are not relevant for this purpose. 
 If there are multiple entities the delay will increase and decreases the playability of the game.

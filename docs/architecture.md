@@ -14,10 +14,10 @@ Important notes:
 
 The playable character has 4 actions that it can perform:
 
--	horizontal movement
+- horizontal movement
 - aiming
--	jump 
--	ability / use
+- jump 
+- ability / use
 
 To perform these action there will be 6 buttons for the user to use.
 
@@ -51,11 +51,12 @@ The game engine will be designed to support 2D games. The engine will use a stat
 FSM is a useful tool for managing game states and transitions. A game can have many different states, such as a title screen, a level selection screen, a loading screen, and various gameplay states. Each state represents a particular configuration of the game, with different sets of variables, objects, and logic
 
 The state machine will be designed with the following states:
-1.	Initialization: The initialization state will be responsible for initializing all game-related variables and subsystems, including the FPGA-based picture processing unit.
-2.	Title Screen: The title screen state will display the game's title screen and wait for user input to start the game or access the options menu.
-3.	Options: The options state will allow the user to configure game settings, such as sound and graphics options.
-4.	Game Play: The game play state will be responsible for running the game logic and updating the game state.
-5.	Game Over: The game over state will display the game over screen and wait for user input to restart the game or return to the title screen.
+
+1. Initialization: The initialization state will be responsible for initializing all game-related variables and subsystems, including the FPGA-based picture processing unit.
+2. Title Screen: The title screen state will display the game's title screen and wait for user input to start the game or access the options menu.
+3. Options: The options state will allow the user to configure game settings, such as sound and graphics options.
+4. Game Play: The game play state will be responsible for running the game logic and updating the game state.
+5. Game Over: The game over state will display the game over screen and wait for user input to restart the game or return to the title screen.
 
 # PPU
 
@@ -275,6 +276,7 @@ The Audio Processing Unit (APU) is programmed on the FPGA, here it will produce 
 These signals will be generated using PWM, this allows a digital signal to act as an analog signal. Using this method it is theoretically possible to create all of the aforementioned signals.
 
 ![Audio signal with PWM](../assets/audioPWM.svg)
+
 This figure shows an example signal (in blue), created by the FPGA. and the corresponding analog signal (in red).
 
 
