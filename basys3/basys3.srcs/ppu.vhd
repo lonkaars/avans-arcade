@@ -16,7 +16,7 @@ entity ppu is
 end ppu;
 
 architecture Behavioral of ppu is
-	constant PPU_FG_SPRITE_COUNT: natural := 1; -- amount of foreground sprites
+	constant PPU_FG_SPRITE_COUNT: natural := 128; -- amount of foreground sprites
 	constant PPU_COLOR_OUTPUT_DEPTH: natural := 4; -- VGA output channel depth
   constant PPU_PALETTE_IDX_WIDTH: natural := 3; -- palette index width (within sprite)
   constant PPU_PALETTE_WIDTH: natural := 3; -- palette index width (palette table)
@@ -47,12 +47,6 @@ architecture Behavioral of ppu is
     FAM_WEN,
     PAL_WEN,
     AUX_WEN: out std_logic; -- write enable MUX
-    TMM_DI: out std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0); -- TMM write DATA MUX
-    BAM_DI: out std_logic_vector(PPU_BAM_DATA_WIDTH-1 downto 0); -- BAM write DATA MUX
-    FAM_DI: out std_logic_vector(PPU_FAM_DATA_WIDTH-1 downto 0); -- FAM write DATA MUX
-    PAL_DI: out std_logic_vector(PPU_PAL_DATA_WIDTH-1 downto 0); -- PAL write DATA MUX
-    AUX_DI: out std_logic_vector(PPU_AUX_DATA_WIDTH-1 downto 0); -- AUX write DATA MUX
-
 		EN: in std_logic; -- EXT *ADDR enable (switch *AO to ADDR instead of *AI)
 		ADDR: in std_logic_vector(15 downto 0); -- address in
     TMM_AI: in std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
@@ -84,17 +78,30 @@ architecture Behavioral of ppu is
 		douta: out std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0);
 		rsta_busy: out std_logic);
 	end component;
+	component ppu_aux port(
+		CLK: in std_logic; -- system clock
+		RESET: in std_logic; -- reset memory
+
+		-- internal memory block (AUX)
+		AUX_WEN: in std_logic; -- VRAM AUX write enable
+		AUX_ADDR: in std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0); -- VRAM AUX address
+		AUX_DATA: in std_logic_vector(PPU_AUX_DATA_WIDTH-1 downto 0); -- VRAM AUX data
+		
+		-- aux outputs
+		BG_SHIFT_X: out std_logic_vector(PPU_POS_H_WIDTH-1 downto 0);
+		BG_SHIFT_Y: out std_logic_vector(PPU_POS_V_WIDTH-1 downto 0);
+		FG_FETCH: out std_logic);
+	end component;
 	component ppu_sprite_bg port( -- background sprite
 		-- inputs
 		CLK: in std_logic; -- system clock
 		OE: in std_logic; -- output enable (of CIDX)
 		X: in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 		Y: in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
-
-		-- internal memory block (AUX)
-		AUX_WEN: in std_logic; -- VRAM AUX write enable
-		AUX_ADDR: in std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0); -- VRAM AUX address
-		AUX_DATA: in std_logic_vector(PPU_AUX_DATA_WIDTH-1 downto 0); -- VRAM AUX data
+		
+		-- aux inputs
+		BG_SHIFT_X: in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0);
+		BG_SHIFT_Y: in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0);
 
 		-- used memory blocks
 		BAM_ADDR: out std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
@@ -108,6 +115,7 @@ architecture Behavioral of ppu is
   component ppu_sprite_fg port( -- foreground sprite
 		-- inputs
 		CLK: in std_logic; -- system clock
+		RESET: in std_logic; -- reset internal memory
 		OE: in std_logic; -- output enable (of CIDX)
 		X: in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 		Y: in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
@@ -176,11 +184,11 @@ architecture Behavioral of ppu is
 	signal FAM_AI, FAM_AO: std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
 	signal PAL_AI, PAL_AO: std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0);
 	signal AUX_AI, AUX_AO: std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0);
-	signal TMM_DI, TMM_DO: std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0);
-	signal BAM_DI, BAM_DO: std_logic_vector(PPU_BAM_DATA_WIDTH-1 downto 0);
-	signal FAM_DI, FAM_DO: std_logic_vector(PPU_FAM_DATA_WIDTH-1 downto 0);
-	signal PAL_DI, PAL_DO: std_logic_vector(PPU_PAL_DATA_WIDTH-1 downto 0);
-	signal AUX_DI, AUX_DO: std_logic_vector(PPU_AUX_DATA_WIDTH-1 downto 0);
+	signal TMM_DO: std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0);
+	signal BAM_DO: std_logic_vector(PPU_BAM_DATA_WIDTH-1 downto 0);
+	signal FAM_DO: std_logic_vector(PPU_FAM_DATA_WIDTH-1 downto 0);
+	signal PAL_DO: std_logic_vector(PPU_PAL_DATA_WIDTH-1 downto 0);
+	signal AUX_DO: std_logic_vector(PPU_AUX_DATA_WIDTH-1 downto 0);
   signal CIDX: std_logic_vector(PPU_PALETTE_CIDX_WIDTH-1 downto 0);
   signal BG_EN: std_logic;
   signal FG_EN, FG_HIT: std_logic_vector(PPU_FG_SPRITE_COUNT-1 downto 0);
@@ -188,6 +196,9 @@ architecture Behavioral of ppu is
 	signal Y: std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
 	signal TR,TG,TB: std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- tiny RGB out (to be buffered)
 	signal PREADY: std_logic; -- current pixel color stable
+	signal BG_SHIFT_X: std_logic_vector(PPU_POS_H_WIDTH-1 downto 0);
+	signal BG_SHIFT_Y: std_logic_vector(PPU_POS_V_WIDTH-1 downto 0);
+	signal FG_FETCH: std_logic;
 begin
   SYSCLK <= CLK100;
   SYSRST <= RESET;
@@ -201,11 +212,6 @@ begin
 		EN => EN,
 		WEN => WEN,
 		ADDR => ADDR,
-    TMM_DI => TMM_DI,
-    BAM_DI => BAM_DI,
-    FAM_DI => FAM_DI,
-    PAL_DI => PAL_DI,
-    AUX_DI => AUX_DI,
     TMM_AI => TMM_AI,
     BAM_AI => BAM_AI,
     FAM_AI => FAM_AI,
@@ -227,7 +233,7 @@ begin
 		rsta => SYSRST,
 		wea => (others => BAM_WEN),
 		addra => BAM_AO,
-		dina => BAM_DI,
+		dina => DATA(PPU_BAM_DATA_WIDTH-1 downto 0),
 		douta => BAM_DO,
 		rsta_busy => open);
   tilemap_memory: component ppu_tmm port map(
@@ -235,18 +241,27 @@ begin
 		rsta => SYSRST,
 		wea => (others => TMM_WEN),
 		addra => TMM_AO,
-		dina => TMM_DI,
+		dina => DATA(PPU_TMM_DATA_WIDTH-1 downto 0),
 		douta => TMM_DO,
 		rsta_busy => open);
+
+	aux: component ppu_aux port map(
+		CLK => SYSCLK,
+		RESET => SYSRST,
+    AUX_WEN => AUX_WEN,
+    AUX_ADDR => AUX_AO,
+    AUX_DATA => DATA(PPU_AUX_DATA_WIDTH-1 downto 0),
+		BG_SHIFT_X => BG_SHIFT_X,
+		BG_SHIFT_Y => BG_SHIFT_Y,
+		FG_FETCH => FG_FETCH);
 
   background_sprite: component ppu_sprite_bg port map(
     CLK => SYSCLK,
     OE => BG_EN,
     X => X,
     Y => Y,
-    AUX_WEN => AUX_WEN,
-    AUX_ADDR => AUX_AO,
-    AUX_DATA => AUX_DI,
+		BG_SHIFT_X => BG_SHIFT_X,
+		BG_SHIFT_Y => BG_SHIFT_Y,
     BAM_ADDR => BAM_AI,
     BAM_DATA => BAM_DO,
     TMM_ADDR => TMM_AI,
@@ -256,13 +271,14 @@ begin
 	foreground_sprites: for FG_IDX in 0 to PPU_FG_SPRITE_COUNT-1 generate
 		foreground_sprite: component ppu_sprite_fg port map(
 			CLK => SYSCLK,
+			RESET => SYSRST,
 			OE => FG_EN(FG_IDX),
 			X => X,
 			Y => Y,
-			FETCH => '0',
+			FETCH => FG_FETCH,
 			FAM_WEN => FAM_WEN,
 			FAM_ADDR => FAM_AO,
-			FAM_DATA => FAM_DI,
+			FAM_DATA => DATA(PPU_FAM_DATA_WIDTH-1 downto 0),
 			TMM_ADDR => TMM_AI,
 			TMM_DATA => TMM_DO,
 			CIDX => CIDX,
@@ -280,7 +296,7 @@ begin
 		RESET => SYSRST,
 		PAL_WEN => PAL_WEN,
 		PAL_ADDR => PAL_AO,
-		PAL_DATA => PAL_DI,
+		PAL_DATA => DATA(PPU_PAL_DATA_WIDTH-1 downto 0),
 		R => TR,
 		G => TG,
 		B => TB);
