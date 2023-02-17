@@ -185,7 +185,7 @@ Important notes:
   for the foreground and background layer, these components will be combined
   into one for each layer respectively. They are separated in the above diagram
   for pipeline stage illustration.
-- The BAX, FAM, and PAL registers are implemented in the component that
+- The AUX, FAM, and PAL registers are implemented in the component that
   directly accesses them, but are exposed to the PPU RAM bus for writing.
 - Each foreground sprite render component holds its own sprite data copy from
   the RAM in it's own cache memory. The cache updates are fetched during the
@@ -222,8 +222,6 @@ Important notes:
 - All DATA and ADDR lines are shared between all RAM ports. WEN inputs are
   controlled by the address decoder.
 
-<!--
-
 ## Registers
 
 |Address|Size (bytes)|Alias|Description|
@@ -232,7 +230,7 @@ Important notes:
 |`0x00000`|`0x00000`|BAM  |[background attribute memory][BAM]|
 |`0x00000`|`0x00000`|FAM  |[foreground attribute memory][FAM]|
 |`0x00000`|`0x00000`|PAL  |[palettes][PAL]|
-|`0x00000`|`0x00000`|BAX  |[background auxiliary memory][BAX]|
+|`0x00000`|`0x00000`|AUX  |[auxiliary memory][AUX]|
 
 [TMM]: #tilemap-memory
 ### Tilemap memory
@@ -242,24 +240,35 @@ Important notes:
 [BAM]: #background-attribute-memory
 ### Background attribute memory
 
+- 15-bit words (padded with 1 bit)
+- 11-bit address width (1200 15-bit words with padding 1)
+
 - TODO: list format
 
 [FAM]: #foreground-attribute-memory
 ### Foreground attribute memory
+
+- 2 * 16-bit words
+- 8-bit address width (256 16-bit words for 128 * 32-bit)
 
 - TODO: list format
 
 [PAL]: #palettes
 ### Palettes
 
+- 12-bit words
+- 6-bit address width (2^6 = 64 colors total)
+
 - TODO: list format
 
-[BAX]: #background-auxiliary-memory
-### Background auxiliary memory
+[AUX]: #auxiliary-memory
+### Auxiliary memory
 
-- background scrolling
+- background scrolling (8 + 9 bits)
+- fetch foreground sprites bit (1 bit)
 
--->
+- 16-bit words
+- 1-bit address width
 
 [custompputimings]: https://docs.google.com/spreadsheets/d/1MU6K4c4PtMR_JXIpc3I0ZJdLZNnoFO7G2P3olCz6LSc
 

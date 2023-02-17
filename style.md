@@ -31,15 +31,21 @@ before formatting as a failsafe.
 - library hooks that need specific symbol names are exempt from the naming
   conventions (e.g. `main` or `HAL_UART_MspInit`)
 
-### others
+## others
 
 - document **how to use** code using doxygen-style comments in headers
 - document **what code is doing** using inline comments (where applicable)
 - don't write redundant comments (e.g. `int c = a + b; // add a and b`)
 
-## markdown
-
-### style
+### markdown
 
 - indent using spaces, align to text start
+
+### vhdl
+
+- vivado puts new files in subfolders, all files (source files, constraints,
+  etc.) should be directly in the basys3/basys3.srcs/ folder
+- use snake case for naming components
+- use uppercase snake case for naming signals and I/O lines
+- use lower case keywords
 
