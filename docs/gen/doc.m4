@@ -32,7 +32,7 @@ define(`docname',
 	<div class="docintro">
 		<span class="left">
 			docname()<br/>
-			Project Domotica<br/>
+			Project arcade game<br/>
 			esyscmd(`LANG="en_US.utf8" date "+%B %d, %Y"')
 		</span>
 		<span class="right">
