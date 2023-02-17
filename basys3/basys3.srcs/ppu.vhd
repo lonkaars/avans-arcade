@@ -12,15 +12,15 @@ entity ppu is
 		DATA: in std_logic_vector(15 downto 0);
 		R,G,B: out std_logic_vector(3 downto 0);
 		NVSYNC, NHSYNC: out std_logic; -- native VGA out
-    TVSYNC, TVBLANK, THSYNC, THBLANK: out std_logic); -- tiny VGA out
+		TVSYNC, TVBLANK, THSYNC, THBLANK: out std_logic); -- tiny VGA out
 end ppu;
 
 architecture Behavioral of ppu is
 	constant PPU_FG_SPRITE_COUNT: natural := 128; -- amount of foreground sprites
 	constant PPU_COLOR_OUTPUT_DEPTH: natural := 4; -- VGA output channel depth
-  constant PPU_PALETTE_IDX_WIDTH: natural := 3; -- palette index width (within sprite)
-  constant PPU_PALETTE_WIDTH: natural := 3; -- palette index width (palette table)
-  constant PPU_PALETTE_CIDX_WIDTH: natural := PPU_PALETTE_IDX_WIDTH + PPU_PALETTE_WIDTH; -- global palette index width
+	constant PPU_PALETTE_IDX_WIDTH: natural := 3; -- palette index width (within sprite)
+	constant PPU_PALETTE_WIDTH: natural := 3; -- palette index width (palette table)
+	constant PPU_PALETTE_CIDX_WIDTH: natural := PPU_PALETTE_IDX_WIDTH + PPU_PALETTE_WIDTH; -- global palette index width
 	constant PPU_PIPELINE_STAGE_COUNT: natural := 5; -- amount of pipeline clock edges to generate
 	constant PPU_TMM_ADDR_WIDTH: natural := 16;
 	constant PPU_TMM_DATA_WIDTH: natural := 16;
@@ -42,25 +42,25 @@ architecture Behavioral of ppu is
 	end component;
 	component ppu_addr_dec port( -- pipeline clock edge generator
 		WEN: in std_logic; -- EXT write enable
-    TMM_WEN,
-    BAM_WEN,
-    FAM_WEN,
-    PAL_WEN,
-    AUX_WEN: out std_logic; -- write enable MUX
+		TMM_WEN,
+		BAM_WEN,
+		FAM_WEN,
+		PAL_WEN,
+		AUX_WEN: out std_logic; -- write enable MUX
 		EN: in std_logic; -- EXT *ADDR enable (switch *AO to ADDR instead of *AI)
 		ADDR: in std_logic_vector(15 downto 0); -- address in
-    TMM_AI: in std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
-    BAM_AI: in std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
-    FAM_AI: in std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
-    PAL_AI: in std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0);
-    AUX_AI: in std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0);
-    TMM_AO: out std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
-    BAM_AO: out std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
-    FAM_AO: out std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
-    PAL_AO: out std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0);
-    AUX_AO: out std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0));
+		TMM_AI: in std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
+		BAM_AI: in std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
+		FAM_AI: in std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
+		PAL_AI: in std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0);
+		AUX_AI: in std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0);
+		TMM_AO: out std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
+		BAM_AO: out std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
+		FAM_AO: out std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
+		PAL_AO: out std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0);
+		AUX_AO: out std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0));
 	end component;
-  component ppu_bam port( -- BAM block memory
+	component ppu_bam port( -- BAM block memory
 		clka: in std_logic;
 		rsta: in std_logic;
 		wea: in std_logic_vector(0 downto 0);
@@ -69,7 +69,7 @@ architecture Behavioral of ppu is
 		douta: out std_logic_vector(PPU_BAM_DATA_WIDTH-1 downto 0);
 		rsta_busy: out std_logic);
 	end component;
-  component ppu_tmm port( -- TMM block memory
+	component ppu_tmm port( -- TMM block memory
 		clka: in std_logic;
 		rsta: in std_logic;
 		wea: in std_logic_vector(0 downto 0);
@@ -112,7 +112,7 @@ architecture Behavioral of ppu is
 		-- outputs
 		CIDX: out std_logic_vector(PPU_PALETTE_CIDX_WIDTH-1 downto 0)); -- output color
 	end component;
-  component ppu_sprite_fg port( -- foreground sprite
+	component ppu_sprite_fg port( -- foreground sprite
 		-- inputs
 		CLK: in std_logic; -- system clock
 		RESET: in std_logic; -- reset internal memory
@@ -142,43 +142,43 @@ architecture Behavioral of ppu is
 	component ppu_plut port( -- palette lookup table
 		CLK: in std_logic; -- system clock
 		CIDX: in std_logic_vector(PPU_PALETTE_CIDX_WIDTH-1 downto 0); -- color in
-    RESET: in std_logic;
+		RESET: in std_logic;
 
 		-- internal memory block (AUX)
 		PAL_WEN: in std_logic; -- VRAM PAL write enable
 		PAL_ADDR: in std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0); -- VRAM PAL address
 		PAL_DATA: in std_logic_vector(PPU_PAL_DATA_WIDTH-1 downto 0); -- VRAM PAL data
-    
-    R,G,B: out std_logic_vector(3 downto 0)); -- VGA color out
+		
+		R,G,B: out std_logic_vector(3 downto 0)); -- VGA color out
 	end component;
 	component ppu_vga_tiny port( -- tiny vga signal generator
 		CLK: in std_logic; -- system clock
-    RESET: in std_logic;
+		RESET: in std_logic;
 
 		X: out std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 		Y: out std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
-    PREADY: out std_logic; -- current pixel ready (pixel color is stable)
-    
-    VSYNC, VBLANK,
-    HSYNC, HBLANK: out std_logic); -- VGA sync outputs
+		PREADY: out std_logic; -- current pixel ready (pixel color is stable)
+		
+		VSYNC, VBLANK,
+		HSYNC, HBLANK: out std_logic); -- VGA sync outputs
 	end component;
 	component ppu_vga_native port( -- native vga signal generator (upscaler)
 		CLK: in std_logic; -- system clock
-    RESET: in std_logic;
+		RESET: in std_logic;
 
 		X: in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 		Y: in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
-    PREADY: in std_logic; -- current pixel ready (pixel color is stable)
-    RI,GI,BI: in std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- VGA color in
-    
-    RO,GO,BO: out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- VGA color out
-    VSYNC, HSYNC: out std_logic); -- VGA sync outputs
+		PREADY: in std_logic; -- current pixel ready (pixel color is stable)
+		RI,GI,BI: in std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- VGA color in
+		
+		RO,GO,BO: out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- VGA color out
+		VSYNC, HSYNC: out std_logic); -- VGA sync outputs
 	end component;
 
 	-- signals
 	signal SYSCLK, SYSRST: std_logic; -- system clock and reset
 	signal PL_S: std_logic_vector(PPU_PIPELINE_STAGE_COUNT-1 downto 0); -- pipeline stages
-  signal TMM_WEN, BAM_WEN, FAM_WEN, PAL_WEN, AUX_WEN: std_logic;
+	signal TMM_WEN, BAM_WEN, FAM_WEN, PAL_WEN, AUX_WEN: std_logic;
 	signal TMM_AI, TMM_AO: std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
 	signal BAM_AI, BAM_AO: std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
 	signal FAM_AI, FAM_AO: std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
@@ -189,9 +189,9 @@ architecture Behavioral of ppu is
 	signal FAM_DO: std_logic_vector(PPU_FAM_DATA_WIDTH-1 downto 0);
 	signal PAL_DO: std_logic_vector(PPU_PAL_DATA_WIDTH-1 downto 0);
 	signal AUX_DO: std_logic_vector(PPU_AUX_DATA_WIDTH-1 downto 0);
-  signal CIDX: std_logic_vector(PPU_PALETTE_CIDX_WIDTH-1 downto 0);
-  signal BG_EN: std_logic;
-  signal FG_EN, FG_HIT: std_logic_vector(PPU_FG_SPRITE_COUNT-1 downto 0);
+	signal CIDX: std_logic_vector(PPU_PALETTE_CIDX_WIDTH-1 downto 0);
+	signal BG_EN: std_logic;
+	signal FG_EN, FG_HIT: std_logic_vector(PPU_FG_SPRITE_COUNT-1 downto 0);
 	signal X: std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 	signal Y: std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
 	signal TR,TG,TB: std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- tiny RGB out (to be buffered)
@@ -200,35 +200,35 @@ architecture Behavioral of ppu is
 	signal BG_SHIFT_Y: std_logic_vector(PPU_POS_V_WIDTH-1 downto 0);
 	signal FG_FETCH: std_logic;
 begin
-  SYSCLK <= CLK100;
-  SYSRST <= RESET;
+	SYSCLK <= CLK100;
+	SYSRST <= RESET;
 
-  pipeline_clock_edge_generator: component ppu_pceg port map(
-    CLK => SYSCLK,
-    R => SYSRST,
-    S => PL_S);
+	pipeline_clock_edge_generator: component ppu_pceg port map(
+		CLK => SYSCLK,
+		R => SYSRST,
+		S => PL_S);
 
-  address_decoder: component ppu_addr_dec port map(
+	address_decoder: component ppu_addr_dec port map(
 		EN => EN,
 		WEN => WEN,
 		ADDR => ADDR,
-    TMM_AI => TMM_AI,
-    BAM_AI => BAM_AI,
-    FAM_AI => FAM_AI,
-    PAL_AI => PAL_AI,
-    AUX_AI => AUX_AI,
-    TMM_AO => TMM_AO,
-    BAM_AO => BAM_AO,
-    FAM_AO => FAM_AO,
-    PAL_AO => PAL_AO,
-    AUX_AO => AUX_AO,
-    TMM_WEN => TMM_WEN,
-    BAM_WEN => BAM_WEN,
-    FAM_WEN => FAM_WEN,
-    PAL_WEN => PAL_WEN,
-    AUX_WEN => AUX_WEN);
+		TMM_AI => TMM_AI,
+		BAM_AI => BAM_AI,
+		FAM_AI => FAM_AI,
+		PAL_AI => PAL_AI,
+		AUX_AI => AUX_AI,
+		TMM_AO => TMM_AO,
+		BAM_AO => BAM_AO,
+		FAM_AO => FAM_AO,
+		PAL_AO => PAL_AO,
+		AUX_AO => AUX_AO,
+		TMM_WEN => TMM_WEN,
+		BAM_WEN => BAM_WEN,
+		FAM_WEN => FAM_WEN,
+		PAL_WEN => PAL_WEN,
+		AUX_WEN => AUX_WEN);
 
-  background_attribute_memory: component ppu_bam port map(
+	background_attribute_memory: component ppu_bam port map(
 		clka => SYSCLK,
 		rsta => SYSRST,
 		wea => (others => BAM_WEN),
@@ -236,7 +236,7 @@ begin
 		dina => DATA(PPU_BAM_DATA_WIDTH-1 downto 0),
 		douta => BAM_DO,
 		rsta_busy => open);
-  tilemap_memory: component ppu_tmm port map(
+	tilemap_memory: component ppu_tmm port map(
 		clka => SYSCLK,
 		rsta => SYSRST,
 		wea => (others => TMM_WEN),
@@ -248,25 +248,25 @@ begin
 	aux: component ppu_aux port map(
 		CLK => SYSCLK,
 		RESET => SYSRST,
-    AUX_WEN => AUX_WEN,
-    AUX_ADDR => AUX_AO,
-    AUX_DATA => DATA(PPU_AUX_DATA_WIDTH-1 downto 0),
+		AUX_WEN => AUX_WEN,
+		AUX_ADDR => AUX_AO,
+		AUX_DATA => DATA(PPU_AUX_DATA_WIDTH-1 downto 0),
 		BG_SHIFT_X => BG_SHIFT_X,
 		BG_SHIFT_Y => BG_SHIFT_Y,
 		FG_FETCH => FG_FETCH);
 
-  background_sprite: component ppu_sprite_bg port map(
-    CLK => SYSCLK,
-    OE => BG_EN,
-    X => X,
-    Y => Y,
+	background_sprite: component ppu_sprite_bg port map(
+		CLK => SYSCLK,
+		OE => BG_EN,
+		X => X,
+		Y => Y,
 		BG_SHIFT_X => BG_SHIFT_X,
 		BG_SHIFT_Y => BG_SHIFT_Y,
-    BAM_ADDR => BAM_AI,
-    BAM_DATA => BAM_DO,
-    TMM_ADDR => TMM_AI,
-    TMM_DATA => TMM_DO,
-    CIDX => CIDX);
+		BAM_ADDR => BAM_AI,
+		BAM_DATA => BAM_DO,
+		TMM_ADDR => TMM_AI,
+		TMM_DATA => TMM_DO,
+		CIDX => CIDX);
 
 	foreground_sprites: for FG_IDX in 0 to PPU_FG_SPRITE_COUNT-1 generate
 		foreground_sprite: component ppu_sprite_fg port map(
@@ -306,10 +306,10 @@ begin
 		RESET => SYSRST,
 		X => X,
 		Y => Y,
-    PREADY => PREADY,
-    VSYNC => TVSYNC,
+		PREADY => PREADY,
+		VSYNC => TVSYNC,
 		VBLANK => TVBLANK,
-    HSYNC => THSYNC,
+		HSYNC => THSYNC,
 		HBLANK => THBLANK);
 
 	native_vga_signal_generator: component ppu_vga_native port map( -- native vga signal generator (upscaler)
@@ -317,7 +317,7 @@ begin
 		RESET => SYSRST,
 		X => X,
 		Y => Y,
-    PREADY => PREADY,
+		PREADY => PREADY,
 		RI => TR,
 		GI => TG,
 		BI => TB,
