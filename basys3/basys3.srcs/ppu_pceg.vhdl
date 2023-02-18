@@ -17,9 +17,9 @@ architecture Behavioral of ppu_pceg is
 	signal state: states := PL_SPRITE;
 begin
 	-- output drivers
-	SPRITE <= CLK when state = PL_SPRITE else '0';
-	COMP_PAL <= CLK when state = PL_COMP_PAL else '0';
-	DONE <= '1' when state = PL_DONE else '0';
+	SPRITE <= CLK when RESET = '0' and state = PL_SPRITE else '0';
+	COMP_PAL <= CLK when RESET = '0' and state = PL_COMP_PAL else '0';
+	DONE <= '1' when RESET = '0' and state = PL_DONE else '0';
 
 	process(CLK, RESET)
 		variable CLK_IDX: natural range 0 to PPU_PL_TOTAL_STAGES+1 := 0;
