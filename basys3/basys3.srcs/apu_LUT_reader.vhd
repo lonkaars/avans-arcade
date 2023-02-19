@@ -44,10 +44,15 @@ begin
 
 
 
-            if unsigned(idx) < 255 then --moves to next index value
-                idx <= std_logic_vector( unsigned(idx) + '1');
+            if buf < unsigned(freq) then -- change frequency
+                buf <= buf + 1;
             else
-                idx <= x"00";
+                buf <= x"00";
+                if unsigned(idx) < 255 then --moves to next index value
+                    idx <= std_logic_vector( unsigned(idx) + '1');
+                else
+                    idx <= x"00";
+                end if;
             end if;
 
         end if;
