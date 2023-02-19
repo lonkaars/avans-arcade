@@ -14,7 +14,10 @@ end entity;
 
 architecture Behavioral of apu_LUT_reader is
 
-    signal idx : std_logic_vector(7 downto 0) := (others => '0');
+    constant AMPLITUDE : natural := 0;
+    constant SAMPLE_SIZE : natural := 256;
+
+    signal idx : unsigned := (others => '0');
     signal buf : unsigned := (others => '0');
     
 begin
@@ -25,21 +28,25 @@ begin
             idx <= x"00";
             buf <= x"00";
         elsif rising_edge(clk) then
-            --main code here
+            -- main code here
 
-            if wave = "00" then     --Sawtooth
-                value <= idx;
-            elsif wave = "01" then  --Square
-                if (signed(idx) < 128) then
+            if wave = "00" then     -- Sawtooth
+                value <= std_logic_vector( idx );
+            elsif wave = "01" then  -- Square
+                if idx < (SAMPLE_SIZE/2) then
                     value <= x"00";
                 else
                     value <= x"FF";
                 end if;
-            elsif wave = "10" then  --Triangle
-                value <= std_logic_vector( abs(signed(idx)-127)*2 );
-            else--wave = "11" then  --Noise
-                --implement noise function here:
-                value <= x"80"; --remove this
+            elsif wave = "10" then  -- Triangle
+                if idx < (SAMPLE_SIZE/2) then
+                    value <= std_logic_vector( idx*2 );
+                else
+                    value <= std_logic_vector( (SAMPLE_SIZE-idx)*2 );
+                end if;
+            else-- wave = "11" then -- Noise
+                -- TODO: implement noise function here:
+                value <= x"80"; -- remove this
             end if;
 
 
@@ -48,8 +55,8 @@ begin
                 buf <= buf + 1;
             else
                 buf <= x"00";
-                if unsigned(idx) < 255 then --moves to next index value
-                    idx <= std_logic_vector( unsigned(idx) + '1');
+                if idx < (SAMPLE_SIZE-1) then -- moves to next index value
+                    idx <= idx + 1;
                 else
                     idx <= x"00";
                 end if;
