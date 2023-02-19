@@ -4,7 +4,7 @@ use ieee.numeric_std.all;
 
 entity apu_LUT_reader is
     port (
-        clk   : in std_logic;
+        clk : in std_logic;
         rst : in std_logic;
         freq : in std_logic_vector(11 downto 0);
         wave : in std_logic_vector(1 downto 0);
@@ -27,6 +27,7 @@ begin
         if rst = '1' then
             idx <= x"00";
             buf <= x"00";
+            value <= x"00";
         elsif rising_edge(clk) then
             -- main code here
 
@@ -34,7 +35,7 @@ begin
                 value <= std_logic_vector( idx );
             elsif wave = "01" then  -- Square
                 if idx < (SAMPLE_SIZE/2) then
-                    value <= x"00";
+                    value <= x"00"; --std_logic_vector( SAMPLE_SIZE-AMPLITUDE ); -- TODO: make so that this work with a changable amplitude (for square wave)
                 else
                     value <= x"FF";
                 end if;
