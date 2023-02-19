@@ -48,4 +48,6 @@ before formatting as a failsafe.
 - use snake case for naming components
 - use uppercase snake case for naming signals and I/O lines
 - use lower case keywords
+- testbench name is the component name with `_tb` as suffix
+- vhdl filename is the same as the component name
 

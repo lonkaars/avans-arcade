@@ -1,6 +1,6 @@
 package ppu_consts is
-  constant PPU_RAM_BUS_ADDR_WIDTH: natural := 16; -- RAM bus address width
-  constant PPU_RAM_BUS_DATA_WIDTH: natural := 16; -- RAM bus data width
+	constant PPU_RAM_BUS_ADDR_WIDTH: natural := 16; -- RAM bus address width
+	constant PPU_RAM_BUS_DATA_WIDTH: natural := 16; -- RAM bus data width
 	constant PPU_FG_SPRITE_COUNT: natural := 128; -- amount of foreground sprites
 	constant PPU_COLOR_OUTPUT_DEPTH: natural := 4; -- VGA output channel depth
 	constant PPU_PALETTE_IDX_WIDTH: natural := 3; -- palette index width (within sprite)

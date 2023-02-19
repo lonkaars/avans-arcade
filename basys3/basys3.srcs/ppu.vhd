@@ -188,14 +188,14 @@ begin
 	SYSCLK <= CLK100;
 	SYSRST <= RESET;
 
-  -- internal unused lines
-  --
-  -- these lines would be used if components use memory blocks as RAM blocks
-  -- (like how TMM and BAM work), the registers of these memory regions are
-  -- directly exposed internally, and are as such not used as RAM blocks
-  AUX_AI <= (others => '0');
-  FAM_AI <= (others => '0');
-  PAL_AI <= (others => '0');
+	-- internal unused lines
+	--
+	-- these lines would be used if components use memory blocks as RAM blocks
+	-- (like how TMM and BAM work), the registers of these memory regions are
+	-- directly exposed internally, and are as such not used as RAM blocks
+	AUX_AI <= (others => '0');
+	FAM_AI <= (others => '0');
+	PAL_AI <= (others => '0');
 
 	pipeline_clock_edge_generator: component ppu_pceg port map(
 		CLK => SYSCLK,
