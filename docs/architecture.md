@@ -224,51 +224,96 @@ Important notes:
 
 ## Registers
 
-|Address|Size (bytes)|Alias|Description|
+- The PPU's memory bus has 16-bit addresses and 16-bit words.
+- Some memory regions use physical word sizes smaller than 16-bits, so
+  "unneeded" bits will be discarded by the PPU.
+- All "fields" or words containing multiple bit strings representing different
+  pieces of information are ordered from MSB to LSB.
+
+|Address offset|Size (16-bit words)|Alias|Description|
 |-|-|-|-|
-|`0x00000`|`0x00000`|TMM  |[tilemap memory][TMM]|
-|`0x00000`|`0x00000`|BAM  |[background attribute memory][BAM]|
-|`0x00000`|`0x00000`|FAM  |[foreground attribute memory][FAM]|
-|`0x00000`|`0x00000`|PAL  |[palettes][PAL]|
-|`0x00000`|`0x00000`|AUX  |[auxiliary memory][AUX]|
+|`0x0000`|`0xc000`|TMM  |[tilemap memory][TMM]|
+|`0xc000`|`0x04b0`|BAM  |[background attribute memory][BAM]|
+|`0xc800`|`0x0100`|FAM  |[foreground attribute memory][FAM]|
+|`0xcc00`|`0x0040`|PAL  |[palettes][PAL]|
+|`0xce00`|`0x0002`|AUX  |[auxiliary memory][AUX]|
+
+This table contains the "official" PPU register offsets and sizes. Due to the
+way the address decoder works, some of these memory regions might be duplicated
+in the address ranges between the memory regions. This is considered undefined
+behavior, so the CPU should not attempt to write in these locations because
+there is no address validity checking.
 
 [TMM]: #tilemap-memory
 ### Tilemap memory
 
-- TODO: list format
+- Each sprite takes up 768 bits spread across 48 16-bit words
+- Sprites and pixels are stored adjacently in memory without padding
+- Pixel order is from top-left to bottom-right in (English) reading order.
 
 [BAM]: #background-attribute-memory
 ### Background attribute memory
 
-- 15-bit words (padded with 1 bit)
-- 11-bit address width (1200 15-bit words with padding 1)
+- 15-bit words (MSB discarded in hardware)
+- Address indicates which background sprite is currently targeted in reading order  
+  e.g. $\textrm{addr} = c000_{\textrm{hex}} + x + y*w$ where $x$ and $y$ are the background tile, and $w$ is the amount of horizontal tiles fit on the background layer (40)
 
-- TODO: list format
+Word format:
+
+|Range (VHDL)|Description|
+|-|-|
+|`15`|Flip horizontally|
+|`14`|Flip vertically|
+|`13`|(unused)|
+|`12 downto 10`|Palette index for tile|
+|`9 downto 0`|Tilemap index|
 
 [FAM]: #foreground-attribute-memory
 ### Foreground attribute memory
 
-- 2 * 16-bit words
-- 8-bit address width (256 16-bit words for 128 * 32-bit)
+- 32-bit words
+- Sprites with lower addresses are drawn "before" sprites with higher addresses
 
-- TODO: list format
+Word format:
+
+|Range (VHDL)|Description|
+|-|-|
+|`31`|Flip horizontally|
+|`30`|Flip vertically|
+|`29 downto 21`|horizontal position (offset by -16)|
+|`20 downto 13`|vertical position (offset by -16)|
+|`12 downto 10`|Palette index for tile|
+|`9 downto 0`|Tilemap index|
 
 [PAL]: #palettes
 ### Palettes
 
-- 12-bit words
-- 6-bit address width (2^6 = 64 colors total)
+- 12-bit words (4 MSB discarded in hardware)
+- Address formula for palette color is $p_i*8 + p_c$ where $p_i$ is the palette
+  index and $p_c$ is the color index within a given palette.
 
-- TODO: list format
+Word format:
+
+|Range (VHDL)|Description|
+|-|-|
+|`15 downto 13`|(discarded)|
+|`12 downto 8`|Red value|
+|`7 downto 4`|Green value|
+|`3 downto 0`|Blue value|
 
 [AUX]: #auxiliary-memory
 ### Auxiliary memory
 
-- background scrolling (8 + 9 bits)
-- fetch foreground sprites bit (1 bit)
+- no words
 
-- 16-bit words
-- 1-bit address width
+Format:
+
+|Range (VHDL)|Description|
+|-|-|
+|`31 downto 18`|(unused)|
+|`17`|Fetch foreground sprites flag|
+|`16 downto 8`|Horizontal background scroll (offset from left edge)|
+|`7 downto 0`|Vertical background scroll (offset from top edge)|
 
 [custompputimings]: https://docs.google.com/spreadsheets/d/1MU6K4c4PtMR_JXIpc3I0ZJdLZNnoFO7G2P3olCz6LSc
 
