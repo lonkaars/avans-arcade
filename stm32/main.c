@@ -1,5 +1,6 @@
 #include <stm32f0xx_hal.h>
 #include <stm32f0xx_hal_uart.h>
+#include <stm32f0xx.h>
 
 void error_handler() {
 	__disable_irq();
@@ -38,6 +39,8 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
 	});
 }
 
+const uint32_t* BIG_DATA_PTR = (uint32_t*) 0x0803F800;
+
 void setup() {
 	if (HAL_UART_Init(&huart2) != HAL_OK)
 		return error_handler();
@@ -46,8 +49,13 @@ void setup() {
 int main() {
 	setup();
 
-	const char test_data[] = "hello world!\r\n";
-	HAL_UART_Transmit(&huart2, (uint8_t*) test_data, sizeof(test_data), 100);
+	HAL_UART_Transmit(&huart2, (uint8_t*) "[", 1, 100);
+	for (unsigned int i = 0; i < 4; i++) {
+		uint32_t word = BIG_DATA_PTR[i];
+		uint8_t* bytes = (uint8_t*) &word;
+		HAL_UART_Transmit(&huart2, bytes, 4, 100);
+	}
+	HAL_UART_Transmit(&huart2, (uint8_t*) "]", 1, 100);
 
 	while(1);
 }

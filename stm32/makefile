@@ -96,6 +96,9 @@ $(TARGET).elf: $(OBJS)
 flash: $(TARGET).bin
 	st-flash --reset write $(TARGET).bin 0x08000000
 
+rom:
+	st-flash write ../test/bin/stm32-rom-poc.bin 0x0803F800
+
 compile_commands.json: clean
 	compiledb make -Bn
 	../scripts/compiledb-full-path-mingw.sh compile_commands.json
