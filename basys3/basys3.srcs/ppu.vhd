@@ -1,38 +1,23 @@
 library ieee;
+library work;
+
 use ieee.std_logic_1164.all;
 --use ieee.numeric_std.all;
+use work.ppu_consts.all;
 
 entity ppu is port(
 	CLK100: in std_logic; -- system clock
 	RESET: in std_logic; -- global (async) system reset
 	EN: in std_logic; -- PPU VRAM enable (enable ADDR and DATA tri-state drivers)
 	WEN: in std_logic; -- PPU VRAM write enable
-	ADDR: in std_logic_vector(15 downto 0); -- PPU VRAM ADDR
-	DATA: in std_logic_vector(15 downto 0);
-	R,G,B: out std_logic_vector(3 downto 0);
+	ADDR: in std_logic_vector(PPU_RAM_BUS_ADDR_WIDTH-1 downto 0); -- PPU VRAM ADDR
+	DATA: in std_logic_vector(PPU_RAM_BUS_DATA_WIDTH-1 downto 0);
+	R,G,B: out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0);
 	NVSYNC, NHSYNC: out std_logic; -- native VGA out
 	TVSYNC, TVBLANK, THSYNC, THBLANK: out std_logic); -- tiny VGA out
 end ppu;
 
 architecture Behavioral of ppu is
-	constant PPU_FG_SPRITE_COUNT: natural := 128; -- amount of foreground sprites
-	constant PPU_COLOR_OUTPUT_DEPTH: natural := 4; -- VGA output channel depth
-	constant PPU_PALETTE_IDX_WIDTH: natural := 3; -- palette index width (within sprite)
-	constant PPU_PALETTE_WIDTH: natural := 3; -- palette index width (palette table)
-	constant PPU_PALETTE_CIDX_WIDTH: natural := PPU_PALETTE_IDX_WIDTH + PPU_PALETTE_WIDTH; -- global palette index width
-	constant PPU_TMM_ADDR_WIDTH: natural := 16;
-	constant PPU_TMM_DATA_WIDTH: natural := 16;
-	constant PPU_BAM_ADDR_WIDTH: natural := 11;
-	constant PPU_BAM_DATA_WIDTH: natural := 15;
-	constant PPU_FAM_ADDR_WIDTH: natural := 8;
-	constant PPU_FAM_DATA_WIDTH: natural := 16;
-	constant PPU_PAL_ADDR_WIDTH: natural := 6;
-	constant PPU_PAL_DATA_WIDTH: natural := 12;
-	constant PPU_AUX_ADDR_WIDTH: natural := 2;
-	constant PPU_AUX_DATA_WIDTH: natural := 16;
-	constant PPU_POS_H_WIDTH: natural := 9; -- amount of bits for horizontal screen offset
-	constant PPU_POS_V_WIDTH: natural := 8; -- amount of bits for vertical screen offset
-
 	component ppu_pceg port( -- pipeline clock edge generator
 		CLK: in std_logic; -- system clock
 		RESET: in std_logic; -- async reset
@@ -48,7 +33,7 @@ architecture Behavioral of ppu is
 		PAL_WEN,
 		AUX_WEN: out std_logic; -- write enable MUX
 		EN: in std_logic; -- EXT *ADDR enable (switch *AO to ADDR instead of *AI)
-		ADDR: in std_logic_vector(15 downto 0); -- address in
+		ADDR: in std_logic_vector(PPU_RAM_BUS_ADDR_WIDTH-1 downto 0); -- address in
 		TMM_AI: in std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
 		BAM_AI: in std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
 		FAM_AI: in std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
@@ -150,7 +135,7 @@ architecture Behavioral of ppu is
 		PAL_ADDR: in std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0); -- VRAM PAL address
 		PAL_DATA: in std_logic_vector(PPU_PAL_DATA_WIDTH-1 downto 0); -- VRAM PAL data
 		
-		R,G,B: out std_logic_vector(3 downto 0)); -- VGA color out
+		R,G,B: out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0)); -- VGA color out
 	end component;
 	component ppu_vga_tiny port( -- tiny vga signal generator
 		CLK: in std_logic; -- system clock
@@ -202,6 +187,15 @@ architecture Behavioral of ppu is
 begin
 	SYSCLK <= CLK100;
 	SYSRST <= RESET;
+
+  -- internal unused lines
+  --
+  -- these lines would be used if components use memory blocks as RAM blocks
+  -- (like how TMM and BAM work), the registers of these memory regions are
+  -- directly exposed internally, and are as such not used as RAM blocks
+  AUX_AI <= (others => '0');
+  FAM_AI <= (others => '0');
+  PAL_AI <= (others => '0');
 
 	pipeline_clock_edge_generator: component ppu_pceg port map(
 		CLK => SYSCLK,
