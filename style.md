@@ -51,4 +51,5 @@ before formatting as a failsafe.
 - testbench name is the component name with `_tb` as suffix
 - vhdl filename is the same as the component name
 - vhdl files should end in the `.vhd` file extension, not `.vhdl`
+- use spaces around the colon used for setting the type of signal definitions
 

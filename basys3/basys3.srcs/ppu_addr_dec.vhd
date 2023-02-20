@@ -5,28 +5,28 @@ use ieee.std_logic_1164.all;
 use work.ppu_consts.all;
 
 entity ppu_addr_dec is port(
-	EN: in std_logic; -- EXT *ADDR enable (switch *AO to ADDR instead of *AI)
-	WEN: in std_logic; -- EXT write enable
+	EN : in std_logic; -- EXT *ADDR enable (switch *AO to ADDR instead of *AI)
+	WEN : in std_logic; -- EXT write enable
 	TMM_WEN,
 	BAM_WEN,
 	FAM_WEN,
 	PAL_WEN,
-	AUX_WEN: out std_logic; -- write enable MUX
-	ADDR: in std_logic_vector(PPU_RAM_BUS_ADDR_WIDTH-1 downto 0); -- address in
-	TMM_AI: in std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
-	BAM_AI: in std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
-	FAM_AI: in std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
-	PAL_AI: in std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0);
-	AUX_AI: in std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0);
-	TMM_AO: out std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
-	BAM_AO: out std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
-	FAM_AO: out std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
-	PAL_AO: out std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0);
-	AUX_AO: out std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0));
+	AUX_WEN : out std_logic; -- write enable MUX
+	ADDR : in std_logic_vector(PPU_RAM_BUS_ADDR_WIDTH-1 downto 0); -- address in
+	TMM_AI : in std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
+	BAM_AI : in std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
+	FAM_AI : in std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
+	PAL_AI : in std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0);
+	AUX_AI : in std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0);
+	TMM_AO : out std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
+	BAM_AO : out std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
+	FAM_AO : out std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
+	PAL_AO : out std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0);
+	AUX_AO : out std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0));
 end ppu_addr_dec;
 
 architecture Behavioral of ppu_addr_dec is
-	signal TMM_RANGE, BAM_RANGE, FAM_RANGE, PAL_RANGE, AUX_RANGE: std_logic := '0'; -- ADDR in range of memory area
+	signal TMM_RANGE, BAM_RANGE, FAM_RANGE, PAL_RANGE, AUX_RANGE : std_logic := '0'; -- ADDR in range of memory area
 begin
 	-- address MUX
 	TMM_AO <= ADDR(PPU_TMM_ADDR_WIDTH-1 downto 0) when EN = '1' else TMM_AI;

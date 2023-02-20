@@ -10,9 +10,9 @@ entity apu_note_to_frequency is port (
 end entity;
 
 architecture Behavioral of apu_note_to_frequency is
-	signal buff_small: std_logic_vector(7 downto 0) := (others => '0');
-	signal buff: std_logic_vector(15 downto 0) := (others => '0');
-	signal shift: integer;
+	signal buff_small : std_logic_vector(7 downto 0) := (others => '0');
+	signal buff : std_logic_vector(15 downto 0) := (others => '0');
+	signal shift : integer;
 begin
 	shift <= to_integer(unsigned(data(2 downto 0)));
 	buff_small <= 
