@@ -43,9 +43,9 @@ begin
 	AUX_WEN <= AUX_RANGE and WEN;
 
 	-- address ranges
-	TMM_RANGE <= '1' when not (ADDR(15) = '1' and ADDR(14) = '1') else '0';
-	BAM_RANGE <= '1' when (ADDR(15) = '1' and ADDR(14) = '1') and (ADDR(11) = '0') else '0';
-	FAM_RANGE <= '1' when (ADDR(15) = '1' and ADDR(14) = '1') and (ADDR(11) = '1' and ADDR(10) = '0') else '0';
-	PAL_RANGE <= '1' when (ADDR(15) = '1' and ADDR(14) = '1') and (ADDR(11) = '1' and ADDR(10) = '1' and ADDR(9) = '0') else '0';
-	AUX_RANGE <= '1' when (ADDR(15) = '1' and ADDR(14) = '1') and (ADDR(11) = '1' and ADDR(10) = '1' and ADDR(9) = '1') else '0';
+	TMM_RANGE <= '1' when not ((ADDR(15) and ADDR(14) and ADDR(13)) or (ADDR(15) and ADDR(14) and ADDR(12))) else '0';
+	BAM_RANGE <= '1' when TMM_RANGE = '0' and (ADDR(11) = '0') else '0';
+	FAM_RANGE <= '1' when TMM_RANGE = '0' and (ADDR(11) = '1' and ADDR(10) = '0') else '0';
+	PAL_RANGE <= '1' when TMM_RANGE = '0' and (ADDR(11) = '1' and ADDR(10) = '1' and ADDR(9) = '0') else '0';
+	AUX_RANGE <= '1' when TMM_RANGE = '0' and (ADDR(11) = '1' and ADDR(10) = '1' and ADDR(9) = '1') else '0';
 end Behavioral;

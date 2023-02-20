@@ -79,7 +79,7 @@ architecture Behavioral of ppu is
 	end component;
 	component ppu_sprite_bg port( -- background sprite
 		-- inputs
-		CLK : in std_logic; -- system clock
+		CLK : in std_logic; -- pipeline clock
 		RESET : in std_logic; -- reset clock counter
 		OE : in std_logic; -- output enable (of CIDX)
 		X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
@@ -100,7 +100,7 @@ architecture Behavioral of ppu is
 	end component;
 	component ppu_sprite_fg port( -- foreground sprite
 		-- inputs
-		CLK : in std_logic; -- system clock
+		CLK : in std_logic; -- pipeline clock
 		RESET : in std_logic; -- reset internal memory and clock counters
 		OE : in std_logic; -- output enable (of CIDX)
 		X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
