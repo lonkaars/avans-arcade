@@ -21,12 +21,14 @@ package ppu_consts is
 	constant PPU_POS_V_WIDTH : natural := 8; -- amount of bits for vertical screen offset
 	constant PPU_SPRITE_WIDTH : natural := 16; -- sprite width (pixels)
 	constant PPU_SPRITE_HEIGHT : natural := 16; -- sprite height (pixels)
+	constant PPU_SPRITE_POS_H_WIDTH: natural := 4; -- bits needed to identify horizontal pixel within sprite
+	constant PPU_SPRITE_POS_V_WIDTH: natural := 4; -- bits needed to identify vertical pixel within sprite
 	constant PPU_SCREEN_WIDTH : natural := 320; -- absolute screen width (pixels)
 	constant PPU_SCREEN_HEIGHT : natural := 240; -- absolute screen height (pixels)
 	constant PPU_BG_CANVAS_TILES_H : natural := 40; -- amount of tiles (horizontally) on background canvas
 	constant PPU_BG_CANVAS_TILES_V : natural := 30; -- amount of tiles (vertically) on background canvas
 	constant PPU_TILE_INDEX_WIDTH : natural := 10; -- amount of bits needed to index a tile from TMM memory
 	constant PPU_PIXELS_PER_TILE_WORD : natural := 5; -- amount of pixels defined in one word in TMM memory
-	constant PPU_TILE_SIZE : natural := 48;
+	constant PPU_SPRITE_PIXELS_PER_WORD : natural := 52; -- amount of words needed for a single sprite
 end package ppu_consts;
 
