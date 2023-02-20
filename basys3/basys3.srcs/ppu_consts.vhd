@@ -14,7 +14,7 @@ package ppu_consts is
 	constant PPU_FAM_DATA_WIDTH : natural := 16;
 	constant PPU_PAL_ADDR_WIDTH : natural := 6;
 	constant PPU_PAL_DATA_WIDTH : natural := 12;
-	constant PPU_AUX_ADDR_WIDTH : natural := 2;
+	constant PPU_AUX_ADDR_WIDTH : natural := 1;
 	constant PPU_AUX_DATA_WIDTH : natural := 16;
 	constant PPU_POS_H_WIDTH : natural := 9; -- amount of bits for horizontal screen offset
 	constant PPU_POS_V_WIDTH : natural := 8; -- amount of bits for vertical screen offset

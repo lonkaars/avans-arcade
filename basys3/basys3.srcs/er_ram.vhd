@@ -15,7 +15,7 @@ entity er_ram is -- exposed register RAM
 		WEN : in std_logic; -- write enable
 		ADDR : in std_logic_vector(ADDR_W-1 downto 0); -- address line
 		DATA : in std_logic_vector(DATA_W-1 downto 0); -- data input
-		REG : out std_logic_vector((ADDR_W*DATA_W)-1 downto 0)); -- exposed register output
+		REG : out std_logic_vector((ADDR_RANGE*DATA_W)-1 downto 0)); -- exposed register output
 end er_ram;
 
 architecture Behavioral of er_ram is
