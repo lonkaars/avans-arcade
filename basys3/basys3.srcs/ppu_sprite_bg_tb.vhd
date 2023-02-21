@@ -59,12 +59,33 @@ begin
 		TMM_DATA => TMM_DATA,
 		CIDX => CIDX);
 
-	BAM_DATA <= std_logic_vector(to_unsigned(16#4814#, PPU_BAM_DATA_WIDTH));  -- hex((1 << 14) | (0 << 13) | (2 << 10) | (20 << 0))
-	TMM_DATA <= std_logic_vector(to_unsigned(16#ffff#, PPU_TMM_DATA_WIDTH));
+	-- inputs
+	-- BAM_DATA -> FLIP_H + palette index 2 + tilemap index 10
+	-- TMM_DATA -> all pixels color 7
+	-- X -> 25
+	-- Y -> 60
+	-- BG_SHIFT_X -> 3
+	-- BG_SHIFT_Y -> 3
+	BAM_DATA <= 15x"4814"; -- hex((1 << 14) | (0 << 13) | (2 << 10) | (20 << 0))
+	TMM_DATA <= 15x"7e3f"; -- hex(0x7fff & ~(0b111 << 6))
 	X <= std_logic_vector(to_unsigned(25, PPU_POS_H_WIDTH));
 	Y <= std_logic_vector(to_unsigned(60, PPU_POS_V_WIDTH));
 	BG_SHIFT_X <= std_logic_vector(to_unsigned(3, PPU_POS_H_WIDTH));
 	BG_SHIFT_Y <= std_logic_vector(to_unsigned(3, PPU_POS_V_WIDTH));
+
+	-- expected outputs:
+	-- absolute pixel coordinates -> (28, 63)
+	-- absolute background canvas tile index coordinates -> (1, 3)
+	-- tile index -> 3 * 40 + 1 = 121
+	-- BAM_ADDR => 121 (OK)
+	-- sprite local coordinates -> (12, 15)
+	-- transformed local coordinates -> (12, 0) (apply FLIP_H)
+	-- pixel index -> 0 * 16 + 12 = 12
+	-- pixel word address -> 52 * 20 + 12//5 -> 1042
+	-- TMM_ADDR => 1042 (OK)
+	-- pixel bits -> [pixel n+] = 12 % 5 = 2 -> 8 downto 6
+	-- cidx should be -- (2 << 3) | (0 << 0) = 16
+	-- CIDX => 16 (OK)
 
 	tb : process
 	begin

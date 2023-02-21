@@ -67,6 +67,8 @@ architecture Behavioral of ppu_sprite_bg is
 	signal TRANSFORM_YI, TRANSFORM_YO : std_logic_vector(PPU_SPRITE_POS_V_WIDTH-1 downto 0);
 	signal PIXEL_BIT_OFFSET : integer := 0;
 begin
+	-- TODO: fix latches
+
 	-- CIDX tri-state driver
 	CIDX <= O_CIDX when OE = '1' else (others => 'Z');
 
@@ -105,18 +107,26 @@ begin
 
 	-- TMM DATA
 	with PIXEL_BIT_OFFSET select
-		TMM_DATA_PAL_IDX <= TMM_DATA(2 downto 0) when 0,
-		                    TMM_DATA(5 downto 3) when 1,
-		                    TMM_DATA(8 downto 6) when 2,
-		                    TMM_DATA(11 downto 9) when 3,
-		                    TMM_DATA(14 downto 12) when 4,
+		TMM_DATA_PAL_IDX <= I_TMM_DATA(2 downto 0) when 0,
+		                    I_TMM_DATA(5 downto 3) when 1,
+		                    I_TMM_DATA(8 downto 6) when 2,
+		                    I_TMM_DATA(11 downto 9) when 3,
+		                    I_TMM_DATA(14 downto 12) when 4,
 		                    (others => '0') when others;
 
 	-- state machine (pipeline stage counter)
 	fsm: process(CLK, RESET)
 	begin
 		if RESET = '1' then
+			-- reset state
 			state <= PL_BAM_ADDR;
+			-- reset internal pipeline registers
+			-- O_BAM_ADDR <= (others => '0');
+			-- I_BAM_DATA <= (others => '0');
+			-- O_TMM_ADDR <= (others => '0');
+			-- I_TMM_DATA <= (others => '0');
+			-- reset working color register
+			-- O_CIDX <= (others => '0');
 		elsif rising_edge(CLK) then
 			state <= next_state;
 		end if;
