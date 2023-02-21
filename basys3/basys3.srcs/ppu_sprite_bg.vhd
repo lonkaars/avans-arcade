@@ -31,11 +31,11 @@ end ppu_sprite_bg;
 
 architecture Behavioral of ppu_sprite_bg is
 	component ppu_sprite_transform port(
-		XI : in std_logic_vector(PPU_SPRITE_POS_H_WIDTH-1 downto 0); -- pixel position relative to tile
-		YI : in std_logic_vector(PPU_SPRITE_POS_V_WIDTH-1 downto 0); -- pixel position relative to tile
+		XI : in unsigned(PPU_SPRITE_POS_H_WIDTH-1 downto 0); -- pixel position relative to tile
+		YI : in unsigned(PPU_SPRITE_POS_V_WIDTH-1 downto 0); -- pixel position relative to tile
 		FLIP_H, FLIP_V : in std_logic; -- flip sprite
-		XO : out std_logic_vector(PPU_SPRITE_POS_H_WIDTH-1 downto 0); -- new pixel position relative to tile
-		YO : out std_logic_vector(PPU_SPRITE_POS_V_WIDTH-1 downto 0)); -- new pixel position relative to tile
+		XO : out unsigned(PPU_SPRITE_POS_H_WIDTH-1 downto 0); -- new pixel position relative to tile
+		YO : out unsigned(PPU_SPRITE_POS_V_WIDTH-1 downto 0)); -- new pixel position relative to tile
 	end component;
 
 	-- BAM and TMM in/out temp + registers
@@ -57,11 +57,9 @@ architecture Behavioral of ppu_sprite_bg is
 	-- auxiliary signals (temp variables)
 	signal PIXEL_ABS_X, PIXEL_ABS_Y : integer := 0; -- absolute pixel position (relative to BG canvas instead of viewport)
 	signal TILE_IDX_X, TILE_IDX_Y : integer := 0; -- background canvas tile grid xy
-	signal TILE_PIXEL_IDX_X, TILE_PIXEL_IDX_Y : integer := 0; -- xy position of pixel within tile (local tile coords)
-	signal TRANS_TILE_PIDX_X, TRANS_TILE_PIDX_Y : integer := 0; -- transformed xy position of pixel within tile
-	signal TRANS_TILE_PIXEL_IDX : integer := 0; -- index of pixel within tile (reading order)
-	signal TRANSFORM_XI, TRANSFORM_XO : std_logic_vector(PPU_SPRITE_POS_H_WIDTH-1 downto 0); -- transform inputs/outputs (x axis)
-	signal TRANSFORM_YI, TRANSFORM_YO : std_logic_vector(PPU_SPRITE_POS_V_WIDTH-1 downto 0); -- transform inputs/outputs (y axis)
+	signal TILE_PIDX_X, TRANS_TILE_PIDX_X : unsigned(PPU_SPRITE_POS_H_WIDTH-1 downto 0) := (others => '0'); -- x position of pixel within tile (local tile coords)
+	signal TILE_PIDX_Y, TRANS_TILE_PIDX_Y : unsigned(PPU_SPRITE_POS_V_WIDTH-1 downto 0) := (others => '0'); -- y position of pixel within tile (local tile coords)
+	signal TRANS_TILE_PIDX : integer := 0; -- index of pixel within tile (reading order)
 	signal TILEMAP_WORD_OFFSET : integer := 0; -- word offset from tile start address in TMM
 	signal PIXEL_BIT_OFFSET : integer := 0; -- pixel index within word of TMM
 	signal TMM_DATA_PAL_IDX : std_logic_vector(PPU_PALETTE_COLOR_WIDTH-1 downto 0); -- color of palette
@@ -77,32 +75,28 @@ begin
 	T_CIDX <= BAM_DATA_COL_IDX & TMM_DATA_PAL_IDX;
 
 	-- BAM address calculations
-	PIXEL_ABS_X <= to_integer(unsigned(X)) + to_integer(unsigned(BG_SHIFT_X));
-	PIXEL_ABS_Y <= to_integer(unsigned(Y)) + to_integer(unsigned(BG_SHIFT_Y));
-	TILE_IDX_X <= PIXEL_ABS_X / 16;
-	TILE_IDX_Y <= PIXEL_ABS_Y / 16;
-	TILE_PIXEL_IDX_X <= PIXEL_ABS_X - TILE_IDX_X * 16;
-	TILE_PIXEL_IDX_Y <= PIXEL_ABS_Y - TILE_IDX_Y * 16;
+	PIXEL_ABS_X <= to_integer(unsigned(X)) + to_integer(unsigned(BG_SHIFT_X)); -- pixel position relative to background canvas
+	PIXEL_ABS_Y <= to_integer(unsigned(Y)) + to_integer(unsigned(BG_SHIFT_Y)); -- pixel position relative to background canvas
+	TILE_IDX_X <= PIXEL_ABS_X / 16; -- tile grid index
+	TILE_IDX_Y <= PIXEL_ABS_Y / 16; -- tile grid index
+	TILE_PIDX_X <= to_unsigned(PIXEL_ABS_X - TILE_IDX_X * 16, TILE_PIDX_X'length); -- (sprite local) pixel coords
+	TILE_PIDX_Y <= to_unsigned(PIXEL_ABS_Y - TILE_IDX_Y * 16, TILE_PIDX_Y'length); -- (sprite local) pixel coords
 	T_BAM_ADDR <= std_logic_vector(to_unsigned((TILE_IDX_Y * integer(PPU_BG_CANVAS_TILES_H)) + TILE_IDX_X, PPU_BAM_ADDR_WIDTH));
 
 	-- BAM data dependant calculations
-	TRANSFORM_XI <= std_logic_vector(to_unsigned(TILE_PIXEL_IDX_X, PPU_SPRITE_POS_H_WIDTH));
-	TRANSFORM_YI <= std_logic_vector(to_unsigned(TILE_PIXEL_IDX_Y, PPU_SPRITE_POS_V_WIDTH));
 	transform: component ppu_sprite_transform port map(
-		XI => TRANSFORM_XI,
-		YI => TRANSFORM_YI,
+		XI => TILE_PIDX_X,
+		YI => TILE_PIDX_Y,
 		FLIP_H => BAM_DATA_FLIP_H,
 		FLIP_V => BAM_DATA_FLIP_V,
-		XO => TRANSFORM_XO,
-		YO => TRANSFORM_YO);
-	TRANS_TILE_PIDX_X <= to_integer(unsigned(TRANSFORM_XO));
-	TRANS_TILE_PIDX_Y <= to_integer(unsigned(TRANSFORM_YO));
+		XO => TRANS_TILE_PIDX_X,
+		YO => TRANS_TILE_PIDX_Y);
 
-	TRANS_TILE_PIXEL_IDX <= integer(PPU_SPRITE_WIDTH) * TRANS_TILE_PIDX_Y + TRANS_TILE_PIDX_X;
-	TILEMAP_WORD_OFFSET <= TRANS_TILE_PIXEL_IDX / PPU_PIXELS_PER_TILE_WORD;
-	PIXEL_BIT_OFFSET <= TRANS_TILE_PIXEL_IDX mod PPU_PIXELS_PER_TILE_WORD;
-
-	T_TMM_ADDR <= std_logic_vector(to_unsigned(PPU_SPRITE_PIXELS_PER_WORD * to_integer(unsigned(BAM_DATA_TILE_IDX)) + TILEMAP_WORD_OFFSET, PPU_TMM_ADDR_WIDTH));
+	-- TMM address calculations
+	TRANS_TILE_PIDX <= integer(PPU_SPRITE_WIDTH) * to_integer(TRANS_TILE_PIDX_Y) + to_integer(TRANS_TILE_PIDX_X); -- pixel index of sprite
+	TILEMAP_WORD_OFFSET <= TRANS_TILE_PIDX / PPU_PIXELS_PER_TILE_WORD; -- word offset from starting word of sprite
+	PIXEL_BIT_OFFSET <= TRANS_TILE_PIDX mod PPU_PIXELS_PER_TILE_WORD; -- pixel bit offset
+	T_TMM_ADDR <= std_logic_vector(to_unsigned(PPU_SPRITE_PIXELS_PER_WORD * to_integer(unsigned(BAM_DATA_TILE_IDX)) + TILEMAP_WORD_OFFSET, PPU_TMM_ADDR_WIDTH)); -- TMM address
 
 	-- TMM DATA
 	with PIXEL_BIT_OFFSET select

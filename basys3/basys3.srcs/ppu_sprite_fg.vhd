@@ -36,11 +36,11 @@ end ppu_sprite_fg;
 
 architecture Behavioral of ppu_sprite_fg is
 	component ppu_sprite_transform port(
-		XI : in std_logic_vector(PPU_SPRITE_POS_H_WIDTH-1 downto 0); -- pixel position relative to tile
-		YI : in std_logic_vector(PPU_SPRITE_POS_V_WIDTH-1 downto 0); -- pixel position relative to tile
+		XI : in unsigned(PPU_SPRITE_POS_H_WIDTH-1 downto 0); -- pixel position relative to tile
+		YI : in unsigned(PPU_SPRITE_POS_V_WIDTH-1 downto 0); -- pixel position relative to tile
 		FLIP_H, FLIP_V : in std_logic; -- flip sprite
-		XO : out std_logic_vector(PPU_SPRITE_POS_H_WIDTH-1 downto 0); -- new pixel position relative to tile
-		YO : out std_logic_vector(PPU_SPRITE_POS_V_WIDTH-1 downto 0)); -- new pixel position relative to tile
+		XO : out unsigned(PPU_SPRITE_POS_H_WIDTH-1 downto 0); -- new pixel position relative to tile
+		YO : out unsigned(PPU_SPRITE_POS_V_WIDTH-1 downto 0)); -- new pixel position relative to tile
 	end component;
 	component er_ram -- exposed register RAM
 		generic(
@@ -77,15 +77,13 @@ architecture Behavioral of ppu_sprite_fg is
 	alias FAM_REG_COL_IDX is INT_FAM(12 downto 10); -- Palette index for tile
 	alias FAM_REG_TILE_IDX is INT_FAM(9 downto 0); -- Tilemap index
 
-	-- signal PIXEL_ABS_X, PIXEL_ABS_Y : integer := 0; -- absolute pixel position (relative to FG canvas instead of viewport)
-	-- signal TILE_IDX_X, TILE_IDX_Y : integer := 0; -- background canvas tile grid xy
-	-- signal TILE_PIXEL_IDX_X, TILE_PIXEL_IDX_Y : integer := 0; -- xy position of pixel within tile (local tile coords)
-	-- signal TRANS_TILE_PIDX_X, TRANS_TILE_PIDX_Y : integer := 0; -- transformed xy position of pixel within tile
-	-- signal TRANS_TILE_PIXEL_IDX : integer := 0; -- index of pixel within tile (reading order)
-	-- signal TRANSFORM_XI, TRANSFORM_XO : std_logic_vector(PPU_SPRITE_POS_H_WIDTH-1 downto 0); -- transform inputs/outputs (x axis)
-	-- signal TRANSFORM_YI, TRANSFORM_YO : std_logic_vector(PPU_SPRITE_POS_V_WIDTH-1 downto 0); -- transform inputs/outputs (y axis)
-	-- signal TILEMAP_WORD_OFFSET : integer := 0; -- word offset from tile start address in TMM
-	-- signal PIXEL_BIT_OFFSET : integer := 0; -- pixel index within word of TMM
+	signal SPRITE_ACTIVE : std_logic := '0'; -- is pixel in bounding box of sprite
+	signal PIXEL_ABS_X, PIXEL_ABS_Y : integer := 0; -- absolute pixel position (relative to FG canvas instead of viewport)
+	signal TILE_PIDX_X, TRANS_TILE_PIDX_X : unsigned(PPU_SPRITE_POS_H_WIDTH-1 downto 0) := (others => '0'); -- xy position of pixel within tile (local tile coords)
+	signal TILE_PIDX_Y, TRANS_TILE_PIDX_Y : unsigned(PPU_SPRITE_POS_V_WIDTH-1 downto 0) := (others => '0'); -- xy position of pixel within tile (local tile coords)
+	signal TRANS_TILE_PIXEL_IDX : integer := 0; -- index of pixel within tile (reading order)
+	signal TILEMAP_WORD_OFFSET : integer := 0; -- word offset from tile start address in TMM
+	signal PIXEL_BIT_OFFSET : integer := 0; -- pixel index within word of TMM
 	signal TMM_DATA_PAL_IDX : std_logic_vector(PPU_PALETTE_COLOR_WIDTH-1 downto 0); -- color of palette
 begin
 	-- output drivers
@@ -104,42 +102,39 @@ begin
 		DATA => FAM_DATA,
 		REG => INT_FAM);
 
-	-- -- -- FAM address calculations
-	-- -- PIXEL_ABS_X <= to_integer(unsigned(X)) + to_integer(unsigned(FG_SHIFT_X));
-	-- -- PIXEL_ABS_Y <= to_integer(unsigned(Y)) + to_integer(unsigned(FG_SHIFT_Y));
-	-- -- TILE_IDX_X <= PIXEL_ABS_X / 16;
-	-- -- TILE_IDX_Y <= PIXEL_ABS_Y / 16;
-	-- -- TILE_PIXEL_IDX_X <= PIXEL_ABS_X - TILE_IDX_X * 16;
-	-- -- TILE_PIXEL_IDX_Y <= PIXEL_ABS_Y - TILE_IDX_Y * 16;
-	-- -- T_FAM_ADDR <= std_logic_vector(to_unsigned((TILE_IDX_Y * integer(PPU_FG_CANVAS_TILES_H)) + TILE_IDX_X, PPU_FAM_ADDR_WIDTH));
+	SPRITE_ACTIVE <= ((unsigned(X) + 16) >= unsigned(FAM_REG_POS_H)) and
+									 ((unsigned(X) + 16) < (unsigned(FAM_REG_POS_H) + to_unsigned(PPU_SPRITE_WIDTH, PPU_POS_H_WIDTH))) and
+	                 ((unsigned(Y) + 16) >= unsigned(FAM_REG_POS_V)) and
+									 ((unsigned(Y) + 16) < (unsigned(FAM_REG_POS_V) + to_unsigned(PPU_SPRITE_HEIGHT, PPU_POS_V_WIDTH)));
 
-	-- -- -- FAM data dependant calculations
-	-- -- TRANSFORM_XI <= std_logic_vector(to_unsigned(TILE_PIXEL_IDX_X, PPU_SPRITE_POS_H_WIDTH));
-	-- -- TRANSFORM_YI <= std_logic_vector(to_unsigned(TILE_PIXEL_IDX_Y, PPU_SPRITE_POS_V_WIDTH));
-	-- -- transform: component ppu_sprite_transform port map(
-	-- -- 	XI => TRANSFORM_XI,
-	-- -- 	YI => TRANSFORM_YI,
-	-- -- 	FLIP_H => FAM_DATA_FLIP_H,
-	-- -- 	FLIP_V => FAM_DATA_FLIP_V,
-	-- -- 	XO => TRANSFORM_XO,
-	-- -- 	YO => TRANSFORM_YO);
-	-- -- TRANS_TILE_PIDX_X <= to_integer(unsigned(TRANSFORM_XO));
-	-- -- TRANS_TILE_PIDX_Y <= to_integer(unsigned(TRANSFORM_YO));
+	HIT <= SPRITE_ACTIVE and (nor TMM_DATA_PAL_IDX); -- if pixel in sprite hitbox and TMM_DATA_PAL_IDX > 0
 
-	-- -- TRANS_TILE_PIXEL_IDX <= integer(PPU_SPRITE_WIDTH) * TRANS_TILE_PIDX_Y + TRANS_TILE_PIDX_X;
-	-- -- TILEMAP_WORD_OFFSET <= TRANS_TILE_PIXEL_IDX / PPU_PIXELS_PER_TILE_WORD;
-	-- -- PIXEL_BIT_OFFSET <= TRANS_TILE_PIXEL_IDX mod PPU_PIXELS_PER_TILE_WORD;
+	TILE_PIDX_X <= to_unsigned(unsigned(X) + 16 - to_unsigned(FAM_REG_POS_H, TILE_PIDX_X'length), TILE_PIDX_X'length); -- (sprite local) pixel coords
+	TILE_PIDX_Y <= to_unsigned(unsigned(Y) + 16 - to_unsigned(FAM_REG_POS_V, TILE_PIDX_Y'length), TILE_PIDX_Y'length); -- (sprite local) pixel coords
 
-	-- -- T_TMM_ADDR <= std_logic_vector(to_unsigned(PPU_SPRITE_PIXELS_PER_WORD * to_integer(unsigned(FAM_DATA_TILE_IDX)) + TILEMAP_WORD_OFFSET, PPU_TMM_ADDR_WIDTH));
+	-- FAM data dependant calculations
+	transform: component ppu_sprite_transform port map(
+		XI => TILE_PIDX_X,
+		YI => TILE_PIDX_Y,
+		FLIP_H => FAM_REG_FLIP_H,
+		FLIP_V => FAM_REG_FLIP_V,
+		XO => TRANS_TILE_PIDX_X,
+		YO => TRANS_TILE_PIDX_Y);
 
-	-- -- -- TMM DATA
-	-- -- with PIXEL_BIT_OFFSET select
-	-- -- 	TMM_DATA_PAL_IDX <= R_TMM_DATA(2 downto 0) when 0,
-	-- -- 	                    R_TMM_DATA(5 downto 3) when 1,
-	-- -- 	                    R_TMM_DATA(8 downto 6) when 2,
-	-- -- 	                    R_TMM_DATA(11 downto 9) when 3,
-	-- -- 	                    R_TMM_DATA(14 downto 12) when 4,
-	-- -- 	                    (others => '0') when others;
+	-- TMM address calculations (sprite word start, word offset, and pixel offset)
+	TRANS_TILE_PIXEL_IDX <= integer(PPU_SPRITE_WIDTH) * to_integer(TRANS_TILE_PIDX_Y) + to_integer(TRANS_TILE_PIDX_X); -- pixel index of sprite
+	TILEMAP_WORD_OFFSET <= TRANS_TILE_PIXEL_IDX / PPU_PIXELS_PER_TILE_WORD; -- word offset from starting word of sprite
+	PIXEL_BIT_OFFSET <= TRANS_TILE_PIXEL_IDX mod PPU_PIXELS_PER_TILE_WORD; -- pixel bit offset
+	T_TMM_ADDR <= std_logic_vector(to_unsigned(PPU_SPRITE_PIXELS_PER_WORD * to_integer(unsigned(FAM_REG_TILE_IDX)) + TILEMAP_WORD_OFFSET, PPU_TMM_ADDR_WIDTH)); -- TMM address
+
+	-- TMM DATA
+	with PIXEL_BIT_OFFSET select
+		TMM_DATA_PAL_IDX <= R_TMM_DATA(2 downto 0) when 0,
+		                    R_TMM_DATA(5 downto 3) when 1,
+		                    R_TMM_DATA(8 downto 6) when 2,
+		                    R_TMM_DATA(11 downto 9) when 3,
+		                    R_TMM_DATA(14 downto 12) when 4,
+		                    (others => '0') when others;
 
 	-- state machine (pipeline stage counter) + sync r/w
 	process(CLK, RESET)
