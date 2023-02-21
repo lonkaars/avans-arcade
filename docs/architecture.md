@@ -134,6 +134,12 @@ Notable differences:
   
   Our game doesn't need this capability for any visual effects. Leaving this
   feature out will lead to a simpler hardware design
+- Sprites are positioned relative to the viewport, not the background layer
+  
+  This leads to a simpler hardware architecture for the foreground sprite
+  rendering component. Since the CPU is already likely to reposition all
+  foreground sprites on every frame, the position calculation is moved to
+  hardware to software.
 
 ## Hardware design schematics
 

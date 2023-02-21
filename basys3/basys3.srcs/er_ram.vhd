@@ -21,8 +21,8 @@ end er_ram;
 architecture Behavioral of er_ram is
 	component er_ram_mod
 		generic(
-			W : natural := 1; -- module data width
-			ADDR_W : natural := 1; -- address width
+			W : natural := DATA_W; -- module data width
+			ADDR_W : natural := ADDR_W; -- address width
 			ADDR_M : std_logic_vector(ADDR_W-1 downto 0) := (others => '0')); -- address match
 		port(
 			CLK : in std_logic; -- clock
@@ -36,12 +36,12 @@ architecture Behavioral of er_ram is
 begin
 	REG <= INT_REG;
 
-	registers : for idx in ADDR_LOW to ADDR_LOW + ADDR_RANGE - 1 generate
+	registers : for idx in 0 to ADDR_RANGE - 1 generate
 		reg : component er_ram_mod
 			generic map(
 				W => DATA_W,
 				ADDR_W => ADDR_W,
-				ADDR_M => std_logic_vector(to_unsigned(idx, ADDR_W)))
+				ADDR_M => std_logic_vector(to_unsigned(ADDR_LOW + idx, ADDR_W)))
 			port map(
 				CLK => CLK,
 				RST => RST,

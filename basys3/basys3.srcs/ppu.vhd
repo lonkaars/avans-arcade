@@ -18,6 +18,7 @@ entity ppu is port(
 end ppu;
 
 architecture Behavioral of ppu is
+	-- TODO: separate SPRITE_BG and SPRITE_FG lines (foreground_sprite only needs 2 clock cycles)
 	component ppu_pceg port( -- pipeline clock edge generator
 		CLK : in std_logic; -- system clock
 		RESET : in std_logic; -- async reset
@@ -98,27 +99,30 @@ architecture Behavioral of ppu is
 		-- outputs
 		CIDX : out std_logic_vector(PPU_PALETTE_CIDX_WIDTH-1 downto 0)); -- output color
 	end component;
-	component ppu_sprite_fg port( -- foreground sprite
-		-- inputs
-		CLK : in std_logic; -- pipeline clock
-		RESET : in std_logic; -- reset internal memory and clock counters
-		OE : in std_logic; -- output enable (of CIDX)
-		X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
-		Y : in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
-		FETCH : in std_logic; -- fetch sprite data from TMM (TODO : generic map, set foreground sprite component index)
+	component ppu_sprite_fg -- foreground sprite
+		generic (
+			IDX : natural := 0);
+		port(
+			-- inputs
+			CLK : in std_logic; -- pipeline clock
+			RESET : in std_logic; -- reset internal memory and clock counters
+			OE : in std_logic; -- output enable (of CIDX)
+			X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
+			Y : in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
+			FETCH : in std_logic; -- fetch sprite data from TMM (TODO : generic map, set foreground sprite component index)
 
-		-- internal memory block (FAM)
-		FAM_WEN : in std_logic; -- VRAM FAM write enable
-		FAM_ADDR : in std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0); -- VRAM fam address
-		FAM_DATA : in std_logic_vector(PPU_FAM_DATA_WIDTH-1 downto 0); -- VRAM fam data
+			-- internal memory block (FAM)
+			FAM_WEN : in std_logic; -- VRAM FAM write enable
+			FAM_ADDR : in std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0); -- VRAM fam address
+			FAM_DATA : in std_logic_vector(PPU_FAM_DATA_WIDTH-1 downto 0); -- VRAM fam data
 
-		-- used memory blocks
-		TMM_ADDR : out std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
-		TMM_DATA : in std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0);
+			-- used memory blocks
+			TMM_ADDR : out std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
+			TMM_DATA : in std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0);
 
-		-- outputs
-		CIDX : out std_logic_vector(PPU_PALETTE_CIDX_WIDTH-1 downto 0); -- output color
-		HIT : out std_logic); -- current pixel is not transparent
+			-- outputs
+			CIDX : out std_logic_vector(PPU_PALETTE_CIDX_WIDTH-1 downto 0); -- output color
+			HIT : out std_logic); -- current pixel is not transparent
 	end component;
 	component ppu_comp port( -- compositor
 		FG_HIT : in std_logic_vector(PPU_FG_SPRITE_COUNT-1 downto 0);
@@ -266,20 +270,22 @@ begin
 		CIDX => CIDX);
 
 	foreground_sprites : for FG_IDX in 0 to PPU_FG_SPRITE_COUNT-1 generate
-		foreground_sprite : component ppu_sprite_fg port map(
-			CLK => PL_SPRITE,
-			RESET => SYSRST,
-			OE => FG_EN(FG_IDX),
-			X => X,
-			Y => Y,
-			FETCH => FG_FETCH,
-			FAM_WEN => FAM_WEN,
-			FAM_ADDR => FAM_AO,
-			FAM_DATA => DATA(PPU_FAM_DATA_WIDTH-1 downto 0),
-			TMM_ADDR => TMM_AI,
-			TMM_DATA => TMM_DO,
-			CIDX => CIDX,
-			HIT => FG_HIT(FG_IDX));
+		foreground_sprite : component ppu_sprite_fg
+			generic map( IDX => FG_IDX )
+			port map(
+				CLK => PL_SPRITE,
+				RESET => SYSRST,
+				OE => FG_EN(FG_IDX),
+				X => X,
+				Y => Y,
+				FETCH => FG_FETCH,
+				FAM_WEN => FAM_WEN,
+				FAM_ADDR => FAM_AO,
+				FAM_DATA => DATA(PPU_FAM_DATA_WIDTH-1 downto 0),
+				TMM_ADDR => TMM_AI,
+				TMM_DATA => TMM_DO,
+				CIDX => CIDX,
+				HIT => FG_HIT(FG_IDX));
 	end generate;
 
 	compositor : component ppu_comp port map( -- compositor
