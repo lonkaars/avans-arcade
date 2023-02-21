@@ -6,6 +6,7 @@ use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 use work.ppu_consts.all;
 
+-- TODO: add input stable / output stable pipeline stages if this doesn't work with propagation delays
 entity ppu_sprite_bg is port(
 	-- inputs
 	CLK : in std_logic; -- pipeline clock
@@ -37,124 +38,107 @@ architecture Behavioral of ppu_sprite_bg is
 		YO : out std_logic_vector(PPU_SPRITE_POS_V_WIDTH-1 downto 0)); -- new pixel position relative to tile
 	end component;
 
-	signal O_BAM_ADDR : std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0) := (others => '0');
-	signal I_BAM_DATA : std_logic_vector(PPU_BAM_DATA_WIDTH-1 downto 0);
-	signal O_TMM_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0) := (others => '0');
-	signal I_TMM_DATA : std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0);
+	-- BAM and TMM in/out temp + registers
+	signal T_BAM_ADDR, R_BAM_ADDR : std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0) := (others => '0');
+	signal T_BAM_DATA, R_BAM_DATA : std_logic_vector(PPU_BAM_DATA_WIDTH-1 downto 0) := (others => '0');
+	signal T_TMM_ADDR, R_TMM_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0) := (others => '0');
+	signal T_TMM_DATA, R_TMM_DATA : std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0) := (others => '0');
 
-	signal FLIP_H, FLIP_V : std_logic := '0';
-	signal TMM_IDX : std_logic_vector(PPU_TILE_INDEX_WIDTH-1 downto 0) := (others => '0');
-
-	alias BAM_DATA_COL_IDX is I_BAM_DATA(12 downto 10);
-	signal TMM_DATA_PAL_IDX : std_logic_vector(PPU_PALETTE_COLOR_WIDTH-1 downto 0);
-	signal O_CIDX : std_logic_vector(PPU_PALETTE_CIDX_WIDTH-1 downto 0) := (others => '0');
-
+	-- state machine for synchronizing pipeline stages
 	type states is (PL_BAM_ADDR, PL_BAM_DATA, PL_TMM_ADDR, PL_TMM_DATA);
-	signal state, next_state : states := PL_BAM_ADDR;
+	signal state : states := PL_BAM_ADDR;
 
 	-- docs/architecture.md#background-attribute-memory
-	alias BAM_DATA_FLIP_H is I_BAM_DATA(14);
-	alias BAM_DATA_FLIP_V is I_BAM_DATA(13);
-	alias BAM_DATA_TILE_IDX is I_BAM_DATA(9 downto 0);
+	alias BAM_DATA_FLIP_H is R_BAM_DATA(14); -- flip horizontally
+	alias BAM_DATA_FLIP_V is R_BAM_DATA(13); -- flip vertically
+	alias BAM_DATA_TILE_IDX is R_BAM_DATA(9 downto 0); -- tilemap tile index
+	alias BAM_DATA_COL_IDX is R_BAM_DATA(12 downto 10); -- palette for sprite
 
+	-- auxiliary signals (temp variables)
 	signal PIXEL_ABS_X, PIXEL_ABS_Y : integer := 0; -- absolute pixel position (relative to BG canvas instead of viewport)
 	signal TILE_IDX_X, TILE_IDX_Y : integer := 0; -- background canvas tile grid xy
-	signal TILE_PIXEL_IDX_X, TILE_PIXEL_IDX_Y : integer := 0; -- xy position of pixel within tile
-	signal TILE_PIXEL_IDX : integer := 0; -- index of pixel within tile
+	signal TILE_PIXEL_IDX_X, TILE_PIXEL_IDX_Y : integer := 0; -- xy position of pixel within tile (local tile coords)
 	signal TRANS_TILE_PIDX_X, TRANS_TILE_PIDX_Y : integer := 0; -- transformed xy position of pixel within tile
-	signal TILEMAP_WORD_OFFSET : integer := 0;
-	signal TRANSFORM_XI, TRANSFORM_XO : std_logic_vector(PPU_SPRITE_POS_H_WIDTH-1 downto 0);
-	signal TRANSFORM_YI, TRANSFORM_YO : std_logic_vector(PPU_SPRITE_POS_V_WIDTH-1 downto 0);
-	signal PIXEL_BIT_OFFSET : integer := 0;
+	signal TRANS_TILE_PIXEL_IDX : integer := 0; -- index of pixel within tile (reading order)
+	signal TRANSFORM_XI, TRANSFORM_XO : std_logic_vector(PPU_SPRITE_POS_H_WIDTH-1 downto 0); -- transform inputs/outputs (x axis)
+	signal TRANSFORM_YI, TRANSFORM_YO : std_logic_vector(PPU_SPRITE_POS_V_WIDTH-1 downto 0); -- transform inputs/outputs (y axis)
+	signal TILEMAP_WORD_OFFSET : integer := 0; -- word offset from tile start address in TMM
+	signal PIXEL_BIT_OFFSET : integer := 0; -- pixel index within word of TMM
+	signal TMM_DATA_PAL_IDX : std_logic_vector(PPU_PALETTE_COLOR_WIDTH-1 downto 0); -- color of palette
+	signal T_CIDX : std_logic_vector(PPU_PALETTE_CIDX_WIDTH-1 downto 0) := (others => '0'); -- output color buffer/register
 begin
-	-- TODO: fix latches
+	-- output drivers
+	CIDX <= T_CIDX when OE = '1' else (others => 'Z');
+	BAM_ADDR <= R_BAM_ADDR;
+	TMM_ADDR <= R_TMM_ADDR;
+	T_BAM_DATA <= BAM_DATA;
+	T_TMM_DATA <= TMM_DATA;
+	-- CIDX combination
+	T_CIDX <= BAM_DATA_COL_IDX & TMM_DATA_PAL_IDX;
 
-	-- CIDX tri-state driver
-	CIDX <= O_CIDX when OE = '1' else (others => 'Z');
-
-	-- internal line separators
-	FLIP_H <= BAM_DATA_FLIP_H;
-	FLIP_V <= BAM_DATA_FLIP_V;
-	O_CIDX <= BAM_DATA_COL_IDX & TMM_DATA_PAL_IDX;
-
-	-- BAM ADDR
+	-- BAM address calculations
 	PIXEL_ABS_X <= to_integer(unsigned(X)) + to_integer(unsigned(BG_SHIFT_X));
 	PIXEL_ABS_Y <= to_integer(unsigned(Y)) + to_integer(unsigned(BG_SHIFT_Y));
 	TILE_IDX_X <= PIXEL_ABS_X / 16;
 	TILE_IDX_Y <= PIXEL_ABS_Y / 16;
 	TILE_PIXEL_IDX_X <= PIXEL_ABS_X - TILE_IDX_X * 16;
 	TILE_PIXEL_IDX_Y <= PIXEL_ABS_Y - TILE_IDX_Y * 16;
-	O_BAM_ADDR <= std_logic_vector(to_unsigned((TILE_IDX_Y * integer(PPU_BG_CANVAS_TILES_H)) + TILE_IDX_X, PPU_BAM_ADDR_WIDTH));
+	T_BAM_ADDR <= std_logic_vector(to_unsigned((TILE_IDX_Y * integer(PPU_BG_CANVAS_TILES_H)) + TILE_IDX_X, PPU_BAM_ADDR_WIDTH));
 
-	-- BAM DATA + FAM ADDR
+	-- BAM data dependant calculations
 	TRANSFORM_XI <= std_logic_vector(to_unsigned(TILE_PIXEL_IDX_X, PPU_SPRITE_POS_H_WIDTH));
 	TRANSFORM_YI <= std_logic_vector(to_unsigned(TILE_PIXEL_IDX_Y, PPU_SPRITE_POS_V_WIDTH));
 	transform: component ppu_sprite_transform port map(
 		XI => TRANSFORM_XI,
 		YI => TRANSFORM_YI,
-		FLIP_H => FLIP_H,
-		FLIP_V => FLIP_V,
+		FLIP_H => BAM_DATA_FLIP_H,
+		FLIP_V => BAM_DATA_FLIP_V,
 		XO => TRANSFORM_XO,
 		YO => TRANSFORM_YO);
 	TRANS_TILE_PIDX_X <= to_integer(unsigned(TRANSFORM_XO));
 	TRANS_TILE_PIDX_Y <= to_integer(unsigned(TRANSFORM_YO));
 
-	TILE_PIXEL_IDX <= integer(PPU_SPRITE_WIDTH) * TRANS_TILE_PIDX_Y + TRANS_TILE_PIDX_X;
-	TILEMAP_WORD_OFFSET <= TILE_PIXEL_IDX / PPU_PIXELS_PER_TILE_WORD;
-	PIXEL_BIT_OFFSET <= TILE_PIXEL_IDX mod PPU_PIXELS_PER_TILE_WORD;
+	TRANS_TILE_PIXEL_IDX <= integer(PPU_SPRITE_WIDTH) * TRANS_TILE_PIDX_Y + TRANS_TILE_PIDX_X;
+	TILEMAP_WORD_OFFSET <= TRANS_TILE_PIXEL_IDX / PPU_PIXELS_PER_TILE_WORD;
+	PIXEL_BIT_OFFSET <= TRANS_TILE_PIXEL_IDX mod PPU_PIXELS_PER_TILE_WORD;
 
-	O_TMM_ADDR <= std_logic_vector(to_unsigned(PPU_SPRITE_PIXELS_PER_WORD * to_integer(unsigned(BAM_DATA_TILE_IDX)) + TILEMAP_WORD_OFFSET, PPU_TMM_ADDR_WIDTH));
+	T_TMM_ADDR <= std_logic_vector(to_unsigned(PPU_SPRITE_PIXELS_PER_WORD * to_integer(unsigned(BAM_DATA_TILE_IDX)) + TILEMAP_WORD_OFFSET, PPU_TMM_ADDR_WIDTH));
 
 	-- TMM DATA
 	with PIXEL_BIT_OFFSET select
-		TMM_DATA_PAL_IDX <= I_TMM_DATA(2 downto 0) when 0,
-		                    I_TMM_DATA(5 downto 3) when 1,
-		                    I_TMM_DATA(8 downto 6) when 2,
-		                    I_TMM_DATA(11 downto 9) when 3,
-		                    I_TMM_DATA(14 downto 12) when 4,
+		TMM_DATA_PAL_IDX <= R_TMM_DATA(2 downto 0) when 0,
+		                    R_TMM_DATA(5 downto 3) when 1,
+		                    R_TMM_DATA(8 downto 6) when 2,
+		                    R_TMM_DATA(11 downto 9) when 3,
+		                    R_TMM_DATA(14 downto 12) when 4,
 		                    (others => '0') when others;
 
-	-- state machine (pipeline stage counter)
-	fsm: process(CLK, RESET)
+	-- state machine (pipeline stage counter) + sync r/w
+	process(CLK, RESET)
 	begin
 		if RESET = '1' then
 			-- reset state
 			state <= PL_BAM_ADDR;
 			-- reset internal pipeline registers
-			-- O_BAM_ADDR <= (others => '0');
-			-- I_BAM_DATA <= (others => '0');
-			-- O_TMM_ADDR <= (others => '0');
-			-- I_TMM_DATA <= (others => '0');
-			-- reset working color register
-			-- O_CIDX <= (others => '0');
+			R_BAM_ADDR <= (others => '0');
+			R_BAM_DATA <= (others => '0');
+			R_TMM_ADDR <= (others => '0');
+			R_TMM_DATA <= (others => '0');
 		elsif rising_edge(CLK) then
-			state <= next_state;
+			case state is
+				when PL_BAM_ADDR =>
+					state <= PL_BAM_DATA;
+					R_BAM_ADDR <= T_BAM_ADDR;
+				when PL_BAM_DATA =>
+					state <= PL_TMM_ADDR;
+					R_BAM_DATA <= T_BAM_DATA;
+				when PL_TMM_ADDR =>
+					state <= PL_TMM_DATA;
+					R_TMM_ADDR <= T_TMM_ADDR;
+				when PL_TMM_DATA =>
+					state <= PL_BAM_ADDR;
+					R_TMM_DATA <= T_TMM_DATA;
+			end case;
 		end if;
 	end process;
-
-	-- sync read/write
-	process(state)
-	begin
-		next_state <= state;
-		case state is
-			when PL_BAM_ADDR =>
-				next_state <= PL_BAM_DATA;
-				BAM_ADDR <= O_BAM_ADDR;
-
-			when PL_BAM_DATA =>
-				next_state <= PL_TMM_ADDR;
-				I_BAM_DATA <= BAM_DATA;
-				
-			when PL_TMM_ADDR =>
-				next_state <= PL_TMM_DATA;
-				TMM_ADDR <= O_TMM_ADDR;
-
-			when PL_TMM_DATA =>
-				next_state <= PL_BAM_ADDR;
-				I_TMM_DATA <= TMM_DATA;
-
-				
-		end case;
-	end process;
-
 end Behavioral;
