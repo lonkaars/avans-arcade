@@ -19,6 +19,6 @@ begin
 	FLIPPED_X <= std_logic_vector(to_unsigned(PPU_SPRITE_WIDTH-1 - to_integer(unsigned(XI)), PPU_SPRITE_POS_H_WIDTH));
 	FLIPPED_Y <= std_logic_vector(to_unsigned(PPU_SPRITE_HEIGHT-1 - to_integer(unsigned(YI)), PPU_SPRITE_POS_V_WIDTH));
 
-	XO <= FLIPPED_X when FLIP_H = '1' else XI;
-	YO <= FLIPPED_Y when FLIP_V = '1' else YI;
+	XO <= FLIPPED_X when FLIP_V = '1' else XI;
+	YO <= FLIPPED_Y when FLIP_H = '1' else YI;
 end Behavioral;
