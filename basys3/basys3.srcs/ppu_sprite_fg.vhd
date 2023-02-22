@@ -19,6 +19,7 @@ entity ppu_sprite_fg is -- foreground sprite
 		X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 		Y : in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
 		FETCH : in std_logic; -- fetch sprite data from TMM
+		VBLANK : in std_logic; -- fetch during vblank
 
 		-- internal memory block (FAM)
 		FAM_WEN : in std_logic; -- VRAM FAM write enable
@@ -44,10 +45,10 @@ architecture Behavioral of ppu_sprite_fg is
 	end component;
 	component er_ram -- exposed register RAM
 		generic(
-			ADDR_W : natural := PPU_FAM_ADDR_WIDTH; -- ADDR line width
-			DATA_W : natural := PPU_FAM_DATA_WIDTH; -- DATA line width
-			ADDR_LOW : natural := IDX*2; -- starting address
-			ADDR_RANGE : natural := 2); -- amount of valid addresses after ADDR_LOW
+			ADDR_W : natural := 2; -- ADDR line width
+			DATA_W : natural := 2; -- DATA line width
+			ADDR_LOW : natural := 16#0000#; -- starting address
+			ADDR_RANGE : natural := 16#0002#); -- amount of valid addresses after ADDR_LOW
 		port(
 			CLK : in std_logic; -- clock
 			RST : in std_logic; -- async memory clear
@@ -83,8 +84,13 @@ architecture Behavioral of ppu_sprite_fg is
 	signal TILE_PIDX_Y, TRANS_TILE_PIDX_Y : unsigned(PPU_SPRITE_POS_V_WIDTH-1 downto 0) := (others => '0'); -- xy position of pixel within tile (local tile coords)
 	signal TRANS_TILE_PIXEL_IDX : integer := 0; -- index of pixel within tile (reading order)
 	signal TILEMAP_WORD_OFFSET : integer := 0; -- word offset from tile start address in TMM
-	signal PIXEL_BIT_OFFSET : integer := 0; -- pixel index within word of TMM
 	signal TMM_DATA_PAL_IDX : std_logic_vector(PPU_PALETTE_COLOR_WIDTH-1 downto 0); -- color of palette
+
+	-- TMM cache
+	signal TMM_CACHE_WEN : std_logic := '0';
+	signal TMM_CACHE_DATA : std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0) := (others => '0');
+	signal TMM_CACHE_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0) := (others => '0');
+	signal TMM_CACHE : std_logic_vector((PPU_SPRITE_WORD_COUNT * PPU_TMM_DATA_WIDTH)-1 downto 0);
 begin
 	-- output drivers
 	CIDX <= T_CIDX when OE = '1' else (others => 'Z');
@@ -94,25 +100,31 @@ begin
 	T_CIDX <= FAM_REG_COL_IDX & TMM_DATA_PAL_IDX;
 
 	-- FAM memory
-	FAM : component er_ram port map(
-		CLK => CLK,
-		RST => RESET,
-		WEN => FAM_WEN,
-		ADDR => FAM_ADDR,
-		DATA => FAM_DATA,
-		REG => INT_FAM);
+	FAM : component er_ram
+		generic map(
+			ADDR_W => PPU_FAM_ADDR_WIDTH,
+			DATA_W => PPU_FAM_DATA_WIDTH,
+			ADDR_LOW => IDX*2,
+			ADDR_RANGE => 2)
+		port map(
+			CLK => CLK,
+			RST => RESET,
+			WEN => FAM_WEN,
+			ADDR => FAM_ADDR,
+			DATA => FAM_DATA,
+			REG => INT_FAM);
 
-	SPRITE_ACTIVE <= ((unsigned(X) + 16) >= unsigned(FAM_REG_POS_H)) and
-									 ((unsigned(X) + 16) < (unsigned(FAM_REG_POS_H) + to_unsigned(PPU_SPRITE_WIDTH, PPU_POS_H_WIDTH))) and
-	                 ((unsigned(Y) + 16) >= unsigned(FAM_REG_POS_V)) and
-									 ((unsigned(Y) + 16) < (unsigned(FAM_REG_POS_V) + to_unsigned(PPU_SPRITE_HEIGHT, PPU_POS_V_WIDTH)));
+	-- pixel position within bounding box of sprite
+	SPRITE_ACTIVE <= '1' when ((unsigned(X) + 16) >= unsigned(FAM_REG_POS_H)) and
+	                          ((unsigned(X) + 16) < (unsigned(FAM_REG_POS_H) + to_unsigned(PPU_SPRITE_WIDTH, PPU_POS_H_WIDTH))) and
+	                          ((unsigned(Y) + 16) >= unsigned(FAM_REG_POS_V)) and
+	                          ((unsigned(Y) + 16) < (unsigned(FAM_REG_POS_V) + to_unsigned(PPU_SPRITE_HEIGHT, PPU_POS_V_WIDTH))) else '0';
 
-	HIT <= SPRITE_ACTIVE and (nor TMM_DATA_PAL_IDX); -- if pixel in sprite hitbox and TMM_DATA_PAL_IDX > 0
+	-- (sprite local) pixel coords
+	TILE_PIDX_X <= resize(unsigned(X) + 16 - resize(unsigned(FAM_REG_POS_H), TILE_PIDX_X'length), TILE_PIDX_X'length);
+	TILE_PIDX_Y <= resize(unsigned(Y) + 16 - resize(unsigned(FAM_REG_POS_V), TILE_PIDX_Y'length), TILE_PIDX_Y'length);
 
-	TILE_PIDX_X <= to_unsigned(unsigned(X) + 16 - to_unsigned(FAM_REG_POS_H, TILE_PIDX_X'length), TILE_PIDX_X'length); -- (sprite local) pixel coords
-	TILE_PIDX_Y <= to_unsigned(unsigned(Y) + 16 - to_unsigned(FAM_REG_POS_V, TILE_PIDX_Y'length), TILE_PIDX_Y'length); -- (sprite local) pixel coords
-
-	-- FAM data dependant calculations
+	-- transform local coords
 	transform: component ppu_sprite_transform port map(
 		XI => TILE_PIDX_X,
 		YI => TILE_PIDX_Y,
@@ -121,23 +133,39 @@ begin
 		XO => TRANS_TILE_PIDX_X,
 		YO => TRANS_TILE_PIDX_Y);
 
-	-- TMM address calculations (sprite word start, word offset, and pixel offset)
-	TRANS_TILE_PIXEL_IDX <= integer(PPU_SPRITE_WIDTH) * to_integer(TRANS_TILE_PIDX_Y) + to_integer(TRANS_TILE_PIDX_X); -- pixel index of sprite
-	TILEMAP_WORD_OFFSET <= TRANS_TILE_PIXEL_IDX / PPU_PIXELS_PER_TILE_WORD; -- word offset from starting word of sprite
-	PIXEL_BIT_OFFSET <= TRANS_TILE_PIXEL_IDX mod PPU_PIXELS_PER_TILE_WORD; -- pixel bit offset
-	T_TMM_ADDR <= std_logic_vector(to_unsigned(PPU_SPRITE_PIXELS_PER_WORD * to_integer(unsigned(FAM_REG_TILE_IDX)) + TILEMAP_WORD_OFFSET, PPU_TMM_ADDR_WIDTH)); -- TMM address
+	-- pixel index
+	TRANS_TILE_PIXEL_IDX <= integer(PPU_SPRITE_WIDTH) * to_integer(TRANS_TILE_PIDX_Y) + to_integer(TRANS_TILE_PIDX_X);
+	-- palette color at pixel
+	TMM_DATA_PAL_IDX <= TMM_CACHE(TRANS_TILE_PIXEL_IDX * integer(PPU_PALETTE_COLOR_WIDTH) + integer(PPU_PALETTE_COLOR_WIDTH)-1 downto TRANS_TILE_PIXEL_IDX * integer(PPU_PALETTE_COLOR_WIDTH));
+	-- if pixel in sprite hitbox and TMM_DATA_PAL_IDX > 0
+	HIT <= SPRITE_ACTIVE and (nor TMM_DATA_PAL_IDX);
 
-	-- TMM DATA
-	with PIXEL_BIT_OFFSET select
-		TMM_DATA_PAL_IDX <= R_TMM_DATA(2 downto 0) when 0,
-		                    R_TMM_DATA(5 downto 3) when 1,
-		                    R_TMM_DATA(8 downto 6) when 2,
-		                    R_TMM_DATA(11 downto 9) when 3,
-		                    R_TMM_DATA(14 downto 12) when 4,
-		                    (others => '0') when others;
+	-- FETCH LOGIC BELOW
+
+	-- TTM cache
+	ttm_cache : component er_ram
+		generic map(
+			ADDR_W => PPU_TMM_ADDR_WIDTH,
+			DATA_W => PPU_TMM_DATA_WIDTH,
+			ADDR_LOW => 0,
+			ADDR_RANGE => PPU_SPRITE_WORD_COUNT)
+		port map(
+			CLK => CLK,
+			RST => RESET,
+			WEN => TMM_CACHE_WEN,
+			ADDR => TMM_CACHE_ADDR,
+			DATA => TMM_CACHE_DATA,
+			REG => TMM_CACHE);
+
+	TILEMAP_WORD_OFFSET <= TRANS_TILE_PIXEL_IDX / PPU_PIXELS_PER_TILE_WORD; -- word offset from starting word of sprite
+	T_TMM_ADDR <= std_logic_vector(to_unsigned(PPU_SPRITE_WORD_COUNT * to_integer(unsigned(FAM_REG_TILE_IDX)) + TILEMAP_WORD_OFFSET, PPU_TMM_ADDR_WIDTH)); -- TMM address
+
 
 	-- state machine (pipeline stage counter) + sync r/w
 	process(CLK, RESET)
+		constant TMM_FETCH_CLK_RANGE_BEGIN : natural := PPU_TMM_CACHE_FETCH_C_COUNT * IDX;
+		variable TMM_FETCH_CTR : unsigned(PPU_TMM_CACHE_FETCH_A_WIDTH-1 downto 0) := (others => '0');
+		variable TMM_FETCH_CTR_REL : unsigned(PPU_TMM_CACHE_FETCH_A_WIDTH-1 downto 0) := (others => '0');
 	begin
 		if RESET = '1' then
 			-- reset state
@@ -146,14 +174,16 @@ begin
 			R_TMM_ADDR <= (others => '0');
 			R_TMM_DATA <= (others => '0');
 		elsif rising_edge(CLK) then
-			case state is
-				when PL_TMM_ADDR =>
-					state <= PL_TMM_DATA;
-					R_TMM_ADDR <= T_TMM_ADDR;
-				when PL_TMM_DATA =>
-					state <= PL_TMM_ADDR;
-					R_TMM_DATA <= T_TMM_DATA;
-			end case;
+			TMM_FETCH_CTR := (others => '0') when FETCH = '0' else TMM_FETCH_CTR + 1;
+			TMM_FETCH_CTR_REL := TMM_FETCH_CTR - TMM_FETCH_CLK_RANGE_BEGIN;
+
+			if FETCH = '1' and TMM_FETCH_CTR >= TMM_FETCH_CLK_RANGE_BEGIN and TMM_FETCH_CTR < (TMM_FETCH_CLK_RANGE_BEGIN + PPU_TMM_CACHE_FETCH_C_COUNT) then
+				TMM_CACHE_WEN <= '1';
+				R_TMM_DATA <= T_TMM_DATA;
+				T_TMM_ADDR <= R_TMM_ADDR;
+			else
+				TMM_CACHE_WEN <= '0';
+			end if;
 		end if;
 	end process;
 end Behavioral;

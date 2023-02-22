@@ -110,6 +110,7 @@ architecture Behavioral of ppu is
 			X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 			Y : in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
 			FETCH : in std_logic; -- fetch sprite data from TMM (TODO : generic map, set foreground sprite component index)
+			VBLANK : in std_logic; -- fetch during vblank
 
 			-- internal memory block (FAM)
 			FAM_WEN : in std_logic; -- VRAM FAM write enable
@@ -188,6 +189,8 @@ architecture Behavioral of ppu is
 	signal BG_SHIFT_X : std_logic_vector(PPU_POS_H_WIDTH-1 downto 0);
 	signal BG_SHIFT_Y : std_logic_vector(PPU_POS_V_WIDTH-1 downto 0);
 	signal FG_FETCH : std_logic;
+	signal TINY_VBLANK, TINY_VSYNC, TINY_HBLANK, TINY_HSYNC,
+	       NATIVE_VSYNC, NATIVE_HSYNC : std_logic;
 begin
 	SYSCLK <= CLK100;
 	SYSRST <= RESET;
@@ -200,6 +203,13 @@ begin
 	AUX_AI <= (others => '0');
 	FAM_AI <= (others => '0');
 	PAL_AI <= (others => '0');
+
+	TVBLANK <= TINY_VBLANK;
+	TVSYNC <= TINY_VSYNC;
+	THBLANK <= TINY_HBLANK;
+	THSYNC <= TINY_HSYNC;
+	NVSYNC <= NATIVE_VSYNC;
+	NHSYNC <= NATIVE_HSYNC;
 
 	pipeline_clock_edge_generator : component ppu_pceg port map(
 		CLK => SYSCLK,
@@ -273,12 +283,13 @@ begin
 		foreground_sprite : component ppu_sprite_fg
 			generic map( IDX => FG_IDX )
 			port map(
-				CLK => PL_SPRITE,
+				CLK => SYSCLK,
 				RESET => SYSRST,
 				OE => FG_EN(FG_IDX),
 				X => X,
 				Y => Y,
 				FETCH => FG_FETCH,
+				VBLANK => TINY_VBLANK,
 				FAM_WEN => FAM_WEN,
 				FAM_ADDR => FAM_AO,
 				FAM_DATA => DATA(PPU_FAM_DATA_WIDTH-1 downto 0),
@@ -323,10 +334,10 @@ begin
 		RESET => SYSRST,
 		X => X,
 		Y => Y,
-		VSYNC => TVSYNC,
-		VBLANK => TVBLANK,
-		HSYNC => THSYNC,
-		HBLANK => THBLANK);
+		VSYNC => TINY_VSYNC,
+		VBLANK => TINY_VBLANK,
+		HSYNC => TINY_HSYNC,
+		HBLANK => TINY_HBLANK);
 
 	native_vga_signal_generator : component ppu_vga_native port map( -- native vga signal generator (upscaler)
 		CLK => SYSCLK,
@@ -340,6 +351,6 @@ begin
 		RO => R,
 		GO => G,
 		BO => B,
-		VSYNC => NVSYNC,
-		HSYNC => NHSYNC);
+		VSYNC => NATIVE_VSYNC,
+		HSYNC => NATIVE_HSYNC);
 end Behavioral;

@@ -96,7 +96,7 @@ begin
 	TRANS_TILE_PIDX <= integer(PPU_SPRITE_WIDTH) * to_integer(TRANS_TILE_PIDX_Y) + to_integer(TRANS_TILE_PIDX_X); -- pixel index of sprite
 	TILEMAP_WORD_OFFSET <= TRANS_TILE_PIDX / PPU_PIXELS_PER_TILE_WORD; -- word offset from starting word of sprite
 	PIXEL_BIT_OFFSET <= TRANS_TILE_PIDX mod PPU_PIXELS_PER_TILE_WORD; -- pixel bit offset
-	T_TMM_ADDR <= std_logic_vector(to_unsigned(PPU_SPRITE_PIXELS_PER_WORD * to_integer(unsigned(BAM_DATA_TILE_IDX)) + TILEMAP_WORD_OFFSET, PPU_TMM_ADDR_WIDTH)); -- TMM address
+	T_TMM_ADDR <= std_logic_vector(to_unsigned(PPU_SPRITE_WORD_COUNT * to_integer(unsigned(BAM_DATA_TILE_IDX)) + TILEMAP_WORD_OFFSET, PPU_TMM_ADDR_WIDTH)); -- TMM address
 
 	-- TMM DATA
 	with PIXEL_BIT_OFFSET select
