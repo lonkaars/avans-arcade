@@ -104,12 +104,12 @@ architecture Behavioral of ppu is
 			IDX : natural := 0);
 		port(
 			-- inputs
-			CLK : in std_logic; -- pipeline clock
+			CLK : in std_logic; -- system clock
 			RESET : in std_logic; -- reset internal memory and clock counters
 			OE : in std_logic; -- output enable (of CIDX)
 			X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 			Y : in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
-			FETCH : in std_logic; -- fetch sprite data from TMM (TODO : generic map, set foreground sprite component index)
+			FETCH : in std_logic; -- fetch sprite data from TMM
 			VBLANK : in std_logic; -- fetch during vblank
 
 			-- internal memory block (FAM)
