@@ -46,37 +46,56 @@ end ppu_vga_tiny;
 architecture Behavioral of ppu_vga_tiny is
   signal hcount: STD_LOGIC_VECTOR(PPU_POS_H_WIDTH-1 downto 0):= (others => '0');
   signal vcount: STD_LOGIC_VECTOR(PPU_POS_V_WIDTH-1 downto 0):= (others => '0');
+  signal CLKcounter: STD_LOGIC_VECTOR(4 downto 0):= (others => '0');
   
 begin
 process (CLK) 
 begin
     if rising_edge(CLK) then
-           -- x,y data uit
+        CLKcounter <= CLKcounter + 1;
+        if(CLKcounter > 15) then
+            -- x,y data uit
             X <= hcount;
             Y <= vcount;
-         --pulse width
-          if hcount < 32 then
-            hsync <= '0';
-          else
-            hsync <= '1';
-          end if;
-    
-          if vcount < 8 then
-            vsync <= '0';
-          else
-            vsync <= '1';
-          end if;
-         -- sync pulse time
-          hcount <= hcount + 1;
-         
-          if hcount = 400 then
-            vcount <= vcount + 1;
-            hcount <= (others => '0');
-          end if;
-         
-          if vcount = 255 then	   
-            vcount <= (others => '0');
-         end if;
+             
+            --pulse width
+            if hcount < 32 or hcount >= 320-80 then
+                hsync <= '0';
+            else
+                hsync <= '1';
+            end if;
+        
+            if vcount < 8 or vcount >= 240-15 then
+                vsync <= '0';
+            else
+                vsync <= '1';
+            end if;
+             
+            -- Hblank and Vblank outputs
+            if hcount >= 320-80 then
+                hblank <= '1';
+            else
+                hblank <= '0';
+            end if;
+            
+            if vcount >= 240-15 then
+                vblank <= '1';
+            else
+                vblank <= '0';
+            end if;
+             
+            -- sync pulse time
+            hcount <= hcount + 1;
+             
+            if hcount = 400 then
+                vcount <= vcount + 1;
+                hcount <= (others => '0');
+            end if;
+             
+            if vcount = 255 then	   
+                vcount <= (others => '0');
+            end if;
+        end if;
     end if;
 end process;
 
