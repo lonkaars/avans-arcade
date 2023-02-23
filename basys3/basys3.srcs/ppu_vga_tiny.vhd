@@ -54,6 +54,7 @@ begin
     if rising_edge(CLK) then
         CLKcounter <= CLKcounter + 1;
         if(CLKcounter > 15) then
+            clkCounter <= (others => '0');
             -- x,y data uit
             X <= hcount;
             Y <= vcount;
@@ -91,7 +92,7 @@ begin
                 vcount <= vcount + 1;
                 hcount <= (others => '0');
             end if;
-             
+            
             if vcount = 255 then	   
                 vcount <= (others => '0');
             end if;
