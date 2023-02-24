@@ -1,6 +1,5 @@
-#include <malloc.h>
+#include <stdlib.h>
 #include <math.h>
-#include <stdio.h>
 
 #include "ppu/ppu.h"
 #include "ppu/consts.h"
@@ -16,17 +15,17 @@ hh_s_ppu_loc_sprite* hh_debug_circle_sprite() {
 }
 
 int main() {
-	hh_ppu_init();
+	// hh_ppu_init();
 
-	hh_ppu_update_aux((hh_s_ppu_loc_aux) {
-		.bg_shift_x = 0,
-		.bg_shift_y = 0,
-		.fg_fetch = 0,
-		.sysreset = 0,
-	});
+	// hh_ppu_update_aux((hh_s_ppu_loc_aux) {
+	// 	.bg_shift_x = 0,
+	// 	.bg_shift_y = 0,
+	// 	.fg_fetch = 0,
+	// 	.sysreset = 0,
+	// });
 
 	hh_s_ppu_loc_sprite* sprite = hh_debug_circle_sprite();
-	hh_ppu_update_sprite(0, *sprite);
+	// hh_ppu_update_sprite(0, *sprite);
 	free(sprite);
 
 	while (1);
