@@ -3,11 +3,6 @@
 #include "ppu/types.h"
 #include "ppu/internals.h"
 
-/** @brief generate bitmask with `n` bits set to one from LSB */
-#define HH_MASK(n) ((1 << (n))-1)
-/** @brief resize `in` to `upper downto lower` like in vhdl */
-#define HH_RESIZE(in, upper, lower) ((((hh_ppu_data_t)(in)) & HH_MASK(upper+1-lower)) >> lower)
-
 bool hh_ppu_vram_valid_address(hh_ppu_addr_t addr) {
 	(void) addr; // compiler bruh
 	return true; // TODO
@@ -72,13 +67,11 @@ hh_s_ppu_vram_data hh_ppu_2nat_aux(hh_s_ppu_loc_aux aux) {
 hh_s_ppu_vram_data hh_ppu_2nat_sprite(hh_ppu_loc_sprite_data_t sprite_data) {
 	hh_ppu_data_t* data = malloc(sizeof(hh_ppu_data_t) * HH_PPU_VRAM_TMM_SPRITE_SIZE);
 
-	for (unsigned x = 0; x < HH_PPU_SPRITE_WIDTH; x++) {
-		for (unsigned y = 0; y < HH_PPU_SPRITE_HEIGHT; y++) {
-			unsigned i = y * HH_PPU_SPRITE_WIDTH + x;
-			unsigned word = i / 5;
-			unsigned pixel = i % 5;
-			data[word] |= HH_RESIZE(sprite_data[i], 2, 0) << pixel * 3;
-		}
+	for (unsigned i = 0; i < HH_PPU_SPRITE_WIDTH * HH_PPU_SPRITE_HEIGHT; i++) {
+		unsigned word = i / 5;
+		unsigned pixel = i % 5;
+		if (pixel == 0) data[word] = 0;
+		data[word] |= HH_RESIZE(sprite_data[i], 2, 0) << pixel * 3;
 	}
 
 	hh_s_ppu_vram_data out = {

@@ -4,6 +4,11 @@
 
 #include "ppu/types.h"
 
+/** @brief generate bitmask with `n` bits set to one from LSB */
+#define HH_MASK(n) ((1 << (n))-1)
+/** @brief resize `in` to `upper downto lower` like in vhdl */
+#define HH_RESIZE(in, upper, lower) ((((hh_ppu_data_t)(in)) & (HH_MASK(upper+1-lower) << lower)) >> lower)
+
 typedef struct {
 	hh_ppu_addr_t offset;
 	hh_ppu_addr_t size;

@@ -323,8 +323,8 @@ Word format:
 
 |Range (VHDL)|Description|
 |-|-|
-|`15 downto 13`|(discarded)|
-|`12 downto 8`|Red value|
+|`15 downto 12`|(discarded)|
+|`11 downto 8`|Red value|
 |`7 downto 4`|Green value|
 |`3 downto 0`|Blue value|
 
