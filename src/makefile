@@ -33,6 +33,7 @@ AFLAGS += $(SHARED_FLAGS)
 
 SRCS += $(LOCAL_SRCS)
 SRCS += $(if $(STM), $(STM_SRCS), )
+SRCS += $(if $(DESKTOP), $(DESKTOP_SRCS), )
 
 ifeq ($(PLATFORM),stm)
 OBJS := $(patsubst %.c,%-stm.o, $(patsubst %.s,%-stm.o, $(SRCS)))
