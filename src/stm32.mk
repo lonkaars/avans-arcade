@@ -56,5 +56,6 @@ STM_SRCS += lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_rcc.c \
             lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_tim_ex.c \
             lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_uart.c \
             lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_uart_ex.c
-STM_SRCS += stm32/idle_task_static_memory.c
+STM_SRCS += stm32/idle_task_static_memory.c \
+						stm32/main.c
 

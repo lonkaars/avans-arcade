@@ -3,7 +3,9 @@
 #include <math.h>
 #include <SDL2/SDL.h>
 
+#include "main.h"
 #include "ppu/ppu.h"
+#include "ppusim/mem.h"
 #include "ppusim/sim.h"
 
 SDL_Window *g_hh_window = NULL;
@@ -24,13 +26,27 @@ void hh_ppu_init() {
 	g_hh_window = SDL_CreateWindow("ppusim", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, HH_PPU_SCREEN_WIDTH * HH_PPUSIM_UPSCALE_FACTOR, HH_PPU_SCREEN_HEIGHT * HH_PPUSIM_UPSCALE_FACTOR, SDL_WINDOW_SHOWN);
 	g_hh_renderer = SDL_CreateRenderer(g_hh_window, -1, SDL_RENDERER_ACCELERATED);
 
+	g_hh_ppusim_vram = malloc(sizeof(hh_ppu_data_t) * 0xffff);
+}
+
+void hh_ppu_deinit() {
+	free(g_hh_ppusim_vram);
+
+	SDL_DestroyRenderer(g_hh_renderer);
+	SDL_DestroyWindow(g_hh_window);
+	SDL_Quit();
+}
+
+void hh_loop() {
+	static unsigned long frame = 0;
 	SDL_Event e;
-	unsigned long frame = 0;
-	while (true) {
+	while (g_hh_run) {
 		uint32_t start = SDL_GetTicks();
 		frame++;
 		while (SDL_PollEvent(&e)) if (e.type == SDL_QUIT) exit(0);
 		
+		hh_ppu_vblank_interrupt();
+
 		SDL_RenderClear(g_hh_renderer);
 
 		for (unsigned i = 0; i < HH_PPU_SCREEN_WIDTH; i++) {
@@ -46,10 +62,4 @@ void hh_ppu_init() {
 		int wait_for = 1000 / HH_PPUSIM_FRAMERATE - (end - start);
 		if (wait_for > 0) SDL_Delay(wait_for);
 	}
-}
-
-void hh_ppu_deinit() {
-	SDL_DestroyRenderer(g_hh_renderer);
-	SDL_DestroyWindow(g_hh_window);
-	SDL_Quit();
 }
