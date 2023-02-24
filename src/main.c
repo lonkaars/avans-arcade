@@ -22,7 +22,7 @@ void hh_ppu_vblank_interrupt() {
 	frame++;
 
 #ifdef HH_TARGET_DESKTOP
-	printf("frame %lu\n", frame);
+	// printf("frame %lu\n", frame);
 #endif
 }
 
