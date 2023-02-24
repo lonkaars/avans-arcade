@@ -2,14 +2,14 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-library UNISIM;
-use UNISIM.VComponents.all;
+library unisim;
+use unisim.vcomponents.all;
 
-entity apu_tb_LUT_reader is
+entity apu_lut_reader_tb is
 end entity;
 
-architecture Behavioral of apu_tb_LUT_reader is
-    component apu_LUT_reader is
+architecture Behavioral of apu_lut_reader_tb is
+    component apu_lut_reader is
         port (
             clk   : in std_logic;
             rst : in std_logic;

@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity apu_LUT_reader is
+entity apu_lut_reader is
     port (
         clk : in std_logic;
         rst : in std_logic;
@@ -12,7 +12,7 @@ entity apu_LUT_reader is
     );
 end entity;
 
-architecture Behavioral of apu_LUT_reader is
+architecture behavioral of apu_lut_reader is
 
     constant AMPLITUDE : natural := 0;
     constant SAMPLE_SIZE : natural := 256;

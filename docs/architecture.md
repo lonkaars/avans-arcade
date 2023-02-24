@@ -134,6 +134,12 @@ Notable differences:
   
   Our game doesn't need this capability for any visual effects. Leaving this
   feature out will lead to a simpler hardware design
+- Sprites are positioned relative to the viewport, not the background layer
+  
+  This leads to a simpler hardware architecture for the foreground sprite
+  rendering component. Since the CPU is already likely to reposition all
+  foreground sprites on every frame, the position calculation is moved to
+  hardware to software.
 
 ## Hardware design schematics
 
@@ -227,16 +233,17 @@ Important notes:
 - The PPU's memory bus has 16-bit addresses and 16-bit words.
 - Some memory regions use physical word sizes smaller than 16-bits, so
   "unneeded" bits will be discarded by the PPU.
-- All "fields" or words containing multiple bit strings representing different
-  pieces of information are ordered from MSB to LSB.
+- Apparent size means the amount of addresses in a given memory region. As
+  mentioned earlier, the exact word sizes of a memory area can vary, though
+  this is not visible to the CPU as all data is presented as 16-bit words.
 
-|Address offset|Size (16-bit words)|Alias|Description|
+|Address offset|Apparent size|Alias|Description|
 |-|-|-|-|
-|`0x0000`|`0xc000`|TMM  |[tilemap memory][TMM]|
-|`0xc000`|`0x04b0`|BAM  |[background attribute memory][BAM]|
-|`0xc800`|`0x0100`|FAM  |[foreground attribute memory][FAM]|
-|`0xcc00`|`0x0040`|PAL  |[palettes][PAL]|
-|`0xce00`|`0x0002`|AUX  |[auxiliary memory][AUX]|
+|`0x0000`|`0xd000`|TMM  |[tilemap memory][TMM]|
+|`0xd000`|`0x04b0`|BAM  |[background attribute memory][BAM]|
+|`0xd800`|`0x0100`|FAM  |[foreground attribute memory][FAM]|
+|`0xdc00`|`0x0040`|PAL  |[palettes][PAL]|
+|`0xde00`|`0x0002`|AUX  |[auxiliary memory][AUX]|
 
 This table contains the "official" PPU register offsets and sizes. Due to the
 way the address decoder works, some of these memory regions might be duplicated
@@ -247,24 +254,44 @@ there is no address validity checking.
 [TMM]: #tilemap-memory
 ### Tilemap memory
 
-- Each sprite takes up 768 bits spread across 48 16-bit words
-- Sprites and pixels are stored adjacently in memory without padding
-- Pixel order is from top-left to bottom-right in (English) reading order.
-
-[BAM]: #background-attribute-memory
-### Background attribute memory
-
-- 15-bit words (MSB discarded in hardware)
-- Address indicates which background sprite is currently targeted in reading order  
-  e.g. $\textrm{addr} = c000_{\textrm{hex}} + x + y*w$ where $x$ and $y$ are the background tile, and $w$ is the amount of horizontal tiles fit on the background layer (40)
+- Each sprite takes up 768 bits spread across 52 15-bit words (with one
+  discarded padding bit per word)
+- Pixel index order is from top-left to bottom-right in (English) reading
+  order.
+- Bits `14 downto 3` of the byte with the highest address for a given tile are
+  not used
+- To calculate TMM address $a$ for any given pixel $p$ of tile with index $t$,
+  compute $a=52*t+\left\lfloor\frac{p}{5}\right\rfloor$
 
 Word format:
 
 |Range (VHDL)|Description|
 |-|-|
-|`15`|Flip horizontally|
-|`14`|Flip vertically|
-|`13`|(unused)|
+|`15`|(discarded)|
+|`14 downto 12`|pixel $n+4$|
+|`11 downto 9`|pixel $n+3$|
+|`8 downto 6`|pixel $n+2$|
+|`5 downto 3`|pixel $n+1$|
+|`2 downto 0`|pixel $n+0$|
+
+
+[BAM]: #background-attribute-memory
+### Background attribute memory
+
+- 15-bit words (MSB discarded in hardware)
+- Address indicates which background sprite is currently targeted in reading
+  order  
+  e.g. $\textrm{addr} = c000_{\textrm{hex}} + x + y*w$ where $x$ and $y$
+  are the background tile, and $w$ is the amount of horizontal tiles fit on the
+  background layer (40)
+
+Word format:
+
+|Range (VHDL)|Description|
+|-|-|
+|`15`|(discarded)|
+|`14`|Flip horizontally|
+|`13`|Flip vertically|
 |`12 downto 10`|Palette index for tile|
 |`9 downto 0`|Tilemap index|
 

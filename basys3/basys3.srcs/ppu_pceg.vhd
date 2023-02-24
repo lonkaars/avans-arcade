@@ -3,18 +3,18 @@ use ieee.std_logic_1164.all;
 --use ieee.numeric_std.all;
 
 entity ppu_pceg is port(
-	CLK: in std_logic; -- system clock
-	RESET: in std_logic; -- async reset
-	SPRITE: out std_logic; -- sprite info fetch + sprite pixel fetch
-	COMP_PAL: out std_logic; -- compositor + palette lookup
-	DONE: out std_logic); -- last pipeline stage done
+	CLK : in std_logic; -- system clock
+	RESET : in std_logic; -- async reset
+	SPRITE : out std_logic; -- sprite info fetch + sprite pixel fetch
+	COMP_PAL : out std_logic; -- compositor + palette lookup
+	DONE : out std_logic); -- last pipeline stage done
 end ppu_pceg;
 
 architecture Behavioral of ppu_pceg is
-	constant PPU_PL_TOTAL_STAGES: natural := 14;
+	constant PPU_PL_TOTAL_STAGES : natural := 14;
 
 	type states is (PL_SPRITE, PL_COMP_PAL, PL_DONE);
-	signal state: states := PL_SPRITE;
+	signal state : states := PL_SPRITE;
 begin
 	-- output drivers
 	SPRITE <= CLK when RESET = '0' and state = PL_SPRITE else '0';
@@ -22,7 +22,7 @@ begin
 	DONE <= '1' when RESET = '0' and state = PL_DONE else '0';
 
 	process(CLK, RESET)
-		variable CLK_IDX: natural range 0 to PPU_PL_TOTAL_STAGES+1 := 0;
+		variable CLK_IDX : natural range 0 to PPU_PL_TOTAL_STAGES+1 := 0;
 	begin
 		if RESET = '1' then
 			state <= PL_SPRITE;
