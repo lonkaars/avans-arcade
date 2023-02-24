@@ -13,7 +13,6 @@ SHARED_FLAGS += -I./lib/STM32-base-STM32Cube/CMSIS/STM32F0xx/inc
 SHARED_FLAGS += -I./lib/STM32-base/startup
 SHARED_FLAGS += -I./lib/FreeRTOS-Kernel/include
 SHARED_FLAGS += -I./lib/FreeRTOS-Kernel/portable/GCC/ARM_CM0/
-SHARED_FLAGS += -I.
 SHARED_FLAGS += -I./stm32
 ifeq ($(HOST),GNU/Linux)
 SHARED_FLAGS += -I/usr/arm-none-eabi/include/

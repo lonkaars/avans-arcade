@@ -3,5 +3,5 @@ LD := gcc
 
 LFLAGS += -lSDL2
 
-DESKTOP_SRCS += ppusim/main.c
+DESKTOP_SRCS += ppusim/sim.c
 

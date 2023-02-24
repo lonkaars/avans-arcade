@@ -19,6 +19,7 @@ HOST=$(strip $(shell uname -o))
 SHARED_FLAGS += -g
 SHARED_FLAGS += -Wall
 SHARED_FLAGS += -Wextra
+SHARED_FLAGS += -I.
 # SHARED_FLAGS += -O1
 LFLAGS += -lm
 # LFLAGS += -lc

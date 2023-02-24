@@ -3,20 +3,26 @@
 #include <math.h>
 #include <SDL2/SDL.h>
 
-#define UPSCALE_FACTOR 3
-#define WIN_HEIGHT 240
-#define WIN_WIDTH 320
-#define FPS 60
+#include "ppu/ppu.h"
+#include "ppusim/sim.h"
+
+SDL_Window *g_hh_window = NULL;
+SDL_Renderer *g_hh_renderer = NULL;
 
 static void pixel(SDL_Renderer* r, unsigned px, unsigned py, unsigned cr, unsigned cg, unsigned cb) {
-		SDL_SetRenderDrawColor(r, cr, cg, cb, 255);
-		SDL_RenderFillRect(r, &(SDL_Rect) {.x = px * UPSCALE_FACTOR, .y = py * UPSCALE_FACTOR, .w = UPSCALE_FACTOR, .h = UPSCALE_FACTOR});
+	SDL_SetRenderDrawColor(r, cr, cg, cb, 255);
+	SDL_RenderFillRect(r, &(SDL_Rect) {
+		.x = px * HH_PPUSIM_UPSCALE_FACTOR,
+		.y = py * HH_PPUSIM_UPSCALE_FACTOR,
+		.w = HH_PPUSIM_UPSCALE_FACTOR,
+		.h = HH_PPUSIM_UPSCALE_FACTOR
+	});
 }
 
-int main() {
+void hh_ppu_init() {
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
-	SDL_Window *window = SDL_CreateWindow("sdl2 test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIN_WIDTH * UPSCALE_FACTOR, WIN_HEIGHT * UPSCALE_FACTOR, SDL_WINDOW_SHOWN);
-	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	g_hh_window = SDL_CreateWindow("ppusim", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, HH_PPU_SCREEN_WIDTH * HH_PPUSIM_UPSCALE_FACTOR, HH_PPU_SCREEN_HEIGHT * HH_PPUSIM_UPSCALE_FACTOR, SDL_WINDOW_SHOWN);
+	g_hh_renderer = SDL_CreateRenderer(g_hh_window, -1, SDL_RENDERER_ACCELERATED);
 
 	SDL_Event e;
 	unsigned long frame = 0;
@@ -25,24 +31,25 @@ int main() {
 		frame++;
 		while (SDL_PollEvent(&e)) if (e.type == SDL_QUIT) exit(0);
 		
-		SDL_RenderClear(renderer);
+		SDL_RenderClear(g_hh_renderer);
 
-		for (unsigned i = 0; i < WIN_WIDTH; i++) {
-			for (unsigned j = 0; j < WIN_HEIGHT; j++) {
-				pixel(renderer, i, j, (unsigned)(sqrt(i * 20) + frame) % 255, (i * j + frame) % 255, (j * 20) % 255);
+		for (unsigned i = 0; i < HH_PPU_SCREEN_WIDTH; i++) {
+			for (unsigned j = 0; j < HH_PPU_SCREEN_HEIGHT; j++) {
+				pixel(g_hh_renderer, i, j, (unsigned)(sqrt(i * 20) + frame) % 255, (i * j + frame) % 255, (j * 20) % 255);
 			}
 		}
 
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-		SDL_RenderPresent(renderer);
+		SDL_SetRenderDrawColor(g_hh_renderer, 0, 0, 0, 255);
+		SDL_RenderPresent(g_hh_renderer);
 
 		uint32_t end = SDL_GetTicks();
-		int wait_for = 1000 / FPS - (end - start);
+		int wait_for = 1000 / HH_PPUSIM_FRAMERATE - (end - start);
 		if (wait_for > 0) SDL_Delay(wait_for);
 	}
+}
 
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
+void hh_ppu_deinit() {
+	SDL_DestroyRenderer(g_hh_renderer);
+	SDL_DestroyWindow(g_hh_window);
 	SDL_Quit();
-	return 0;
 }

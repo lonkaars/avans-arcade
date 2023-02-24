@@ -15,7 +15,7 @@ hh_s_ppu_loc_sprite* hh_debug_circle_sprite() {
 }
 
 int main() {
-	// hh_ppu_init();
+	hh_ppu_init();
 
 	// hh_ppu_update_aux((hh_s_ppu_loc_aux) {
 	// 	.bg_shift_x = 0,
@@ -29,11 +29,11 @@ int main() {
 	free(sprite);
 
 	while (1);
+
+	hh_ppu_deinit();
 }
 
 void hh_ppu_vblank_interrupt() {
 	static unsigned long frame = 0;
 	frame++;
-
-
 }
