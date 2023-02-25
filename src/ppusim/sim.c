@@ -7,7 +7,7 @@
 #include "ppu/ppu.h"
 #include "ppusim/mem.h"
 #include "ppusim/sim.h"
-#include "ppusim/pixel.h"
+#include "ppusim/work.h"
 
 SDL_Window *g_hh_window = NULL;
 SDL_Renderer *g_hh_renderer = NULL;
@@ -38,11 +38,7 @@ void hh_loop() {
 		hh_ppu_vblank_interrupt();
 
 		SDL_RenderClear(g_hh_renderer);
-
-		for (unsigned x = 0; x < HH_PPU_SCREEN_WIDTH; x++)
-			for (unsigned y = 0; y < HH_PPU_SCREEN_HEIGHT; y++)
-				hh_ppusim_pixel(g_hh_renderer, x, y);
-
+		hh_ppusim_draw_frame(g_hh_renderer);
 		SDL_SetRenderDrawColor(g_hh_renderer, 0, 0, 0, 255);
 		SDL_RenderPresent(g_hh_renderer);
 

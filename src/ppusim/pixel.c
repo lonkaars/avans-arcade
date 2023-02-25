@@ -1,20 +1,10 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 
+#include "ppusim/work.h"
 #include "ppu/internals.h"
 #include "ppusim/mem.h"
-#include "ppusim/sim.h"
 #include "ppu/consts.h"
-
-static void hh_ppusim_draw(SDL_Renderer* r, unsigned px, unsigned py, unsigned cr, unsigned cg, unsigned cb) {
-	SDL_SetRenderDrawColor(r, cr, cg, cb, 255);
-	SDL_RenderFillRect(r, &(SDL_Rect) {
-		.x = px * HH_PPUSIM_UPSCALE_FACTOR,
-		.y = py * HH_PPUSIM_UPSCALE_FACTOR,
-		.w = HH_PPUSIM_UPSCALE_FACTOR,
-		.h = HH_PPUSIM_UPSCALE_FACTOR
-	});
-}
 
 /* transform xy if tile is flipped */
 static uint16_t hh_ppusim_apply_transform(unsigned x, unsigned y, bool fliph, bool flipv) {
@@ -77,7 +67,7 @@ static uint8_t hh_ppusim_fg_pixel(unsigned x, unsigned y) {
 	return cidx;
 }
 
-void hh_ppusim_pixel(SDL_Renderer* r, unsigned x, unsigned y) {
+void hh_ppusim_pixel(uint8_t* s, unsigned x, unsigned y) {
 	uint8_t bg_cidx = hh_ppusim_bg_pixel(x, y);
 	uint8_t fg_cidx = hh_ppusim_fg_pixel(x, y);
 	uint8_t cidx = (fg_cidx & HH_MASK(3)) == 0 ? bg_cidx : fg_cidx;
@@ -87,6 +77,9 @@ void hh_ppusim_pixel(SDL_Renderer* r, unsigned x, unsigned y) {
 		HH_RESIZE(pal_rgb, 7, 4),
 		HH_RESIZE(pal_rgb, 3, 0)
 	};
-	hh_ppusim_draw(r, x, y, rgb[0] << 4, rgb[1] << 4, rgb[2] << 4);
+
+	s[0] = rgb[0] << 4;
+	s[1] = rgb[1] << 4;
+	s[2] = rgb[2] << 4;
 }
 

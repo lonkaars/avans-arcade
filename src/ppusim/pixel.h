@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL2/SDL.h>
+#include "ppusim/work.h"
 
-void hh_ppusim_pixel(SDL_Renderer*, unsigned x, unsigned y);
+void hh_ppusim_pixel(uint8_t* s, unsigned x, unsigned y);
 
