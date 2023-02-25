@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdbool.h>
-#include <math.h>
 #include <SDL2/SDL.h>
 
 #include "main.h"
@@ -17,11 +16,15 @@ void hh_ppu_init() {
 	g_hh_window = SDL_CreateWindow("ppusim", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, HH_PPU_SCREEN_WIDTH * HH_PPUSIM_UPSCALE_FACTOR, HH_PPU_SCREEN_HEIGHT * HH_PPUSIM_UPSCALE_FACTOR, SDL_WINDOW_SHOWN);
 	g_hh_renderer = SDL_CreateRenderer(g_hh_window, -1, SDL_RENDERER_ACCELERATED);
 
+	g_hh_ppusim_core_count = SDL_GetCPUCount();
+	g_hh_ppusim_threads = malloc(sizeof(pthread_t) * g_hh_ppusim_core_count);
+
 	g_hh_ppusim_vram = malloc(sizeof(hh_ppu_data_t) * 0xffff);
 	memset(g_hh_ppusim_vram, 0x0000, 0xffff);
 }
 
 void hh_ppu_deinit() {
+	free(g_hh_ppusim_threads);
 	free(g_hh_ppusim_vram);
 
 	SDL_DestroyRenderer(g_hh_renderer);

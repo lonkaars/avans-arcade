@@ -7,21 +7,23 @@
 #include "ppu/consts.h"
 #include "ppusim/pixel.h"
 
-pthread_t g_hh_ppusim_scanline_threads[HH_PPU_SCREEN_HEIGHT];
+pthread_t* g_hh_ppusim_threads;
+unsigned g_hh_ppusim_core_count;
 hh_s_ppusim_screen g_hh_ppusim_screen;
 
-void* hh_ppusim_draw_scanline(void* scanline_context) {
-	unsigned scanline = (unsigned long) scanline_context;
-	for (unsigned x = 0; x < HH_PPU_SCREEN_WIDTH; x++)
-		hh_ppusim_pixel(g_hh_ppusim_screen[scanline][x], x, scanline);
+void* hh_ppusim_draw_thread(void* arg) {
+	unsigned core = (unsigned long) arg;
+	for (unsigned y = core; y < HH_PPU_SCREEN_HEIGHT; y += g_hh_ppusim_core_count)
+		for (unsigned x = 0; x < HH_PPU_SCREEN_WIDTH; x++)
+			hh_ppusim_pixel(g_hh_ppusim_screen[y][x], x, y);
 	return NULL;
 }
 
 void hh_ppusim_draw_frame(SDL_Renderer* renderer) {
-	for (unsigned y = 0; y < HH_PPU_SCREEN_HEIGHT; y++)
-		pthread_create(&g_hh_ppusim_scanline_threads[y], NULL, hh_ppusim_draw_scanline, (void*)(unsigned long)y);
-	for (unsigned y = 0; y < HH_PPU_SCREEN_HEIGHT; y++)
-		pthread_join(g_hh_ppusim_scanline_threads[y], NULL);
+	for (unsigned core = 0; core < g_hh_ppusim_core_count; core++)
+		pthread_create(&g_hh_ppusim_threads[core], NULL, hh_ppusim_draw_thread, (void*)(unsigned long)core);
+	for (unsigned core = 0; core < g_hh_ppusim_core_count; core++)
+		pthread_join(g_hh_ppusim_threads[core], NULL);
 	
 	for (unsigned x = 0; x < HH_PPU_SCREEN_WIDTH; x++) {
 		for (unsigned y = 0; y < HH_PPU_SCREEN_HEIGHT; y++) {
