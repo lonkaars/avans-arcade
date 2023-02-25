@@ -4,9 +4,12 @@
 #include "ppu/internals.h"
 
 bool hh_ppu_vram_valid_address(hh_ppu_addr_t addr) {
-	#warning unimlemented 
-	(void) addr; // compiler bruh
-	return true;
+	if (addr >= HH_PPU_VRAM_TMM_OFFSET && addr <= HH_PPU_VRAM_TMM_OFFSET + HH_PPU_VRAM_TMM_SIZE) return true;
+	if (addr >= HH_PPU_VRAM_BAM_OFFSET && addr <= HH_PPU_VRAM_BAM_OFFSET + HH_PPU_VRAM_BAM_SIZE) return true;
+	if (addr >= HH_PPU_VRAM_FAM_OFFSET && addr <= HH_PPU_VRAM_FAM_OFFSET + HH_PPU_VRAM_FAM_SIZE) return true;
+	if (addr >= HH_PPU_VRAM_PAL_OFFSET && addr <= HH_PPU_VRAM_PAL_OFFSET + HH_PPU_VRAM_PAL_SIZE) return true;
+	if (addr >= HH_PPU_VRAM_AUX_OFFSET && addr <= HH_PPU_VRAM_AUX_OFFSET + HH_PPU_VRAM_AUX_SIZE) return true;
+	return false;
 }
 
 void hh_ppu_vram_write(hh_s_ppu_vram_data data) {

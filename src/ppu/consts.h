@@ -18,9 +18,9 @@
 #define HH_PPU_SCREEN_WIDTH 320
 /** @brief screen height in pixels */
 #define HH_PPU_SCREEN_HEIGHT 240
-/** @brief amount of horizontal backgorund tiles on background canvas */
+/** @brief amount of horizontal background tiles on background canvas */
 #define HH_PPU_BG_CANVAS_TILES_H 40
-/** @brief amount of vertical backgorund tiles on background canvas */
+/** @brief amount of vertical background tiles on background canvas */
 #define HH_PPU_BG_CANVAS_TILES_V 30
 
 #include "ppu/types.h"
