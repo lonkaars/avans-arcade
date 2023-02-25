@@ -5,6 +5,8 @@ TARGET = main
 # platform is ds (desktop) or stm (stm32)
 PLATFORM = ds
 
+HOST=$(strip $(shell uname -o))
+
 ifeq ($(PLATFORM),stm)
 STM = true
 include stm32.mk
@@ -13,8 +15,6 @@ ifeq ($(PLATFORM),ds)
 DESKTOP = true
 include ds.mk
 endif
-
-HOST=$(strip $(shell uname -o))
 
 SHARED_FLAGS += -g
 SHARED_FLAGS += -Wall
@@ -72,7 +72,7 @@ flash: $(TARGET).bin
 	$(CC) -c $(CFLAGS) $< -o $@
 
 $(TARGET): $(OBJS)
-	$(LD) $(LFLAGS) $^ -o $@
+	$(LD) $^ $(LFLAGS) -o $@
 
 compile_commands.json:
 	compiledb make -Bn
