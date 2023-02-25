@@ -39,7 +39,7 @@ static uint8_t hh_ppusim_bg_pixel(unsigned x, unsigned y) {
 	uint8_t cidx = 0;
 	uint16_t tile_pixel_idx = hh_ppusim_apply_transform(loc_x, loc_y, HH_RESIZE(bam, 14, 14), HH_RESIZE(bam, 13, 13));
 	uint16_t tile_idx = HH_RESIZE(bam, 9, 0);
-	hh_ppu_addr_t ttm_addr = tile_idx + tile_pixel_idx / 5;
+	hh_ppu_addr_t ttm_addr = tile_idx * HH_PPU_VRAM_TMM_SPRITE_SIZE + tile_pixel_idx / 5;
 	uint8_t word_bit_addr = (tile_pixel_idx % 5) * 3;
 	hh_ppu_data_t tmm = g_hh_ppusim_vram[HH_PPU_VRAM_TMM_OFFSET + ttm_addr];
 	cidx |= HH_RESIZE(bam, 12, 10) << 3;
@@ -47,13 +47,40 @@ static uint8_t hh_ppusim_bg_pixel(unsigned x, unsigned y) {
 	return cidx;
 }
 
+/* @brief get current fg pixel cidx */
+static uint8_t hh_ppusim_fg_pixel(unsigned x, unsigned y) {
+	x += 16;
+	y += 16;
+	uint8_t cidx = 0;
+	for (unsigned i = 0; i < HH_PPU_FG_SPRITE_COUNT; i++) {
+		unsigned fam_offset = i * HH_PPU_VRAM_FAM_ENTRY_SIZE;
+		hh_ppu_data_t* fam = &g_hh_ppusim_vram[HH_PPU_VRAM_FAM_OFFSET + fam_offset];
+		unsigned sprite_y = HH_RESIZE(fam[0], 15, 13) | HH_RESIZE(fam[1], 4, 0) << 3;
+		unsigned sprite_x = HH_RESIZE(fam[1], 13, 5);
+		if (x < sprite_x) continue;
+		if (x >= sprite_x + HH_PPU_SPRITE_WIDTH) continue;
+		if (y < sprite_y) continue;
+		if (y >= sprite_y + HH_PPU_SPRITE_HEIGHT) continue;
+		unsigned loc_x = x - sprite_x;
+		unsigned loc_y = y - sprite_y;
+		uint16_t tile_pixel_idx = hh_ppusim_apply_transform(loc_x, loc_y, HH_RESIZE(fam[1], 15, 15), HH_RESIZE(fam[1], 14, 14));
+		uint16_t tile_idx = HH_RESIZE(fam[0], 9, 0);
+		hh_ppu_addr_t ttm_addr = tile_idx * HH_PPU_VRAM_TMM_SPRITE_SIZE + tile_pixel_idx / 5;
+		uint8_t word_bit_addr = (tile_pixel_idx % 5) * 3;
+		hh_ppu_data_t tmm = g_hh_ppusim_vram[HH_PPU_VRAM_TMM_OFFSET + ttm_addr];
+		unsigned cidx_col = HH_RESIZE(tmm, word_bit_addr+2, word_bit_addr);
+		if (cidx_col == 0) continue;
+		unsigned cidx_pal = HH_RESIZE(fam[0], 12, 10);
+		cidx = (cidx_col << 0) | (cidx_pal << 3);
+		break;
+	}
+	return cidx;
+}
+
 void hh_ppusim_pixel(SDL_Renderer* r, unsigned x, unsigned y) {
-	// loop through foreground sprites to get highest priority cidx
 	uint8_t bg_cidx = hh_ppusim_bg_pixel(x, y);
-	// check if palette color cidx of foreground is 0
-	// lookup color from PAL
-	// hh_ppusim_draw
-	uint8_t cidx = bg_cidx;
+	uint8_t fg_cidx = hh_ppusim_fg_pixel(x, y);
+	uint8_t cidx = (fg_cidx & HH_MASK(3)) == 0 ? bg_cidx : fg_cidx;
 	hh_ppu_data_t pal_rgb = g_hh_ppusim_vram[HH_PPU_VRAM_PAL_OFFSET + cidx];
 	hh_ppu_rgb_color_t rgb = {
 		HH_RESIZE(pal_rgb, 11, 8),

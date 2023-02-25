@@ -18,7 +18,7 @@ void hh_ppu_update_background(unsigned index, hh_s_ppu_loc_bam_entry e) {
 	free(s.data);
 }
 
-void hh_ppu_update_sprite(unsigned tilemap_index, hh_s_ppu_loc_sprite sprite) {
+void hh_ppu_update_sprite(unsigned tilemap_index, const hh_s_ppu_loc_sprite sprite) {
 	hh_s_ppu_vram_data s = hh_ppu_2nat_sprite(sprite);
 	s.offset = HH_PPU_VRAM_TMM_OFFSET + HH_PPU_VRAM_TMM_SPRITE_SIZE * tilemap_index;
 	hh_ppu_vram_write(s);

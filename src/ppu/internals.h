@@ -25,6 +25,6 @@ void hh_ppu_vram_write(hh_s_ppu_vram_data data);
 hh_s_ppu_vram_data hh_ppu_2nat_bam(hh_s_ppu_loc_bam_entry);
 hh_s_ppu_vram_data hh_ppu_2nat_fam(hh_s_ppu_loc_fam_entry);
 hh_s_ppu_vram_data hh_ppu_2nat_aux(hh_s_ppu_loc_aux);
-hh_s_ppu_vram_data hh_ppu_2nat_sprite(hh_ppu_loc_sprite_data_t);
+hh_s_ppu_vram_data hh_ppu_2nat_sprite(const hh_ppu_loc_sprite_data_t);
 hh_s_ppu_vram_data hh_ppu_2nat_color(hh_ppu_rgb_color_t);
 

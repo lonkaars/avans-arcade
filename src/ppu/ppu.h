@@ -13,7 +13,7 @@ void hh_ppu_update_background(unsigned index, hh_s_ppu_loc_bam_entry e);
 /* @brief update aux register */
 void hh_ppu_update_aux(hh_s_ppu_loc_aux aux);
 /* @brief update single sprite */
-void hh_ppu_update_sprite(unsigned tilemap_index, hh_s_ppu_loc_sprite sprite);
+void hh_ppu_update_sprite(unsigned tilemap_index, const hh_s_ppu_loc_sprite sprite);
 /* @brief update entire palette table */
 void hh_ppu_update_palette_table(hh_ppu_loc_palette_table_t table);
 /* @brief update single palette */
