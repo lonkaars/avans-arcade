@@ -4,8 +4,7 @@ use ieee.std_logic_1164.all;
 --use ieee.numeric_std.all;
 use work.ppu_consts.all;
 
-entity ppu_addr_dec is port(
-	EN : in std_logic; -- EXT *ADDR enable (switch *AO to ADDR instead of *AI)
+entity ppu_addr_dec is port( -- address decoder
 	WEN : in std_logic; -- EXT write enable
 	TMM_WEN,
 	BAM_WEN,
@@ -13,27 +12,22 @@ entity ppu_addr_dec is port(
 	PAL_WEN,
 	AUX_WEN : out std_logic; -- write enable MUX
 	ADDR : in std_logic_vector(PPU_RAM_BUS_ADDR_WIDTH-1 downto 0); -- address in
-	TMM_AI : in std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
-	BAM_AI : in std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
-	FAM_AI : in std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
-	PAL_AI : in std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0);
-	AUX_AI : in std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0);
-	TMM_AO : out std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
-	BAM_AO : out std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
-	FAM_AO : out std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
-	PAL_AO : out std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0);
-	AUX_AO : out std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0));
+	TMM_ADDR : out std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
+	BAM_ADDR : out std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
+	FAM_ADDR : out std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
+	PAL_ADDR : out std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0);
+	AUX_ADDR : out std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0));
 end ppu_addr_dec;
 
 architecture Behavioral of ppu_addr_dec is
 	signal TMM_RANGE, BAM_RANGE, FAM_RANGE, PAL_RANGE, AUX_RANGE : std_logic := '0'; -- ADDR in range of memory area
 begin
 	-- address MUX
-	TMM_AO <= ADDR(PPU_TMM_ADDR_WIDTH-1 downto 0) when EN = '1' else TMM_AI;
-	BAM_AO <= ADDR(PPU_BAM_ADDR_WIDTH-1 downto 0) when EN = '1' else BAM_AI;
-	FAM_AO <= ADDR(PPU_FAM_ADDR_WIDTH-1 downto 0) when EN = '1' else FAM_AI;
-	PAL_AO <= ADDR(PPU_PAL_ADDR_WIDTH-1 downto 0) when EN = '1' else PAL_AI;
-	AUX_AO <= ADDR(PPU_AUX_ADDR_WIDTH-1 downto 0) when EN = '1' else AUX_AI;
+	TMM_ADDR <= ADDR(PPU_TMM_ADDR_WIDTH-1 downto 0);
+	BAM_ADDR <= ADDR(PPU_BAM_ADDR_WIDTH-1 downto 0);
+	FAM_ADDR <= ADDR(PPU_FAM_ADDR_WIDTH-1 downto 0);
+	PAL_ADDR <= ADDR(PPU_PAL_ADDR_WIDTH-1 downto 0);
+	AUX_ADDR <= ADDR(PPU_AUX_ADDR_WIDTH-1 downto 0);
 
 	-- WEN MUX
 	TMM_WEN <= TMM_RANGE and WEN;

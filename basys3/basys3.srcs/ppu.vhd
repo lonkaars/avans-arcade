@@ -8,7 +8,6 @@ use work.ppu_consts.all;
 entity ppu is port(
 	CLK100 : in std_logic; -- system clock
 	RESET : in std_logic; -- global (async) system reset
-	EN : in std_logic; -- PPU VRAM enable (enable ADDR and DATA tri-state drivers)
 	WEN : in std_logic; -- PPU VRAM write enable
 	ADDR : in std_logic_vector(PPU_RAM_BUS_ADDR_WIDTH-1 downto 0); -- PPU VRAM ADDR
 	DATA : in std_logic_vector(PPU_RAM_BUS_DATA_WIDTH-1 downto 0);
@@ -26,43 +25,43 @@ architecture Behavioral of ppu is
 		COMP_PAL : out std_logic; -- compositor + palette lookup
 		DONE : out std_logic); -- last pipeline stage done
 	end component;
-	component ppu_addr_dec port( -- pipeline clock edge generator
+	component ppu_addr_dec port( -- address decoder
 		WEN : in std_logic; -- EXT write enable
 		TMM_WEN,
 		BAM_WEN,
 		FAM_WEN,
 		PAL_WEN,
 		AUX_WEN : out std_logic; -- write enable MUX
-		EN : in std_logic; -- EXT *ADDR enable (switch *AO to ADDR instead of *AI)
 		ADDR : in std_logic_vector(PPU_RAM_BUS_ADDR_WIDTH-1 downto 0); -- address in
-		TMM_AI : in std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
-		BAM_AI : in std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
-		FAM_AI : in std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
-		PAL_AI : in std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0);
-		AUX_AI : in std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0);
-		TMM_AO : out std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
-		BAM_AO : out std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
-		FAM_AO : out std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
-		PAL_AO : out std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0);
-		AUX_AO : out std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0));
+		TMM_ADDR : out std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
+		BAM_ADDR : out std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
+		FAM_ADDR : out std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
+		PAL_ADDR : out std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0);
+		AUX_ADDR : out std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0));
 	end component;
 	component ppu_bam port( -- BAM block memory
 		clka : in std_logic;
-		rsta : in std_logic;
-		wea : in std_logic_vector(0 downto 0);
+		wea : in std_logic_vector(0 to 0);
 		addra : in std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
 		dina : in std_logic_vector(PPU_BAM_DATA_WIDTH-1 downto 0);
-		douta : out std_logic_vector(PPU_BAM_DATA_WIDTH-1 downto 0);
-		rsta_busy : out std_logic);
+		clkb : in std_logic;
+		rstb : in std_logic;
+		addrb : in std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
+		doutb : out std_logic_vector(PPU_BAM_DATA_WIDTH-1 downto 0);
+		rsta_busy : out std_logic;
+		rstb_busy : out std_logic);
 	end component;
 	component ppu_tmm port( -- TMM block memory
 		clka : in std_logic;
-		rsta : in std_logic;
-		wea : in std_logic_vector(0 downto 0);
+		wea : in std_logic_vector(0 to 0);
 		addra : in std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
 		dina : in std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0);
-		douta : out std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0);
-		rsta_busy : out std_logic);
+		clkb : in std_logic;
+		rstb : in std_logic;
+		addrb : in std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
+		doutb : out std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0);
+		rsta_busy : out std_logic;
+		rstb_busy : out std_logic);
 	end component;
 	component ppu_aux port(
 		CLK : in std_logic; -- system clock
@@ -169,16 +168,13 @@ architecture Behavioral of ppu is
 	signal SYSCLK, SYSRST : std_logic; -- system clock and reset
 	signal PL_SPRITE, PL_COMP_PAL, PL_DONE : std_logic; -- pipeline stages
 	signal TMM_WEN, BAM_WEN, FAM_WEN, PAL_WEN, AUX_WEN : std_logic;
-	signal TMM_AI, TMM_AO : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
-	signal BAM_AI, BAM_AO : std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
-	signal FAM_AI, FAM_AO : std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0);
-	signal PAL_AI, PAL_AO : std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0);
-	signal AUX_AI, AUX_AO : std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0);
-	signal TMM_DO : std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0);
-	signal BAM_DO : std_logic_vector(PPU_BAM_DATA_WIDTH-1 downto 0);
-	signal FAM_DO : std_logic_vector(PPU_FAM_DATA_WIDTH-1 downto 0);
-	signal PAL_DO : std_logic_vector(PPU_PAL_DATA_WIDTH-1 downto 0);
-	signal AUX_DO : std_logic_vector(PPU_AUX_DATA_WIDTH-1 downto 0);
+	signal TMM_W_ADDR, TMM_R_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0); -- read/write TMM addr (dual port)
+	signal BAM_W_ADDR, BAM_R_ADDR : std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0); -- read/write BAM addr (dual port)
+	signal TMM_R_DATA : std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0); -- internal read TMM data
+	signal BAM_R_DATA : std_logic_vector(PPU_BAM_DATA_WIDTH-1 downto 0); -- internal read BAM data
+	signal FAM_W_ADDR : std_logic_vector(PPU_FAM_ADDR_WIDTH-1 downto 0); -- write only FAM addr
+	signal PAL_W_ADDR : std_logic_vector(PPU_PAL_ADDR_WIDTH-1 downto 0); -- write only PAL addr
+	signal AUX_W_ADDR : std_logic_vector(PPU_AUX_ADDR_WIDTH-1 downto 0); -- write only AUX addr
 	signal CIDX : std_logic_vector(PPU_PALETTE_CIDX_WIDTH-1 downto 0);
 	signal BG_EN : std_logic;
 	signal FG_EN, FG_HIT : std_logic_vector(PPU_FG_SPRITE_COUNT-1 downto 0);
@@ -195,15 +191,6 @@ begin
 	SYSCLK <= CLK100;
 	SYSRST <= RESET;
 
-	-- internal unused lines
-	--
-	-- these lines would be used if components use memory blocks as RAM blocks
-	-- (like how TMM and BAM work), the registers of these memory regions are
-	-- directly exposed internally, and are as such not used as RAM blocks
-	AUX_AI <= (others => '0');
-	FAM_AI <= (others => '0');
-	PAL_AI <= (others => '0');
-
 	TVBLANK <= TINY_VBLANK;
 	TVSYNC <= TINY_VSYNC;
 	THBLANK <= TINY_HBLANK;
@@ -219,19 +206,13 @@ begin
 		DONE => PL_DONE);
 
 	address_decoder : component ppu_addr_dec port map(
-		EN => EN,
 		WEN => WEN,
 		ADDR => ADDR,
-		TMM_AI => TMM_AI,
-		BAM_AI => BAM_AI,
-		FAM_AI => FAM_AI,
-		PAL_AI => PAL_AI,
-		AUX_AI => AUX_AI,
-		TMM_AO => TMM_AO,
-		BAM_AO => BAM_AO,
-		FAM_AO => FAM_AO,
-		PAL_AO => PAL_AO,
-		AUX_AO => AUX_AO,
+		TMM_ADDR => TMM_W_ADDR,
+		BAM_ADDR => BAM_W_ADDR,
+		FAM_ADDR => FAM_W_ADDR,
+		PAL_ADDR => PAL_W_ADDR,
+		AUX_ADDR => AUX_W_ADDR,
 		TMM_WEN => TMM_WEN,
 		BAM_WEN => BAM_WEN,
 		FAM_WEN => FAM_WEN,
@@ -240,26 +221,32 @@ begin
 
 	background_attribute_memory : component ppu_bam port map(
 		clka => SYSCLK,
-		rsta => SYSRST,
 		wea => (others => BAM_WEN),
-		addra => BAM_AO,
+		addra => BAM_W_ADDR,
 		dina => DATA(PPU_BAM_DATA_WIDTH-1 downto 0),
-		douta => BAM_DO,
-		rsta_busy => open);
+		clkb => SYSCLK,
+		rstb => SYSRST,
+		addrb => BAM_R_ADDR,
+		doutb => BAM_R_DATA,
+		rsta_busy => open,
+		rstb_busy => open);
 	tilemap_memory : component ppu_tmm port map(
 		clka => SYSCLK,
-		rsta => SYSRST,
 		wea => (others => TMM_WEN),
-		addra => TMM_AO,
+		addra => TMM_W_ADDR,
 		dina => DATA(PPU_TMM_DATA_WIDTH-1 downto 0),
-		douta => TMM_DO,
-		rsta_busy => open);
+		clkb => SYSCLK,
+		rstb => SYSRST,
+		addrb => TMM_R_ADDR,
+		doutb => TMM_R_DATA,
+		rsta_busy => open,
+		rstb_busy => open);
 
 	aux : component ppu_aux port map(
 		CLK => SYSCLK,
 		RESET => SYSRST,
 		AUX_WEN => AUX_WEN,
-		AUX_ADDR => AUX_AO,
+		AUX_ADDR => AUX_W_ADDR,
 		AUX_DATA => DATA(PPU_AUX_DATA_WIDTH-1 downto 0),
 		BG_SHIFT_X => BG_SHIFT_X,
 		BG_SHIFT_Y => BG_SHIFT_Y,
@@ -273,10 +260,10 @@ begin
 		Y => Y,
 		BG_SHIFT_X => BG_SHIFT_X,
 		BG_SHIFT_Y => BG_SHIFT_Y,
-		BAM_ADDR => BAM_AI,
-		BAM_DATA => BAM_DO,
-		TMM_ADDR => TMM_AI,
-		TMM_DATA => TMM_DO,
+		BAM_ADDR => BAM_R_ADDR,
+		BAM_DATA => BAM_R_DATA,
+		TMM_ADDR => TMM_R_ADDR,
+		TMM_DATA => TMM_R_DATA,
 		CIDX => CIDX);
 
 	foreground_sprites : for FG_IDX in 0 to PPU_FG_SPRITE_COUNT-1 generate
@@ -291,10 +278,10 @@ begin
 				FETCH => FG_FETCH,
 				VBLANK => TINY_VBLANK,
 				FAM_WEN => FAM_WEN,
-				FAM_ADDR => FAM_AO,
+				FAM_ADDR => FAM_W_ADDR,
 				FAM_DATA => DATA(PPU_FAM_DATA_WIDTH-1 downto 0),
-				TMM_ADDR => TMM_AI,
-				TMM_DATA => TMM_DO,
+				TMM_ADDR => TMM_R_ADDR,
+				TMM_DATA => TMM_R_DATA,
 				CIDX => CIDX,
 				HIT => FG_HIT(FG_IDX));
 	end generate;
@@ -309,7 +296,7 @@ begin
 		CIDX => CIDX,
 		RESET => SYSRST,
 		PAL_WEN => PAL_WEN,
-		PAL_ADDR => PAL_AO,
+		PAL_ADDR => PAL_W_ADDR,
 		PAL_DATA => DATA(PPU_PAL_DATA_WIDTH-1 downto 0),
 		R => UR,
 		G => UG,
