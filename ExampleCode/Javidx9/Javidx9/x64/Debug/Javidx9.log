@@ -1,0 +1,45 @@
+﻿  OneLoneCoder_PlatformGame1.cpp
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\olcConsoleGameEngine.h(767,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\olcConsoleGameEngine.h(1107,1): warning C4267: 'return': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\olcConsoleGameEngine.h(1204,1): warning C4312: 'type cast': conversion from 'DWORD' to 'olcConsoleGameEngine *' of greater size
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(222,51): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(222,31): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(222,113): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(222,93): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(224,42): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(230,51): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(230,31): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(230,113): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(230,93): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(232,27): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(241,39): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(241,31): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(241,97): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(241,89): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(243,42): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(249,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(249,31): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(249,119): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(249,96): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(251,27): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(279,71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(280,73): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(291,47): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(291,33): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(295,133): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(295,95): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(295,58): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(295,26): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(298,133): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(298,95): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(298,58): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(298,26): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(315,133): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(315,95): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(315,58): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(315,26): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(322,164): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(322,118): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(322,72): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Bjorn\Documents\TestCodes\Javidx9\Javidx9\OneLoneCoder_PlatformGame1.cpp(322,33): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Javidx9.vcxproj -> C:\Users\Bjorn\Documents\TestCodes\Javidx9\x64\Debug\Javidx9.exe
