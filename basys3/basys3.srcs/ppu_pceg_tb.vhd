@@ -13,22 +13,22 @@ architecture behavioral of ppu_pceg_tb is
 		CLK : in std_logic; -- system clock
 		RESET : in std_logic; -- async reset
 		SPRITE : out std_logic; -- sprite info fetch + sprite pixel fetch
-		COMP_PAL : out std_logic; -- compositor + palette lookup
-		DONE : out std_logic); -- last pipeline stage done
+		DONE : out std_logic; -- last pipeline stage done
+		READY : out std_logic); -- rgb buffer propagation ready
 	end component;
 	signal CLK : std_logic := '0';
 	signal RESET : std_logic := '0';
 	signal SPRITE : std_logic;
-	signal COMP_PAL : std_logic;
 	signal DONE : std_logic;
+	signal READY : std_logic;
 
 begin
 	uut : ppu_pceg port map(
 		CLK => CLK,
 		RESET => RESET,
 		SPRITE => SPRITE,
-		COMP_PAL => COMP_PAL,
-		DONE => DONE);
+		DONE => DONE,
+		READY => READY);
 
 	tb : process
 	begin

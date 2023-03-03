@@ -68,6 +68,7 @@ Here's a list of features our PPU has:
 - 640x480 background canvas with scrolling
 - NO background scrolling splits
 - 128 total sprites on screen (NO scanline sprite limit)
+  - the first 16 foreground sprites have accurate background occlusion
 - sprites are always drawn on top of the background layer
 - PPU control using DMA (dual-port asynchronous RAM)
 - tiles can be flipped using FAM or BAM
@@ -82,7 +83,9 @@ Notable differences:
   
   Since we're using VGA, we can't use custom resolutions without an
   upscaler/downscaler. This resolution was chosen because it's exactly half of
-  the lowest standard VGA resolution 640x480.
+  the lowest standard VGA resolution 640x480. The native resolution can't be
+  used due to the pipelined pixel fetch logic, which needs at least 5 clock
+  cycles to produce a stable color output.
 - No scanline sprite limit  
   
   Unless not imposing any sprite limit makes the hardware implementation
@@ -98,24 +101,24 @@ Notable differences:
 - Single 1024 sprite tilemap shared between foreground and background sprites
   
   The NES OAM registers contain a bit to select which tilemap to use (of two),
-  which effectively expands each tile's index address by one byte. Instead of
+  which effectively expands each tile's index address by one bit. Instead of
   creating the illusion of two separate memory areas for tiles, having one
-  large tilemap seems like a more sensible solution to indexed tiles.
+  large tilemap seems like a more sensible solution.
 - 8 total palettes, with 8 colors each
   
-  More colors is better. Increasing the total palette count is a very memory
-  intensive operation, while increasing the palette color count is likely slower
+  More colors is better. Increasing the palette color count is a very memory
+  intensive operation, while increasing the total amount of palettes is slower
   when looking up color values for each pixel on real hardware.
 - Sprites can be positioned partially off-screen on all screen edges using only
   the offset bits in the FAM register
   
   The NES has a separate PPUMASK register to control special color effects, and
   to shift sprites off the left and top screen edges, as the sprite offsets
-  count from 0. Our PPU's FAM sprite offset bits count from -15, so the sprite
+  count from 0. Our PPU's FAM sprite offset bits count from -16, so the sprite
   can shift past the top and left screen edges, as well as the standard bottom
   and right edges.
-- No status line register, only V-sync and H-sync outputs are supplied back to
-  CPU
+- No status line register, only vertical and horizontal blanking/sync outputs
+  are supplied back to CPU
   
   The NES status line register contains some handy lines, such as a buggy
   status line for reaching the max sprite count per scanline, and a status line
@@ -126,7 +129,7 @@ Notable differences:
 - No background scrolling splits
   
   This feature allows only part of the background canvas to be scrolled, while
-  another portion stays still. This was used to draw HUD elements on the
+  another portion remains still. This was used to draw HUD elements on the
   background layer for displaying things like health bars or score counters.
   Since we are working with a higher foreground sprite limit, we'll use regular
   foreground sprites to display HUD elements.
@@ -197,6 +200,7 @@ Important notes:
   the RAM in it's own cache memory. The cache updates are fetched during the
   VBLANK time between each frame.
 
+<!-- inaccurate and no longer needed
 ### Level 3
 
 This diagram has several flaws, but a significant amount of time has already
@@ -227,6 +231,24 @@ Important notes:
   CIDX signal based on the EN signal from the compositor.
 - All DATA and ADDR lines are shared between all RAM ports. WEN inputs are
   controlled by the address decoder.
+-->
+
+## Pipeline stage reference
+
+This table describes which components use which lines during pipeline stages
+1-5. The pipeline stages happen for every pixel, and is run on the system clock
+(100 MHz).
+
+|Stage|Component|Action|To|Type|
+|-|-|-|-|-|
+|1|`ppu_sprite_bg`|write|BAM address|bus|
+|2|`ppu_sprite_bg`|read|BAM data|bus|
+|2|`ppu_sprite_fg`|write|TMM address|bus|
+|3|`ppu_sprite_bg`|write|TMM address|bus|
+|3|`ppu_sprite_fg`|read|TMM data|bus|
+|4|`ppu_sprite_bg`|read|TMM data|bus|
+|5|`ppu_pceg`|write|pixel done|flag|
+|6|`ppu_pceg`|write|pixel ready|flag|
 
 ## Registers
 
@@ -258,7 +280,7 @@ there is no address validity checking.
   discarded padding bit per word)
 - Pixel index order is from top-left to bottom-right in (English) reading
   order.
-- Bits `14 downto 3` of the byte with the highest address for a given tile are
+- Bits `14 downto 3` of the word with the highest address for a given tile are
   not used
 - To calculate TMM address $a$ for any given pixel $p$ of tile with index $t$,
   compute $a=52*t+\left\lfloor\frac{p}{5}\right\rfloor$

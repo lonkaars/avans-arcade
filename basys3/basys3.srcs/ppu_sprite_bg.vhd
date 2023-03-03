@@ -11,6 +11,7 @@ entity ppu_sprite_bg is port(
 	-- inputs
 	CLK : in std_logic; -- pipeline clock
 	RESET : in std_logic; -- reset clock counter
+	PL_RESET : in std_logic; -- reset pipeline clock counters
 	OE : in std_logic; -- output enable (of CIDX)
 	X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 	Y : in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
@@ -108,16 +109,18 @@ begin
 		                    (others => '0') when others;
 
 	-- state machine (pipeline stage counter) + sync r/w
-	process(CLK, RESET)
+	process(CLK, RESET, PL_RESET)
 	begin
-		if RESET = '1' then
+		if RESET = '1' or PL_RESET = '1' then
 			-- reset state
 			state <= PL_BAM_ADDR;
-			-- reset internal pipeline registers
-			R_BAM_ADDR <= (others => '0');
-			R_BAM_DATA <= (others => '0');
-			R_TMM_ADDR <= (others => '0');
-			R_TMM_DATA <= (others => '0');
+			if RESET = '1' then
+				-- reset internal pipeline registers
+				R_BAM_ADDR <= (others => '0');
+				R_BAM_DATA <= (others => '0');
+				R_TMM_ADDR <= (others => '0');
+				R_TMM_DATA <= (others => '0');
+			end if;
 		elsif rising_edge(CLK) then
 			case state is
 				when PL_BAM_ADDR =>

@@ -14,6 +14,7 @@ entity ppu_sprite_fg is -- foreground sprite
 		-- inputs
 		CLK : in std_logic; -- system clock
 		RESET : in std_logic; -- reset internal memory and clock counters
+		PL_RESET : in std_logic; -- reset pipeline clock counters
 		OE : in std_logic; -- output enable (of CIDX)
 		X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 		Y : in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
@@ -80,18 +81,7 @@ architecture Behavioral of ppu_sprite_fg is
 	signal TRANS_TILE_PIXEL_IDX : integer := 0; -- index of pixel within tile (reading order)
 	signal TILEMAP_WORD_OFFSET : integer := 0; -- word offset from tile start address in TMM
 	signal TMM_DATA_PAL_IDX : std_logic_vector(PPU_PALETTE_COLOR_WIDTH-1 downto 0); -- color of palette
-
-	-- TMM cache lines
-	signal TMM_CACHE_WEN, TMM_CACHE_UPDATE_TURN : std_logic := '0';
-	signal TMM_CACHE_DATA : std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0) := (others => '0');
-	signal TMM_CACHE_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0) := (others => '0');
-	signal TMM_CACHE : std_logic_vector((PPU_SPRITE_WORD_COUNT * PPU_TMM_DATA_WIDTH)-1 downto 0);
 begin
-	-- output drivers
-	CIDX <= T_CIDX when OE = '1' else (others => 'Z');
-	-- CIDX combination
-	T_CIDX <= FAM_REG_COL_IDX & TMM_DATA_PAL_IDX;
-
 	-- FAM memory
 	FAM : component er_ram
 		generic map(
@@ -107,11 +97,18 @@ begin
 			DATA => FAM_DATA,
 			REG => INT_FAM);
 
+	-- output drivers
+	CIDX <= T_CIDX when OE = '1' else (others => 'Z');
+	-- CIDX combination
+	T_CIDX <= FAM_REG_COL_IDX & TMM_DATA_PAL_IDX;
+
+	T_TMM_DATA <= TMM_DATA;
+
 	-- pixel position within bounding box of sprite
 	SPRITE_ACTIVE <= '1' when ((unsigned(X) + 16) >= unsigned(FAM_REG_POS_H)) and
-	                          ((unsigned(X) + 16) < (unsigned(FAM_REG_POS_H) + to_unsigned(PPU_SPRITE_WIDTH, PPU_POS_H_WIDTH))) and
-	                          ((unsigned(Y) + 16) >= unsigned(FAM_REG_POS_V)) and
-	                          ((unsigned(Y) + 16) < (unsigned(FAM_REG_POS_V) + to_unsigned(PPU_SPRITE_HEIGHT, PPU_POS_V_WIDTH))) else '0';
+														((unsigned(X) + 16) < (unsigned(FAM_REG_POS_H) + to_unsigned(PPU_SPRITE_WIDTH, PPU_POS_H_WIDTH))) and
+														((unsigned(Y) + 16) >= unsigned(FAM_REG_POS_V)) and
+														((unsigned(Y) + 16) < (unsigned(FAM_REG_POS_V) + to_unsigned(PPU_SPRITE_HEIGHT, PPU_POS_V_WIDTH))) else '0';
 
 	-- (sprite local) pixel coords
 	TILE_PIDX_X <= resize(unsigned(X) + 16 - resize(unsigned(FAM_REG_POS_H), TILE_PIDX_X'length), TILE_PIDX_X'length);
@@ -128,65 +125,80 @@ begin
 
 	-- pixel index
 	TRANS_TILE_PIXEL_IDX <= integer(PPU_SPRITE_WIDTH) * to_integer(TRANS_TILE_PIDX_Y) + to_integer(TRANS_TILE_PIDX_X);
-	-- palette color at pixel
-	TMM_DATA_PAL_IDX <= TMM_CACHE(TRANS_TILE_PIXEL_IDX * integer(PPU_PALETTE_COLOR_WIDTH) + integer(PPU_PALETTE_COLOR_WIDTH)-1 downto TRANS_TILE_PIXEL_IDX * integer(PPU_PALETTE_COLOR_WIDTH));
 	-- if pixel in sprite hitbox and TMM_DATA_PAL_IDX > 0
 	HIT <= SPRITE_ACTIVE and (nor TMM_DATA_PAL_IDX);
 
-	-- FETCH LOGIC BELOW
-	TMM_ADDR <= T_TMM_ADDR when TMM_CACHE_UPDATE_TURN else (others => 'Z');
-	T_TMM_DATA <= TMM_DATA;
-
-	-- TTM cache
-	ttm_cache : component er_ram
-		generic map(
-			ADDR_W => PPU_TMM_ADDR_WIDTH,
-			DATA_W => PPU_TMM_DATA_WIDTH,
-			ADDR_LOW => 0,
-			ADDR_RANGE => PPU_SPRITE_WORD_COUNT)
-		port map(
-			CLK => CLK,
-			RST => RESET,
-			WEN => TMM_CACHE_WEN,
-			ADDR => TMM_CACHE_ADDR,
-			DATA => TMM_CACHE_DATA,
-			REG => TMM_CACHE);
-
-	-- fetch machine, should do the following (offset data read by one clock -> propagation/lookup delay):
-	-- CLK[53 * IDX + 0] (addr = 0)
-	-- CLK[53 * IDX + 1] (addr = 1, read data[0])
-	-- CLK[53 * IDX + 2] (addr = 2, read data[1]), etc
-	-- a full tile is 52 words, but since the offset is 1 clock, a total copy takes 53 clock cycles
-	process(CLK, RESET, FETCH)
-		constant TMM_FETCH_CLK_RANGE_BEGIN : natural := PPU_TMM_CACHE_FETCH_C_COUNT * IDX; -- fetch CLK count for copying this module's sprite from TMM
-		variable TMM_FETCH_CTR : unsigned(PPU_TMM_CACHE_FETCH_A_WIDTH-1 downto 0) := (others => '0'); -- CLK counter while FETCH=1
-		variable TMM_FETCH_CTR_REL : unsigned(PPU_TMM_CACHE_FETCH_A_WIDTH-1 downto 0) := (others => '0'); -- CLK counter relative for sprite[IDX]
+	inaccurate_occlusion_shims: if IDX >= PPU_ACCURATE_FG_SPRITE_COUNT generate
 	begin
-		if RESET = '1' or FETCH = '0' then
-			TMM_FETCH_CTR := (others => '0');
-			TMM_FETCH_CTR_REL := (others => '0');
-			TMM_CACHE_WEN <= '0';
-			TMM_CACHE_UPDATE_TURN <= '0';
-		elsif rising_edge(CLK) then
-			TMM_FETCH_CTR := TMM_FETCH_CTR + 1;
-			TMM_FETCH_CTR_REL := TMM_FETCH_CTR - TMM_FETCH_CLK_RANGE_BEGIN;
+		-- palette color at pixel
+		TMM_DATA_PAL_IDX <= (others => '0');
 
-			if TMM_FETCH_CTR >= TMM_FETCH_CLK_RANGE_BEGIN and
-			   TMM_FETCH_CTR < (TMM_FETCH_CLK_RANGE_BEGIN + PPU_TMM_CACHE_FETCH_C_COUNT) then
-				TMM_CACHE_UPDATE_TURN <= '1';
-				if TMM_FETCH_CTR_REL < PPU_TMM_CACHE_FETCH_C_COUNT - 1 then -- calculate address until second to last clock
-					T_TMM_ADDR <= std_logic_vector(resize(TMM_FETCH_CTR - IDX, T_TMM_ADDR'length));
-					TMM_CACHE_ADDR <= std_logic_vector(resize(TMM_FETCH_CTR_REL - 1, TMM_CACHE_ADDR'length));
-				end if;
+		TMM_ADDR <= (others => 'Z');
+	end generate;
 
-				if TMM_FETCH_CTR_REL > 0 then -- read offset
-					TMM_CACHE_DATA <= T_TMM_DATA;
-					TMM_CACHE_WEN <= '1';
-				end if;
-			else
+	accurate_occlusion_logic: if IDX < PPU_ACCURATE_FG_SPRITE_COUNT generate
+		-- TMM cache lines
+		signal TMM_CACHE_WEN, TMM_CACHE_UPDATE_TURN : std_logic := '0';
+		signal TMM_CACHE_DATA : std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0) := (others => '0');
+		signal TMM_CACHE_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0) := (others => '0');
+		signal TMM_CACHE : std_logic_vector((PPU_SPRITE_WORD_COUNT * PPU_TMM_DATA_WIDTH)-1 downto 0);
+	begin
+		-- palette color at pixel
+		TMM_DATA_PAL_IDX <= TMM_CACHE(TRANS_TILE_PIXEL_IDX * integer(PPU_PALETTE_COLOR_WIDTH) + integer(PPU_PALETTE_COLOR_WIDTH)-1 downto TRANS_TILE_PIXEL_IDX * integer(PPU_PALETTE_COLOR_WIDTH));
+
+		TMM_ADDR <= T_TMM_ADDR when TMM_CACHE_UPDATE_TURN else (others => 'Z');
+
+		-- TTM cache
+		ttm_cache : component er_ram
+			generic map(
+				ADDR_W => PPU_TMM_ADDR_WIDTH,
+				DATA_W => PPU_TMM_DATA_WIDTH,
+				ADDR_LOW => 0,
+				ADDR_RANGE => PPU_SPRITE_WORD_COUNT)
+			port map(
+				CLK => CLK,
+				RST => RESET,
+				WEN => TMM_CACHE_WEN,
+				ADDR => TMM_CACHE_ADDR,
+				DATA => TMM_CACHE_DATA,
+				REG => TMM_CACHE);
+
+		-- fetch machine, should do the following (offset data read by one clock -> propagation/lookup delay):
+		-- CLK[53 * IDX + 0] (addr = 0)
+		-- CLK[53 * IDX + 1] (addr = 1, read data[0])
+		-- CLK[53 * IDX + 2] (addr = 2, read data[1]), etc
+		-- a full tile is 52 words, but since the offset is 1 clock, a total copy takes 53 clock cycles
+		process(CLK, RESET, FETCH)
+			constant TMM_FETCH_CLK_RANGE_BEGIN : natural := PPU_TMM_CACHE_FETCH_C_COUNT * IDX; -- fetch CLK count for copying this module's sprite from TMM
+			variable TMM_FETCH_CTR : unsigned(PPU_TMM_CACHE_FETCH_A_WIDTH-1 downto 0) := (others => '0'); -- CLK counter while FETCH=1
+			variable TMM_FETCH_CTR_REL : unsigned(PPU_TMM_CACHE_FETCH_A_WIDTH-1 downto 0) := (others => '0'); -- CLK counter relative for sprite[IDX]
+		begin
+			if RESET = '1' or FETCH = '0' then
+				TMM_FETCH_CTR := (others => '0');
+				TMM_FETCH_CTR_REL := (others => '0');
 				TMM_CACHE_WEN <= '0';
 				TMM_CACHE_UPDATE_TURN <= '0';
+			elsif rising_edge(CLK) then
+				TMM_FETCH_CTR := TMM_FETCH_CTR + 1;
+				TMM_FETCH_CTR_REL := TMM_FETCH_CTR - TMM_FETCH_CLK_RANGE_BEGIN;
+
+				if TMM_FETCH_CTR >= TMM_FETCH_CLK_RANGE_BEGIN and
+					 TMM_FETCH_CTR < (TMM_FETCH_CLK_RANGE_BEGIN + PPU_TMM_CACHE_FETCH_C_COUNT) then
+					TMM_CACHE_UPDATE_TURN <= '1';
+					if TMM_FETCH_CTR_REL < PPU_TMM_CACHE_FETCH_C_COUNT - 1 then -- calculate address until second to last clock
+						T_TMM_ADDR <= std_logic_vector(resize(TMM_FETCH_CTR - IDX, T_TMM_ADDR'length));
+						TMM_CACHE_ADDR <= std_logic_vector(resize(TMM_FETCH_CTR_REL - 1, TMM_CACHE_ADDR'length));
+					end if;
+
+					if TMM_FETCH_CTR_REL > 0 then -- read offset
+						TMM_CACHE_DATA <= T_TMM_DATA;
+						TMM_CACHE_WEN <= '1';
+					end if;
+				else
+					TMM_CACHE_WEN <= '0';
+					TMM_CACHE_UPDATE_TURN <= '0';
+				end if;
 			end if;
-		end if;
-	end process;
+		end process;
+	end generate;
 end Behavioral;

@@ -44,6 +44,8 @@ package ppu_consts is
 	constant PPU_TMM_CACHE_FETCH_C_COUNT : natural := PPU_SPRITE_WORD_COUNT + 1;
 	constant PPU_TMM_CACHE_FETCH_A_COUNT : natural := PPU_TMM_CACHE_FETCH_C_COUNT * PPU_FG_SPRITE_COUNT; -- amount of clocks to fetch new TMM cache
 	constant PPU_TMM_CACHE_FETCH_A_WIDTH : natural := ceil_log2(PPU_TMM_CACHE_FETCH_A_COUNT);
+	constant PPU_ACCURATE_FG_SPRITE_COUNT : natural := 16;
+	constant PPU_PL_TOTAL_STAGES : natural := 14;
 end package ppu_consts;
 package body ppu_consts is
 	-- https://stackoverflow.com/questions/21783280/number-of-bits-to-represent-an-integer-in-vhdl

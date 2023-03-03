@@ -2,7 +2,6 @@ library ieee;
 library work;
 
 use ieee.std_logic_1164.all;
---use ieee.numeric_std.all;
 use work.ppu_consts.all;
 
 entity ppu is port(
@@ -22,8 +21,8 @@ architecture Behavioral of ppu is
 		CLK : in std_logic; -- system clock
 		RESET : in std_logic; -- async reset
 		SPRITE : out std_logic; -- sprite info fetch + sprite pixel fetch
-		COMP_PAL : out std_logic; -- compositor + palette lookup
-		DONE : out std_logic); -- last pipeline stage done
+		DONE : out std_logic; -- last pipeline stage done
+		READY : out std_logic); -- rgb buffer propagation ready
 	end component;
 	component ppu_addr_dec port( -- address decoder
 		WEN : in std_logic; -- EXT write enable
@@ -81,6 +80,7 @@ architecture Behavioral of ppu is
 		-- inputs
 		CLK : in std_logic; -- pipeline clock
 		RESET : in std_logic; -- reset clock counter
+		PL_RESET : in std_logic; -- reset pipeline clock counters
 		OE : in std_logic; -- output enable (of CIDX)
 		X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 		Y : in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
@@ -105,6 +105,7 @@ architecture Behavioral of ppu is
 			-- inputs
 			CLK : in std_logic; -- system clock
 			RESET : in std_logic; -- reset internal memory and clock counters
+			PL_RESET : in std_logic; -- reset pipeline clock counters
 			OE : in std_logic; -- output enable (of CIDX)
 			X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 			Y : in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
@@ -166,7 +167,7 @@ architecture Behavioral of ppu is
 
 	-- signals
 	signal SYSCLK, SYSRST : std_logic; -- system clock and reset
-	signal PL_SPRITE, PL_COMP_PAL, PL_DONE : std_logic; -- pipeline stages
+	signal PL_SPRITE, PL_DONE, PL_READY : std_logic; -- pipeline stages
 	signal TMM_WEN, BAM_WEN, FAM_WEN, PAL_WEN, AUX_WEN : std_logic;
 	signal TMM_W_ADDR, TMM_R_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0); -- read/write TMM addr (dual port)
 	signal BAM_W_ADDR, BAM_R_ADDR : std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0); -- read/write BAM addr (dual port)
@@ -181,7 +182,7 @@ architecture Behavioral of ppu is
 	signal X : std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 	signal Y : std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
 	signal UR,UG,UB : std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- unstable RGB (to be buffered)
-	signal SR,SG,SB : std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- stable RGB (buffered until PL_COMP_PAL)
+	signal SR,SG,SB : std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- stable RGB (buffered until PL_DONE)
 	signal BG_SHIFT_X : std_logic_vector(PPU_POS_H_WIDTH-1 downto 0);
 	signal BG_SHIFT_Y : std_logic_vector(PPU_POS_V_WIDTH-1 downto 0);
 	signal FG_FETCH : std_logic;
@@ -202,8 +203,8 @@ begin
 		CLK => SYSCLK,
 		RESET => SYSRST,
 		SPRITE => PL_SPRITE,
-		COMP_PAL => PL_COMP_PAL,
-		DONE => PL_DONE);
+		DONE => PL_DONE,
+		READY => PL_READY);
 
 	address_decoder : component ppu_addr_dec port map(
 		WEN => WEN,
@@ -255,6 +256,7 @@ begin
 	background_sprite : component ppu_sprite_bg port map(
 		CLK => PL_SPRITE,
 		RESET => SYSRST,
+		PL_RESET => PL_READY,
 		OE => BG_EN,
 		X => X,
 		Y => Y,
@@ -272,6 +274,7 @@ begin
 			port map(
 				CLK => SYSCLK,
 				RESET => SYSRST,
+				PL_RESET => PL_READY,
 				OE => FG_EN(FG_IDX),
 				X => X,
 				Y => Y,
@@ -303,13 +306,13 @@ begin
 		B => UB);
 
 	-- palette lookup output buffer (pipeline stage 5)
-	process(PL_COMP_PAL, SYSRST)
+	process(PL_DONE, SYSRST)
 	begin
 		if SYSRST = '1' then
 			SR <= x"0";
 			SG <= x"0";
 			SB <= x"0";
-		elsif rising_edge(PL_COMP_PAL) then
+		elsif rising_edge(PL_DONE) then
 			SR <= UR;
 			SG <= UG;
 			SB <= UB;
@@ -331,7 +334,7 @@ begin
 		RESET => SYSRST,
 		X => X,
 		Y => Y,
-		PREADY => PL_DONE,
+		PREADY => PL_READY,
 		RI => SR,
 		GI => SG,
 		BI => SB,
