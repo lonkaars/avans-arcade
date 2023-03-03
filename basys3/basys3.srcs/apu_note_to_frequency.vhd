@@ -1,5 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 
 library work;
@@ -13,7 +14,7 @@ entity apu_note_to_frequency is port (
 end entity;
 
 architecture Behavioral of apu_note_to_frequency is
-	signal buff : std_logic_vector(15 downto 0) := (others => '0');
+	signal buff : std_logic_vector(11 downto 0) := (others => '0');
 	signal shift : integer;
 begin
 
@@ -34,6 +35,6 @@ begin
         x"100" when data(6 downto 3) = (x"C") else -- B     256
         x"000";
 
-    freq <= std_logic_vector( shift_right(unsigned(buff), natural(shift)) ); -- TODO: MAYBE WORKY???
+    freq <= std_logic_vector(shift_right(unsigned(buff), shift)); -- TODO: MAYBE WORKY???
 
 end architecture;
