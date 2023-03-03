@@ -138,22 +138,14 @@ int main(void)
 
   };
 
-  int pos_x_max = 410;
-  int pos_y_max = 310;
-  int pos_x_min = 210;
-  int pos_y_min = 110;
   uint8_t pos_x_bit[2];
   uint8_t pos_y_bit[2];
   uint8_t data_send[3];
-  uint8_t led1Uit =  0b00100001 ;
-  uint8_t led2Uit =  0x9D ;
+
   int tileX;
   int tileY;
-  // int to pointer
- // uint8_t * ledTest1 = &led1Aan;
-//  uint8_t * ledTest2 = &led2Aan;
-  uint8_t * ledTest3 = &led1Uit;
-  uint8_t * ledTest4 = &led2Uit;
+
+
 
 
 
@@ -163,134 +155,114 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	//  pos_x_bit[0] = 0b00000001;
-	//  pos_x_bit[1] = 0b00110110;
 
-		  pos_x_bit[1] = pos_x & 0xff;
-		  pos_x_bit[0] = (pos_x >> 8);
+		//shift int into 2 8bit u_int
+		pos_x_bit[1] = pos_x & 0xff;
+		pos_x_bit[0] = (pos_x >> 8);
 
-		  pos_y_bit[1] = pos_y & 0xff;
-		  pos_y_bit[0] = (pos_y >> 8);
+		pos_y_bit[1] = pos_y & 0xff;
+		pos_y_bit[0] = (pos_y >> 8);
 
-			  tileX = pos_x / 20;
-
-
-			  tileY = pos_y / 16;
+		// simplify coor for tilemap
+		tileX = pos_x / 20;
+		tileY = pos_y / 16;
 
 
-
-	  if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_4) == 1)
-	  	 {
+		//read buttons 4 times
+		if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_4) == 1)
+		{
 			left++;
-
-	  	 }
-	  else
-	  {
-		  left = 0;
-	  }
-	 if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5) == 1)
-	  	 {
+		}
+		else
+		{
+			left = 0;
+		}
+		if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5) == 1)
+		 {
 			right++;
-	  	 }
-	  else
-	  {
-		  right = 0;
-	  }
-	 if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6) == 1)
-	  	 {
+		 }
+		else
+		{
+			right = 0;
+		}
+		if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6) == 1)
+		{
 			up++;
-	  	 }
-	  else
-	  {
-		  up = 0;
-	  }
-	 if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_8) == 1)
-	  	 {
-	  		 down++;
-		 }
-		  else
-		  {
-			  down = 0;
-		  }
-
-	// if(pos_x % 8 == 0 && pos_y % 8 == 0 && tileMap[tileY][tileX] == 1)
-	// {
-
-	// }
-	// else
-	// {
-		 if(left > 10)
-		 {
-			 if(tileMap[tileY][tileX] == 1)
-			 {
-				 left = 0;
-			 }
-			 else
-			 {
-				 pos_x--;
-			 }
-			 left = 0;
-		 }
-		 if(right > 10)
-		 {
-			 if(tileMap[tileY][tileX+1] == 1)
-				 {
-				 right = 0;
-				 }
-				 else
-				 {
-					 pos_x++;
-				 }
-
-
-			 right = 0;
-		 }
-
-		 if(up > 10)
-		 {
-			 if(tileMap[tileY+1][tileX] == 1)
-				 {
-				 up = 0;
-				 }
-				 else
-				 {
-					 pos_y++;
-				 }
-			 	 up = 0;
-
-
-
-		 }
-		 if(down > 10)
-		 {
-			 if( tileMap[tileY][tileX] == 1)
-			 {
-				 down = 0;
-			 }
-			 else
-			 {
-				 pos_y--;
-			 }
-
-			 down = 0;
-		 }
-	// }
-
-
-
-
-			data_send[0] = 0b00000000;
-			data_send[1] = pos_y_bit[0] ;
-			data_send[2] = pos_y_bit[1];
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
-			HAL_SPI_Transmit(&hspi1, data_send, 3, HAL_MAX_DELAY); //2*8 bit
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
-			data_send[0] = 0b01000000;
-			data_send[1] = pos_x_bit[0] ;
-			data_send[2] = pos_x_bit[1];
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
-			HAL_SPI_Transmit(&hspi1, data_send, 3, HAL_MAX_DELAY); //2*8 bit
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+		}
+		else
+		{
+			up = 0;
+		}
+		if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_8) == 1)
+		{
+			down++;
+		}
+		else
+		{
+			down = 0;
+		}
+		// compare position x/y with tilemap for collision
+		if(left > 10)
+		{
+			if(tileMap[tileY][tileX] == 1)
+			{
+				left = 0;
+			}
+			else
+			{
+				pos_x--;
+			}
+			left = 0;
+		}
+		if(right > 10)
+		{
+			if(tileMap[tileY][tileX+1] == 1)
+			{
+				right = 0;
+			}
+			else
+			{
+				pos_x++;
+			}
+			right = 0;
+		}
+		if(up > 10)
+		{
+			if(tileMap[tileY+1][tileX] == 1)
+			{
+				up = 0;
+			}
+			else
+			{
+				pos_y++;
+			}
+		up = 0;
+		}
+		if(down > 10)
+		{
+			if( tileMap[tileY][tileX] == 1)
+			{
+				down = 0;
+			}
+			else
+			{
+				pos_y--;
+			}
+			down = 0;
+		}
+		// send data via SPI
+		data_send[0] = 0b00000000; // first byte is address
+		data_send[1] = pos_y_bit[0] ;
+		data_send[2] = pos_y_bit[1];
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+		HAL_SPI_Transmit(&hspi1, data_send, 3, HAL_MAX_DELAY); //3*8 bit
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+		data_send[0] = 0b01000000; // first byte is address
+		data_send[1] = pos_x_bit[0] ;
+		data_send[2] = pos_x_bit[1];
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+		HAL_SPI_Transmit(&hspi1, data_send, 3, HAL_MAX_DELAY); //3*8 bit
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
 
 
     /* USER CODE END WHILE */
