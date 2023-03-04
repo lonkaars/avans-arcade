@@ -14,6 +14,7 @@ entity ppu_sprite_fg is -- foreground sprite
 		-- inputs
 		CLK : in std_logic; -- system clock
 		RESET : in std_logic; -- reset internal memory and clock counters
+		PL_CLK : in std_logic; -- pipeline clock
 		PL_RESET : in std_logic; -- reset pipeline clock counters
 		OE : in std_logic; -- output enable (of CIDX)
 		X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
@@ -58,9 +59,9 @@ architecture Behavioral of ppu_sprite_fg is
 			REG : out std_logic_vector((ADDR_RANGE*DATA_W)-1 downto 0)); -- exposed register output
 	end component;
 
-	-- FAM and TMM in/out lines
-	signal T_TMM_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0) := (others => '0');
-	signal T_TMM_DATA : std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0) := (others => '0');
+	-- TMM in/out temp + registers
+	signal T_TMM_ADDR, R_TMM_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0) := (others => '0');
+	signal T_TMM_DATA, R_TMM_DATA : std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0) := (others => '0');
 
 	-- auxiliary signals (temp variables)
 	signal T_CIDX : std_logic_vector(PPU_PALETTE_CIDX_WIDTH-1 downto 0) := (others => '0'); -- output color buffer/register
@@ -76,11 +77,14 @@ architecture Behavioral of ppu_sprite_fg is
 
 	signal SPRITE_ACTIVE : std_logic := '0'; -- is pixel in bounding box of sprite
 	signal PIXEL_ABS_X, PIXEL_ABS_Y : integer := 0; -- absolute pixel position (relative to FG canvas instead of viewport)
+	signal PIXEL_BIT_OFFSET : integer := 0; -- pixel index within word of TMM
 	signal TILE_PIDX_X, TRANS_TILE_PIDX_X : unsigned(PPU_SPRITE_POS_H_WIDTH-1 downto 0) := (others => '0'); -- xy position of pixel within tile (local tile coords)
 	signal TILE_PIDX_Y, TRANS_TILE_PIDX_Y : unsigned(PPU_SPRITE_POS_V_WIDTH-1 downto 0) := (others => '0'); -- xy position of pixel within tile (local tile coords)
-	signal TRANS_TILE_PIXEL_IDX : integer := 0; -- index of pixel within tile (reading order)
+	signal TRANS_TILE_PIDX : integer := 0; -- index of pixel within tile (reading order)
+	signal TILEMAP_WORD : unsigned(PPU_TMM_ADDR_WIDTH-1 downto 0) := (others => '0');
 	signal TILEMAP_WORD_OFFSET : integer := 0; -- word offset from tile start address in TMM
 	signal TMM_DATA_PAL_IDX : std_logic_vector(PPU_PALETTE_COLOR_WIDTH-1 downto 0); -- color of palette
+
 begin
 	-- FAM memory
 	FAM : component er_ram
@@ -97,11 +101,11 @@ begin
 			DATA => FAM_DATA,
 			REG => INT_FAM);
 
-	-- output drivers
-	CIDX <= T_CIDX when OE = '1' else (others => 'Z');
 	-- CIDX combination
 	T_CIDX <= FAM_REG_COL_IDX & TMM_DATA_PAL_IDX;
-
+	-- output drivers
+	CIDX <= T_CIDX when OE = '1' else (others => 'Z');
+	-- TMM memory
 	T_TMM_DATA <= TMM_DATA;
 
 	-- pixel position within bounding box of sprite
@@ -124,16 +128,51 @@ begin
 		YO => TRANS_TILE_PIDX_Y);
 
 	-- pixel index
-	TRANS_TILE_PIXEL_IDX <= integer(PPU_SPRITE_WIDTH) * to_integer(TRANS_TILE_PIDX_Y) + to_integer(TRANS_TILE_PIDX_X);
-	-- if pixel in sprite hitbox and TMM_DATA_PAL_IDX > 0
-	HIT <= SPRITE_ACTIVE and (nor TMM_DATA_PAL_IDX);
+	TRANS_TILE_PIDX <= integer(PPU_SPRITE_WIDTH) * to_integer(TRANS_TILE_PIDX_Y) + to_integer(TRANS_TILE_PIDX_X);
+	TILEMAP_WORD <= resize(unsigned(FAM_REG_TILE_IDX) * PPU_SPRITE_WORD_COUNT, TILEMAP_WORD'length); -- TMM sprite starting word
+	TILEMAP_WORD_OFFSET <= TRANS_TILE_PIDX / PPU_PIXELS_PER_TILE_WORD; -- word offset from starting word of sprite
+	PIXEL_BIT_OFFSET <= TRANS_TILE_PIDX mod PPU_PIXELS_PER_TILE_WORD; -- pixel bit offset
 
 	inaccurate_occlusion_shims: if IDX >= PPU_ACCURATE_FG_SPRITE_COUNT generate
+		-- state machine for synchronizing pipeline stages
+		type states is (PL_TMM_ADDR, PL_TMM_DATA);
+		signal state : states := PL_TMM_ADDR;
 	begin
-		-- palette color at pixel
-		TMM_DATA_PAL_IDX <= (others => '0');
+		HIT <= SPRITE_ACTIVE;
+		-- only fetch if OE is high, and during the second pipeline stage
+		TMM_ADDR <= R_TMM_ADDR when OE = '1' and state = PL_TMM_ADDR else (others => 'Z');
+		T_TMM_ADDR <= std_logic_vector(TILEMAP_WORD + to_unsigned(TILEMAP_WORD_OFFSET, PPU_TMM_ADDR_WIDTH)); -- TMM address
 
-		TMM_ADDR <= (others => 'Z');
+		-- TMM DATA
+		with PIXEL_BIT_OFFSET select
+			TMM_DATA_PAL_IDX <= R_TMM_DATA(2 downto 0) when 0,
+													R_TMM_DATA(5 downto 3) when 1,
+													R_TMM_DATA(8 downto 6) when 2,
+													R_TMM_DATA(11 downto 9) when 3,
+													R_TMM_DATA(14 downto 12) when 4,
+													(others => '0') when others;
+
+		process(PL_CLK, RESET, PL_RESET)
+		begin
+			if RESET = '1' or PL_RESET = '1' then
+				-- reset state
+				state <= PL_TMM_ADDR;
+				if RESET = '1' then
+					-- reset internal pipeline registers
+					R_TMM_ADDR <= (others => '0');
+					R_TMM_DATA <= (others => '0');
+				end if;
+			elsif rising_edge(CLK) then
+				case state is
+					when PL_TMM_ADDR =>
+						state <= PL_TMM_DATA;
+						R_TMM_ADDR <= T_TMM_ADDR;
+					when PL_TMM_DATA =>
+						state <= PL_TMM_ADDR;
+						R_TMM_DATA <= T_TMM_DATA;
+				end case;
+			end if;
+		end process;
 	end generate;
 
 	accurate_occlusion_logic: if IDX < PPU_ACCURATE_FG_SPRITE_COUNT generate
@@ -143,8 +182,10 @@ begin
 		signal TMM_CACHE_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0) := (others => '0');
 		signal TMM_CACHE : std_logic_vector((PPU_SPRITE_WORD_COUNT * PPU_TMM_DATA_WIDTH)-1 downto 0);
 	begin
+		HIT <= SPRITE_ACTIVE and (nor TMM_DATA_PAL_IDX);
+
 		-- palette color at pixel
-		TMM_DATA_PAL_IDX <= TMM_CACHE(TRANS_TILE_PIXEL_IDX * integer(PPU_PALETTE_COLOR_WIDTH) + integer(PPU_PALETTE_COLOR_WIDTH)-1 downto TRANS_TILE_PIXEL_IDX * integer(PPU_PALETTE_COLOR_WIDTH));
+		TMM_DATA_PAL_IDX <= TMM_CACHE(TRANS_TILE_PIDX * integer(PPU_PALETTE_COLOR_WIDTH) + integer(PPU_PALETTE_COLOR_WIDTH)-1 downto TRANS_TILE_PIDX * integer(PPU_PALETTE_COLOR_WIDTH));
 
 		TMM_ADDR <= T_TMM_ADDR when TMM_CACHE_UPDATE_TURN else (others => 'Z');
 
@@ -186,7 +227,7 @@ begin
 					 TMM_FETCH_CTR < (TMM_FETCH_CLK_RANGE_BEGIN + PPU_TMM_CACHE_FETCH_C_COUNT) then
 					TMM_CACHE_UPDATE_TURN <= '1';
 					if TMM_FETCH_CTR_REL < PPU_TMM_CACHE_FETCH_C_COUNT - 1 then -- calculate address until second to last clock
-						T_TMM_ADDR <= std_logic_vector(resize(TMM_FETCH_CTR - IDX, T_TMM_ADDR'length));
+						T_TMM_ADDR <= std_logic_vector(resize(TMM_FETCH_CTR - IDX, T_TMM_ADDR'length)); -- -IDX to correct for each fetch cycle taking 1 extra clock cycle
 						TMM_CACHE_ADDR <= std_logic_vector(resize(TMM_FETCH_CTR_REL - 1, TMM_CACHE_ADDR'length));
 					end if;
 

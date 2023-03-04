@@ -20,7 +20,8 @@ architecture Behavioral of ppu is
 	component ppu_pceg port( -- pipeline clock edge generator
 		CLK : in std_logic; -- system clock
 		RESET : in std_logic; -- async reset
-		SPRITE : out std_logic; -- sprite info fetch + sprite pixel fetch
+		SPRITE_BG : out std_logic; -- sprite info fetch + sprite pixel fetch
+		SPRITE_FG : out std_logic; -- sprite pixel fetch
 		DONE : out std_logic; -- last pipeline stage done
 		READY : out std_logic); -- rgb buffer propagation ready
 	end component;
@@ -105,6 +106,7 @@ architecture Behavioral of ppu is
 			-- inputs
 			CLK : in std_logic; -- system clock
 			RESET : in std_logic; -- reset internal memory and clock counters
+			PL_CLK : in std_logic; -- pipeline clock
 			PL_RESET : in std_logic; -- reset pipeline clock counters
 			OE : in std_logic; -- output enable (of CIDX)
 			X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
@@ -167,7 +169,7 @@ architecture Behavioral of ppu is
 
 	-- signals
 	signal SYSCLK, SYSRST : std_logic; -- system clock and reset
-	signal PL_SPRITE, PL_DONE, PL_READY : std_logic; -- pipeline stages
+	signal PL_SPRITE_FG, PL_SPRITE_BG, PL_DONE, PL_READY : std_logic; -- pipeline stages
 	signal TMM_WEN, BAM_WEN, FAM_WEN, PAL_WEN, AUX_WEN : std_logic;
 	signal TMM_W_ADDR, TMM_R_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0); -- read/write TMM addr (dual port)
 	signal BAM_W_ADDR, BAM_R_ADDR : std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0); -- read/write BAM addr (dual port)
@@ -202,7 +204,8 @@ begin
 	pipeline_clock_edge_generator : component ppu_pceg port map(
 		CLK => SYSCLK,
 		RESET => SYSRST,
-		SPRITE => PL_SPRITE,
+		SPRITE_FG => PL_SPRITE_FG,
+		SPRITE_BG => PL_SPRITE_BG,
 		DONE => PL_DONE,
 		READY => PL_READY);
 
@@ -254,7 +257,7 @@ begin
 		FG_FETCH => FG_FETCH);
 
 	background_sprite : component ppu_sprite_bg port map(
-		CLK => PL_SPRITE,
+		CLK => PL_SPRITE_BG,
 		RESET => SYSRST,
 		PL_RESET => PL_READY,
 		OE => BG_EN,
@@ -274,6 +277,7 @@ begin
 			port map(
 				CLK => SYSCLK,
 				RESET => SYSRST,
+				PL_CLK => PL_SPRITE_FG,
 				PL_RESET => PL_READY,
 				OE => FG_EN(FG_IDX),
 				X => X,
