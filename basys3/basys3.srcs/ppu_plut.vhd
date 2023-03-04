@@ -34,7 +34,8 @@ architecture Behavioral of ppu_plut is
 	end component;
 	
 	signal PLUT : std_logic_vector((64 * PPU_PAL_DATA_WIDTH)-1 downto 0) := (others => '0');
-	signal CHECK_ZERO_CIDX : std_logic_vector(PPU_PALETTE_CIDX_WIDTH-1 downto 0) := (others => '0'); -- color in
+	signal COLOR : std_logic_vector(PPU_PAL_DATA_WIDTH-1 downto 0) := (others => '0'); -- COLORS RGB IN
+	signal CIDX_INT : integer := 0;
 begin
 	RAM : component er_ram port map(
 		CLK => CLK,
@@ -44,26 +45,9 @@ begin
 		DATA => PAL_DATA,
 		REG => PLUT);
 
-	process(CLK, RESET)
-		variable COLOR : std_logic_vector(PPU_PAL_DATA_WIDTH-1 downto 0) := (others => '0'); -- COLORS RGB IN
-		variable CIDX_INT : integer := 0;
-	begin
-		if RESET = '1' then
-			PLUT <= (others => '0');
-		else
-			if rising_edge (CLK) then
-				if (CIDX /= CHECK_ZERO_CIDX) then
-					CIDX_INT := to_integer(unsigned(CIDX));
-					COLOR := PLUT((12 * CIDX_INT) + 11 downto (12*CIDX_INT));
-					R <= COLOR(11 downto  8);
-					G <= COLOR(7 downto 4);
-					B <= COLOR(3 downto 0);
-				else
-					R <= x"0";
-					G <= x"0";
-					B <= x"0";
-				end if;
-			end if;
-		end if;
-	end process;
+	CIDX_INT <= to_integer(unsigned(CIDX));
+	COLOR <= PLUT((12 * CIDX_INT) + 11 downto (12*CIDX_INT));
+	R <= COLOR(11 downto  8);
+	G <= COLOR(7 downto 4);
+	B <= COLOR(3 downto 0);
 end Behavioral;

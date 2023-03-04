@@ -68,8 +68,8 @@ architecture Behavioral of ppu_sprite_bg is
 begin
 	-- output drivers
 	CIDX <= T_CIDX when OE = '1' else (others => 'Z');
-	BAM_ADDR <= R_BAM_ADDR;
-	TMM_ADDR <= R_TMM_ADDR;
+	BAM_ADDR <= R_BAM_ADDR when state = PL_BAM_ADDR else (others => 'Z');
+	TMM_ADDR <= R_TMM_ADDR when state = PL_TMM_ADDR else (others => 'Z');
 	T_BAM_DATA <= BAM_DATA;
 	T_TMM_DATA <= TMM_DATA;
 	-- CIDX combination
