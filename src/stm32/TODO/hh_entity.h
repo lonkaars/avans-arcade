@@ -7,10 +7,10 @@ typedef struct hh_entity
     //armor/block?
 };
 
-/// @brief detect for collision enity and eviroment
+/// @brief detect for collision entity and environment
 /// @param environment position of tile to be checked
 /// @param entity position entity
-/// @return true if collision between enity and environment
+/// @return true if collision between entity and environment
 bool hh_collision(const vec2& environment, const vec2& entity);
 
 /// @brief solve collisions
