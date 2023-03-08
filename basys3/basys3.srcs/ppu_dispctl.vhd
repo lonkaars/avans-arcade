@@ -82,9 +82,9 @@ begin
 	U_POS_Y <= resize(N_POS_Y / 2, U_POS_Y'length);
 
 	ADDR_O <= std_logic_vector(resize(U_POS_X, ADDR_I'length)) when U_POS_Y(0) = '0' else std_logic_vector(resize(U_POS_X, ADDR_I'length) + PPU_SCREEN_WIDTH);
-	RO <= DATA_O(11 downto 8);
-	GO <= DATA_O(7 downto 4);
-	BO <= DATA_O(3 downto 0);
+	RO <= DATA_O(11 downto 8) when NACTIVE = '1' else (others => '0');
+	GO <= DATA_O(7 downto 4) when NACTIVE = '1' else (others => '0');
+	BO <= DATA_O(3 downto 0) when NACTIVE = '1' else (others => '0');
 
 	scanline_buffer : component ppu_dispctl_slbuf port map(
 		clka => CLK,

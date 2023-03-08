@@ -52,15 +52,15 @@ package ppu_consts is
 	constant PPU_PL_TOTAL_STAGES : natural := 14;
 	-- VGA signal timings (https://tomverbeure.github.io/video_timings_calculator)
 	constant PPU_VGA_H_ACTIVE : natural := PPU_NATIVE_SCREEN_WIDTH;
-	constant PPU_VGA_H_PORCH_FRONT : natural := 16;
-	constant PPU_VGA_H_SYNC : natural := 64;
-	constant PPU_VGA_H_PORCH_BACK : natural := 80;
+	constant PPU_VGA_H_PORCH_FRONT : natural := 8;
+	constant PPU_VGA_H_SYNC : natural := 96;
+	constant PPU_VGA_H_PORCH_BACK : natural := 40;
 	constant PPU_VGA_H_BLANK : natural := PPU_VGA_H_PORCH_FRONT + PPU_VGA_H_SYNC + PPU_VGA_H_PORCH_BACK;
 	constant PPU_VGA_H_TOTAL : natural := PPU_VGA_H_BLANK + PPU_VGA_H_ACTIVE;
 	constant PPU_VGA_V_ACTIVE : natural := PPU_NATIVE_SCREEN_HEIGHT;
-	constant PPU_VGA_V_PORCH_FRONT : natural := 4;
-	constant PPU_VGA_V_SYNC : natural := 4;
-	constant PPU_VGA_V_PORCH_BACK : natural := 12;
+	constant PPU_VGA_V_PORCH_FRONT : natural := 2;
+	constant PPU_VGA_V_SYNC : natural := 2;
+	constant PPU_VGA_V_PORCH_BACK : natural := 25;
 	constant PPU_VGA_V_BLANK : natural := PPU_VGA_V_PORCH_FRONT + PPU_VGA_V_SYNC + PPU_VGA_V_PORCH_BACK;
 	constant PPU_VGA_V_TOTAL : natural := PPU_VGA_V_BLANK + PPU_VGA_V_ACTIVE;
 	constant PPU_VGA_SIGNAL_PIXEL_IDX_MAX : natural := PPU_VGA_V_TOTAL * PPU_VGA_H_TOTAL; -- horizontal and vertical pixel clock index
