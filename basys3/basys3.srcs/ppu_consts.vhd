@@ -34,7 +34,7 @@ package ppu_consts is
 	constant PPU_SCREEN_WIDTH : natural := 320; -- absolute screen width (tiny pixels)
 	constant PPU_SCREEN_HEIGHT : natural := 240; -- absolute screen height (tiny pixels)
 	constant PPU_NATIVE_SCREEN_WIDTH : natural := 2 * PPU_SCREEN_WIDTH; -- screen width (native pixels)
-	constant PPU_NATIVE_SCREEN_HEIGHT : natural := 2 * PPU_SCREEN_WIDTH; -- screen height (native pixels)
+	constant PPU_NATIVE_SCREEN_HEIGHT : natural := 2 * PPU_SCREEN_HEIGHT; -- screen height (native pixels)
 	constant PPU_DISPCTL_SLBUF_ADDR_WIDTH : natural := ceil_log2(2 * PPU_SCREEN_WIDTH);
 	constant PPU_BG_CANVAS_TILES_H : natural := 40; -- tiles (horizontally) on background canvas
 	constant PPU_BG_CANVAS_TILES_V : natural := 30; -- tiles (vertically) on background canvas
@@ -58,9 +58,9 @@ package ppu_consts is
 	constant PPU_VGA_H_BLANK : natural := PPU_VGA_H_PORCH_FRONT + PPU_VGA_H_SYNC + PPU_VGA_H_PORCH_BACK;
 	constant PPU_VGA_H_TOTAL : natural := PPU_VGA_H_BLANK + PPU_VGA_H_ACTIVE;
 	constant PPU_VGA_V_ACTIVE : natural := PPU_NATIVE_SCREEN_HEIGHT;
-	constant PPU_VGA_V_PORCH_FRONT : natural := 3;
+	constant PPU_VGA_V_PORCH_FRONT : natural := 4;
 	constant PPU_VGA_V_SYNC : natural := 4;
-	constant PPU_VGA_V_PORCH_BACK : natural := 13;
+	constant PPU_VGA_V_PORCH_BACK : natural := 12;
 	constant PPU_VGA_V_BLANK : natural := PPU_VGA_V_PORCH_FRONT + PPU_VGA_V_SYNC + PPU_VGA_V_PORCH_BACK;
 	constant PPU_VGA_V_TOTAL : natural := PPU_VGA_V_BLANK + PPU_VGA_V_ACTIVE;
 	constant PPU_VGA_SIGNAL_PIXEL_IDX_MAX : natural := PPU_VGA_V_TOTAL * PPU_VGA_H_TOTAL; -- horizontal and vertical pixel clock index

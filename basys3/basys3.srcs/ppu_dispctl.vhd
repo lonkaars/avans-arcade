@@ -45,7 +45,7 @@ architecture Behavioral of ppu_dispctl is
 	signal TACTIVE, THACTIVE, TVACTIVE : std_logic := '0';
 begin
 	NHCOUNT <= PCOUNT mod PPU_VGA_H_TOTAL;
-	NVCOUNT <= PCOUNT / PPU_VGA_H_TOTAL mod PPU_VGA_V_TOTAL;
+	NVCOUNT <= (PCOUNT / PPU_VGA_H_TOTAL) mod PPU_VGA_V_TOTAL;
 
 	THCOUNT <= (PCOUNT / 4) mod (PPU_VGA_H_TOTAL / 2);
 	TVCOUNT <= (PCOUNT / 4) / (PPU_VGA_H_TOTAL / 2) mod (PPU_VGA_V_TOTAL / 2);
@@ -68,15 +68,15 @@ begin
 	N_POS_X <= resize(NHCOUNT - PPU_VGA_H_PORCH_BACK, N_POS_X'length) when NHACTIVE = '1' else (others => '0');
 	N_POS_Y <= resize(NVCOUNT - PPU_VGA_V_PORCH_BACK, N_POS_Y'length) when NVACTIVE = '1' else (others => '0');
 
-	T_POS_X <= resize(THCOUNT - (PPU_VGA_H_PORCH_BACK / 2), X'length); -- TODO: prevent out of range (add THACTIVE)
-	T_POS_Y <= resize(TVCOUNT - (PPU_VGA_V_PORCH_BACK / 2), Y'length);
+	T_POS_X <= resize(THCOUNT - (PPU_VGA_H_PORCH_BACK / 4), T_POS_X'length) when N_POS_Y(0) = '0' else
+	           resize(THCOUNT - ((PPU_VGA_H_PORCH_BACK + PPU_VGA_H_BLANK) / 4), T_POS_X'length); -- divide tiny x equally over two native scanlines
+	T_POS_Y <= resize(TVCOUNT - (PPU_VGA_V_PORCH_BACK / 2), T_POS_Y'length);
 
 	DATA_I <= RI & GI & BI;
 	ADDR_I <= std_logic_vector(resize(T_POS_X, ADDR_I'length)) when T_POS_Y(0) = '0' else std_logic_vector(resize(T_POS_X, ADDR_I'length) + PPU_SCREEN_WIDTH);
 
-	-- TODO: X isn't calculated right, Y seems okay
-	X <= std_logic_vector(T_POS_X);
-	Y <= std_logic_vector(T_POS_Y);
+	X <= std_logic_vector(T_POS_X) when NACTIVE = '1' else (others => '0');
+	Y <= std_logic_vector(T_POS_Y) when NACTIVE = '1' else (others => '0');
 
 	U_POS_X <= resize(N_POS_X / 2, U_POS_X'length);
 	U_POS_Y <= resize(N_POS_Y / 2, U_POS_Y'length);
@@ -108,15 +108,14 @@ begin
 	end process;
 
 	process(CLK25(1), RESET)
-		variable V_PCOUNT : unsigned(PPU_VGA_SIGNAL_PIXEL_WIDTH-1 downto 0) := (others => '0');
 	begin
-		PCOUNT <= V_PCOUNT;
 		if RESET = '1' then
-			V_PCOUNT := (others => '0');
+			PCOUNT <= (others => '0');
 		elsif rising_edge(CLK25(1)) then
-			V_PCOUNT := V_PCOUNT + 1;
-			if V_PCOUNT = PPU_VGA_SIGNAL_PIXEL_IDX_MAX then
-				V_PCOUNT := (others => '0');
+			if PCOUNT + 1 >= PPU_VGA_SIGNAL_PIXEL_IDX_MAX then
+				PCOUNT <= (others => '0');
+			else
+				PCOUNT <= PCOUNT + 1;
 			end if;
 		end if;
 	end process;
