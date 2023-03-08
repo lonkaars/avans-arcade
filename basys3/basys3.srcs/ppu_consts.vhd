@@ -50,6 +50,25 @@ package ppu_consts is
 	constant PPU_TMM_CACHE_FETCH_A_WIDTH : natural := ceil_log2(PPU_TMM_CACHE_FETCH_A_COUNT);
 	constant PPU_ACCURATE_FG_SPRITE_COUNT : natural := 16;
 	constant PPU_PL_TOTAL_STAGES : natural := 14;
+	-- VGA signal timings (https://tomverbeure.github.io/video_timings_calculator)
+	constant PPU_VGA_H_ACTIVE : natural := PPU_NATIVE_SCREEN_WIDTH;
+	constant PPU_VGA_H_PORCH_FRONT : natural := 16;
+	constant PPU_VGA_H_SYNC : natural := 64;
+	constant PPU_VGA_H_PORCH_BACK : natural := 80;
+	constant PPU_VGA_H_BLANK : natural := PPU_VGA_H_PORCH_FRONT + PPU_VGA_H_SYNC + PPU_VGA_H_PORCH_BACK;
+	constant PPU_VGA_H_TOTAL : natural := PPU_VGA_H_BLANK + PPU_VGA_H_ACTIVE;
+	constant PPU_VGA_V_ACTIVE : natural := PPU_NATIVE_SCREEN_HEIGHT;
+	constant PPU_VGA_V_PORCH_FRONT : natural := 3;
+	constant PPU_VGA_V_SYNC : natural := 4;
+	constant PPU_VGA_V_PORCH_BACK : natural := 13;
+	constant PPU_VGA_V_BLANK : natural := PPU_VGA_V_PORCH_FRONT + PPU_VGA_V_SYNC + PPU_VGA_V_PORCH_BACK;
+	constant PPU_VGA_V_TOTAL : natural := PPU_VGA_V_BLANK + PPU_VGA_V_ACTIVE;
+	constant PPU_VGA_SIGNAL_PIXEL_IDX_MAX : natural := PPU_VGA_V_TOTAL * PPU_VGA_H_TOTAL; -- horizontal and vertical pixel clock index
+	constant PPU_VGA_SIGNAL_PIXEL_WIDTH : natural := ceil_log2(PPU_VGA_SIGNAL_PIXEL_IDX_MAX); -- bit width to count total horizontal and vertical pixel clock index
+	constant PPU_SCREEN_T_POS_X_WIDTH : natural := ceil_log2(PPU_SCREEN_WIDTH);
+	constant PPU_SCREEN_T_POS_Y_WIDTH : natural := ceil_log2(PPU_SCREEN_HEIGHT);
+	constant PPU_SCREEN_N_POS_X_WIDTH : natural := ceil_log2(PPU_NATIVE_SCREEN_WIDTH);
+	constant PPU_SCREEN_N_POS_Y_WIDTH : natural := ceil_log2(PPU_NATIVE_SCREEN_HEIGHT);
 end package ppu_consts;
 package body ppu_consts is
 	-- https://stackoverflow.com/questions/21783280/number-of-bits-to-represent-an-integer-in-vhdl
