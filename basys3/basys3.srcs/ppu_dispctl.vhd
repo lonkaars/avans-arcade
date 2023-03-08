@@ -32,48 +32,59 @@ architecture Behavioral of ppu_dispctl is
 		rstb_busy : out std_logic);
 	end component;
 	signal CLK25 : unsigned(1 downto 0) := (others => '0'); -- clock divider (100_000_000/4)
-	signal PCOUNT, HCOUNT, VCOUNT : unsigned(PPU_VGA_SIGNAL_PIXEL_WIDTH-1 downto 0) := (others => '0');
+	signal PCOUNT, NHCOUNT, NVCOUNT, THCOUNT, TVCOUNT: unsigned(PPU_VGA_SIGNAL_PIXEL_WIDTH-1 downto 0) := (others => '0');
 	signal ADDR_I, ADDR_O : std_logic_vector(PPU_DISPCTL_SLBUF_ADDR_WIDTH-1 downto 0);
 	signal DATA_I, DATA_O : std_logic_vector(PPU_RGB_COLOR_OUTPUT_DEPTH-1 downto 0);
-	signal T_POS_X : unsigned(PPU_SCREEN_T_POS_X_WIDTH-1 downto 0) := (others => '0');
-	signal T_POS_Y : unsigned(PPU_SCREEN_T_POS_Y_WIDTH-1 downto 0) := (others => '0');
-	signal N_POS_X : unsigned(PPU_SCREEN_N_POS_X_WIDTH-1 downto 0) := (others => '0');
-	signal N_POS_Y : unsigned(PPU_SCREEN_N_POS_Y_WIDTH-1 downto 0) := (others => '0');
-	signal ACTIVE, HACTIVE, VACTIVE : std_logic := '0';
+	signal T_POS_X : unsigned(PPU_SCREEN_T_POS_X_WIDTH-1 downto 0) := (others => '0'); -- real tiny x position
+	signal T_POS_Y : unsigned(PPU_SCREEN_T_POS_Y_WIDTH-1 downto 0) := (others => '0'); -- real tiny y position
+	signal U_POS_X : unsigned(PPU_SCREEN_T_POS_X_WIDTH-1 downto 0) := (others => '0'); -- upscaled tiny x position
+	signal U_POS_Y : unsigned(PPU_SCREEN_T_POS_Y_WIDTH-1 downto 0) := (others => '0'); -- upscaled tiny y position
+	signal N_POS_X : unsigned(PPU_SCREEN_N_POS_X_WIDTH-1 downto 0) := (others => '0'); -- native x position
+	signal N_POS_Y : unsigned(PPU_SCREEN_N_POS_Y_WIDTH-1 downto 0) := (others => '0'); -- native y position
+	signal NACTIVE, NHACTIVE, NVACTIVE : std_logic := '0';
+	signal TACTIVE, THACTIVE, TVACTIVE : std_logic := '0';
 begin
+	NHCOUNT <= PCOUNT mod PPU_VGA_H_TOTAL;
+	NVCOUNT <= PCOUNT / PPU_VGA_H_TOTAL mod PPU_VGA_V_TOTAL;
+
+	THCOUNT <= (PCOUNT / 4) mod (PPU_VGA_H_TOTAL / 2);
+	TVCOUNT <= (PCOUNT / 4) / (PPU_VGA_H_TOTAL / 2) mod (PPU_VGA_V_TOTAL / 2);
+
+	NHACTIVE <= '1' when
+		(NHCOUNT >= (PPU_VGA_H_PORCH_BACK)) and
+		(NHCOUNT <  (PPU_VGA_H_PORCH_BACK + PPU_VGA_H_ACTIVE)) else '0';
+	NVACTIVE <= '1' when
+		(NVCOUNT >= (PPU_VGA_V_PORCH_BACK)) and
+		(NVCOUNT <  (PPU_VGA_V_PORCH_BACK + PPU_VGA_V_ACTIVE)) else '0';
+	NACTIVE <= NHACTIVE and NVACTIVE;
+	
+	NVSYNC <= '1' when
+		(NVCOUNT >= (PPU_VGA_V_PORCH_BACK + PPU_VGA_V_ACTIVE)) and
+		(NVCOUNT <  (PPU_VGA_V_PORCH_BACK + PPU_VGA_V_ACTIVE + PPU_VGA_V_SYNC)) else '0';
+	NHSYNC <= '1' when NVACTIVE = '1' and
+		(NHCOUNT >= (PPU_VGA_H_PORCH_BACK + PPU_VGA_H_ACTIVE)) and
+		(NHCOUNT <  (PPU_VGA_H_PORCH_BACK + PPU_VGA_H_ACTIVE + PPU_VGA_H_SYNC)) else '0';
+	
+	N_POS_X <= resize(NHCOUNT - PPU_VGA_H_PORCH_BACK, N_POS_X'length) when NHACTIVE = '1' else (others => '0');
+	N_POS_Y <= resize(NVCOUNT - PPU_VGA_V_PORCH_BACK, N_POS_Y'length) when NVACTIVE = '1' else (others => '0');
+
+	T_POS_X <= resize(THCOUNT - (PPU_VGA_H_PORCH_BACK / 2), X'length); -- TODO: prevent out of range (add THACTIVE)
+	T_POS_Y <= resize(TVCOUNT - (PPU_VGA_V_PORCH_BACK / 2), Y'length);
+
 	DATA_I <= RI & GI & BI;
 	ADDR_I <= std_logic_vector(resize(T_POS_X, ADDR_I'length)) when T_POS_Y(0) = '0' else std_logic_vector(resize(T_POS_X, ADDR_I'length) + PPU_SCREEN_WIDTH);
 
+	-- TODO: X isn't calculated right, Y seems okay
 	X <= std_logic_vector(T_POS_X);
 	Y <= std_logic_vector(T_POS_Y);
 
+	U_POS_X <= resize(N_POS_X / 2, U_POS_X'length);
+	U_POS_Y <= resize(N_POS_Y / 2, U_POS_Y'length);
+
+	ADDR_O <= std_logic_vector(resize(U_POS_X, ADDR_I'length)) when U_POS_Y(0) = '0' else std_logic_vector(resize(U_POS_X, ADDR_I'length) + PPU_SCREEN_WIDTH);
 	RO <= DATA_O(11 downto 8);
 	GO <= DATA_O(7 downto 4);
 	BO <= DATA_O(3 downto 0);
-
-	HCOUNT <= PCOUNT mod PPU_VGA_H_TOTAL;
-	VCOUNT <= PCOUNT / PPU_VGA_H_TOTAL mod PPU_VGA_V_TOTAL;
-
-	HACTIVE <= '1' when
-		(HCOUNT >  (PPU_VGA_H_PORCH_BACK)) and
-		(HCOUNT <= (PPU_VGA_H_PORCH_BACK + PPU_VGA_H_ACTIVE)) else '0';
-	VACTIVE <= '1' when
-		(VCOUNT >  (PPU_VGA_V_PORCH_BACK)) and
-		(VCOUNT <= (PPU_VGA_V_PORCH_BACK + PPU_VGA_V_ACTIVE)) else '0';
-	ACTIVE <= HACTIVE and VACTIVE;
-	
-	NVSYNC <= '1' when
-		(VCOUNT >  (PPU_VGA_V_PORCH_BACK + PPU_VGA_V_ACTIVE)) and
-		(VCOUNT <= (PPU_VGA_V_PORCH_BACK + PPU_VGA_V_ACTIVE + PPU_VGA_V_SYNC)) else '0';
-	NHSYNC <= '1' when VACTIVE = '1' and
-		(HCOUNT >  (PPU_VGA_H_PORCH_BACK + PPU_VGA_H_ACTIVE)) and
-		(HCOUNT <= (PPU_VGA_H_PORCH_BACK + PPU_VGA_H_ACTIVE + PPU_VGA_H_SYNC)) else '0';
-	
-	N_POS_X <= resize(HCOUNT - PPU_VGA_H_PORCH_BACK, N_POS_X'length);
-	N_POS_Y <= resize(VCOUNT - PPU_VGA_V_PORCH_BACK, N_POS_Y'length);
-
-	T_POS_X <= resize(N_POS_X / 2, T_POS_X'length);
-	T_POS_Y <= resize(N_POS_Y / 2, T_POS_Y'length);
 
 	scanline_buffer : component ppu_dispctl_slbuf port map(
 		clka => CLK,
