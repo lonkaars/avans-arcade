@@ -4,6 +4,7 @@ TARGET = main
 
 # platform is ds (desktop) or stm (stm32)
 PLATFORM = ds
+# if your editor uses compile_commands.json for autocomplete, you should run `make compile_commands.json` again
 
 HOST=$(strip $(shell uname -o))
 
@@ -74,7 +75,7 @@ flash: $(TARGET).bin
 $(TARGET): $(OBJS)
 	$(LD) $^ $(LFLAGS) -o $@
 
-compile_commands.json:
+compile_commands.json: makefile stm32.mk ds.mk
 	compiledb make -Bn
 	../scripts/compiledb-full-path-mingw.sh compile_commands.json
 

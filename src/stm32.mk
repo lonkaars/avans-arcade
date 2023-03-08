@@ -17,6 +17,9 @@ SHARED_FLAGS += -I./stm32
 ifeq ($(HOST),GNU/Linux)
 SHARED_FLAGS += -I/usr/arm-none-eabi/include/
 endif
+ifeq ($(HOST),Msys)
+SHARED_FLAGS += -I/mingw64/arm-none-eabi/include/
+endif
 SHARED_FLAGS += -ffunction-sections
 SHARED_FLAGS += -fdata-sections
 SHARED_FLAGS += -Wl,--gc-sections

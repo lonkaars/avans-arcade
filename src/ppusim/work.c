@@ -11,6 +11,10 @@ pthread_t* g_hh_ppusim_threads;
 unsigned g_hh_ppusim_core_count;
 hh_s_ppusim_screen g_hh_ppusim_screen;
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wint-to-pointer-cast"
+#pragma GCC diagnostic ignored "-Wpointer-to-int-cast"
+
 void* hh_ppusim_draw_thread(void* arg) {
 	unsigned core = (unsigned long) arg;
 	for (unsigned y = core; y < HH_PPU_SCREEN_HEIGHT; y += g_hh_ppusim_core_count)
@@ -38,3 +42,4 @@ void hh_ppusim_draw_frame(SDL_Renderer* renderer) {
 	}
 }
 
+#pragma GCC diagnostic pop
