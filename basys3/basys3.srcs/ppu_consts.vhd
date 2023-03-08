@@ -10,6 +10,7 @@ package ppu_consts is
 	constant PPU_RAM_BUS_DATA_WIDTH : natural := 16; -- RAM bus data width
 	constant PPU_FG_SPRITE_COUNT : natural := 128; -- foreground sprites
 	constant PPU_COLOR_OUTPUT_DEPTH : natural := 4; -- VGA output channel depth
+	constant PPU_RGB_COLOR_OUTPUT_DEPTH : natural := 3 * PPU_COLOR_OUTPUT_DEPTH;
 	constant PPU_PALETTE_COLOR_WIDTH : natural := 3; -- palette index width (within sprite)
 	constant PPU_PALETTE_INDEX_WIDTH : natural := 3; -- palette index width (palette table)
 	constant PPU_PALETTE_CIDX_WIDTH : natural := (PPU_PALETTE_COLOR_WIDTH + PPU_PALETTE_INDEX_WIDTH); -- global palette index width
@@ -30,8 +31,11 @@ package ppu_consts is
 	constant PPU_SPRITE_PIDX_WIDTH : natural := 8; -- bits needed to identify horizontal and vertical pixel within sprite
 	constant PPU_SPRITE_POS_H_WIDTH: natural := 4; -- bits needed to identify horizontal pixel within sprite
 	constant PPU_SPRITE_POS_V_WIDTH: natural := 4; -- bits needed to identify vertical pixel within sprite
-	constant PPU_SCREEN_WIDTH : natural := 320; -- absolute screen width (pixels)
-	constant PPU_SCREEN_HEIGHT : natural := 240; -- absolute screen height (pixels)
+	constant PPU_SCREEN_WIDTH : natural := 320; -- absolute screen width (tiny pixels)
+	constant PPU_SCREEN_HEIGHT : natural := 240; -- absolute screen height (tiny pixels)
+	constant PPU_NATIVE_SCREEN_WIDTH : natural := 2 * PPU_SCREEN_WIDTH; -- screen width (native pixels)
+	constant PPU_NATIVE_SCREEN_HEIGHT : natural := 2 * PPU_SCREEN_WIDTH; -- screen height (native pixels)
+	constant PPU_DISPCTL_SLBUF_ADDR_WIDTH : natural := ceil_log2(2 * PPU_SCREEN_WIDTH);
 	constant PPU_BG_CANVAS_TILES_H : natural := 40; -- tiles (horizontally) on background canvas
 	constant PPU_BG_CANVAS_TILES_V : natural := 30; -- tiles (vertically) on background canvas
 	constant PPU_BG_CANVAS_TILE_H_WIDTH : natural := 6; -- bits needed to describe horizontal bg tile index (grid coordinates)

@@ -11,8 +11,8 @@ entity ppu is port(
 	ADDR : in std_logic_vector(PPU_RAM_BUS_ADDR_WIDTH-1 downto 0); -- PPU VRAM ADDR
 	DATA : in std_logic_vector(PPU_RAM_BUS_DATA_WIDTH-1 downto 0);
 	R,G,B : out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0);
-	NVSYNC, NHSYNC : out std_logic; -- native VGA out
-	TVSYNC, TVBLANK, THSYNC, THBLANK : out std_logic); -- tiny VGA out
+	VSYNC, HSYNC : out std_logic; -- VGA sync out
+	VBLANK : out std_logic); -- vblank for synchronization
 end ppu;
 
 architecture Behavioral of ppu is
@@ -144,27 +144,18 @@ architecture Behavioral of ppu is
 		
 		R,G,B : out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0)); -- VGA color out
 	end component;
-	component ppu_vga_tiny port( -- tiny vga signal generator
+	component ppu_dispctl port( -- display controller
 		CLK : in std_logic; -- system clock
 		RESET : in std_logic;
 
-		X : out std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
-		Y : out std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
-		
-		VSYNC, VBLANK,
-		HSYNC, HBLANK : out std_logic); -- VGA sync outputs
-	end component;
-	component ppu_vga_native port( -- native vga signal generator (upscaler)
-		CLK : in std_logic; -- system clock
-		RESET : in std_logic;
-
-		X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
-		Y : in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
+		X : out std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- tiny screen pixel x
+		Y : out std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- tiny screen pixel y
+		RI,GI,BI : in std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- color in
 		PREADY : in std_logic; -- current pixel ready (pixel color is stable)
-		RI,GI,BI : in std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- VGA color in
-		
+
 		RO,GO,BO : out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- VGA color out
-		VSYNC, HSYNC : out std_logic); -- VGA sync outputs
+		NVSYNC, NHSYNC : out std_logic; -- VGA sync out
+		THBLANK, TVBLANK : out std_logic); -- tiny sync signals
 	end component;
 
 	-- signals
@@ -183,23 +174,21 @@ architecture Behavioral of ppu is
 	signal FG_EN, FG_HIT : std_logic_vector(PPU_FG_SPRITE_COUNT-1 downto 0);
 	signal X : std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 	signal Y : std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
-	signal UR,UG,UB : std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- unstable RGB (to be buffered)
-	signal SR,SG,SB : std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- stable RGB (buffered until PL_DONE)
+	signal UR,UG,UB : std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- palette lookup output RGB
 	signal BG_SHIFT_X : std_logic_vector(PPU_POS_H_WIDTH-1 downto 0);
 	signal BG_SHIFT_Y : std_logic_vector(PPU_POS_V_WIDTH-1 downto 0);
 	signal FG_FETCH : std_logic;
-	signal TINY_VBLANK, TINY_VSYNC, TINY_HBLANK, TINY_HSYNC,
-	       NATIVE_VSYNC, NATIVE_HSYNC : std_logic;
+	signal NVSYNC, NHSYNC, THBLANK, TVBLANK : std_logic;
+	signal PCEG_RESET : std_logic;
 begin
 	SYSCLK <= CLK100;
 	SYSRST <= RESET;
 
-	TVBLANK <= TINY_VBLANK;
-	TVSYNC <= TINY_VSYNC;
-	THBLANK <= TINY_HBLANK;
-	THSYNC <= TINY_HSYNC;
-	NVSYNC <= NATIVE_VSYNC;
-	NHSYNC <= NATIVE_HSYNC;
+	VSYNC <= NVSYNC;
+	HSYNC <= NHSYNC;
+
+	PCEG_RESET <= SYSRST or THBLANK;
+	VBLANK <= TVBLANK;
 
 	pipeline_clock_edge_generator : component ppu_pceg port map(
 		CLK => SYSCLK,
@@ -283,7 +272,7 @@ begin
 				X => X,
 				Y => Y,
 				FETCH => FG_FETCH,
-				VBLANK => TINY_VBLANK,
+				VBLANK => TVBLANK,
 				FAM_WEN => FAM_WEN,
 				FAM_ADDR => FAM_W_ADDR,
 				FAM_DATA => DATA(PPU_FAM_DATA_WIDTH-1 downto 0),
@@ -309,42 +298,20 @@ begin
 		G => UG,
 		B => UB);
 
-	-- palette lookup output buffer (pipeline stage 5)
-	process(PL_DONE, SYSRST)
-	begin
-		if SYSRST = '1' then
-			SR <= x"0";
-			SG <= x"0";
-			SB <= x"0";
-		elsif rising_edge(PL_DONE) then
-			SR <= UR;
-			SG <= UG;
-			SB <= UB;
-		end if;
-	end process;
-
-	tiny_vga_signal_generator : component ppu_vga_tiny port map( -- tiny vga signal generator
+	display_controller : component ppu_dispctl port map(
 		CLK => SYSCLK,
 		RESET => SYSRST,
-		X => X,
-		Y => Y,
-		VSYNC => TINY_VSYNC,
-		VBLANK => TINY_VBLANK,
-		HSYNC => TINY_HSYNC,
-		HBLANK => TINY_HBLANK);
-
-	native_vga_signal_generator : component ppu_vga_native port map( -- native vga signal generator (upscaler)
-		CLK => SYSCLK,
-		RESET => SYSRST,
-		X => X,
-		Y => Y,
 		PREADY => PL_READY,
-		RI => SR,
-		GI => SG,
-		BI => SB,
+		X => X,
+		Y => Y,
+		RI => UR,
+		GI => UG,
+		BI => UB,
 		RO => R,
 		GO => G,
 		BO => B,
-		VSYNC => NATIVE_VSYNC,
-		HSYNC => NATIVE_HSYNC);
+		NVSYNC => NVSYNC,
+		NHSYNC => NHSYNC,
+		TVBLANK => TVBLANK,
+		THBLANK => THBLANK);
 end Behavioral;
