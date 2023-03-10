@@ -22,6 +22,11 @@ void hh_ppu_init() {
 
 	g_hh_ppusim_vram = malloc(sizeof(hh_ppu_data_t) * 0xffff);
 	memset(g_hh_ppusim_vram, 0x0000, 0xffff);
+	hh_ppu_load_tilemap();
+}
+
+void hh_ppu_load_tilemap() {
+	
 }
 
 void hh_ppu_deinit() {
