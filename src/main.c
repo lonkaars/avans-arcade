@@ -1,8 +1,8 @@
 #include <stdlib.h>
 
-#include "main.h"
 #include "demo.h"
 #include "input.h"
+#include "main.h"
 
 bool g_hh_run = true;
 
@@ -19,4 +19,3 @@ void hh_ppu_vblank_interrupt() {
 	hh_demo_loop(frame);
 	frame++;
 }
-

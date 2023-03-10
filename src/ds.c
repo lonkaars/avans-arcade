@@ -1,6 +1,6 @@
+#include "demo.h"
 #include "main.h"
 #include "ppu/ppu.h"
-#include "demo.h"
 
 void hh_setup() {
 	hh_ppu_init();
