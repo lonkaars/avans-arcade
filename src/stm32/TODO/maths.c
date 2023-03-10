@@ -1,12 +1,10 @@
 #include "maths.h"
 
-#include <math.h>
-
-float clamp( float x, float min, float max ){
-    if (x > max)
-        return max;
-    else if (x < min)
-        return min;
+float clamp( float* x, float *min, float *max ){
+    if (*x < *min)
+        return *min;
+    else if (*x > *max)
+        return *max;
     else
-        return x;
+        return *x;
 }
