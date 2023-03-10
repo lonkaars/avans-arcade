@@ -28,10 +28,7 @@ void hh_ppu_load_tilemap() {
 	// printf("%i",_size);
 	for (int i = 0; i < _size; i++) {
 		uint8_t data[HH_PPU_VRAM_TMM_SPRITE_SIZE];
-		// for (int i = 0; i < 255; i++) {
-		// 	buffer[i] = 0; //TODO: vullen
-			fread(data,HH_PPU_VRAM_TMM_SPRITE_SIZE,1,fp);
-		// }
+		fread(data,HH_PPU_VRAM_TMM_SPRITE_SIZE,1,fp);
 		
 		printData(data);
 	}
