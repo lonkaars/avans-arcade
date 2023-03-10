@@ -17,6 +17,9 @@ SHARED_FLAGS += -I./stm32
 ifeq ($(HOST),GNU/Linux)
 SHARED_FLAGS += -I/usr/arm-none-eabi/include/
 endif
+ifeq ($(HOST),Msys)
+SHARED_FLAGS += -I/mingw64/arm-none-eabi/include/
+endif
 SHARED_FLAGS += -ffunction-sections
 SHARED_FLAGS += -fdata-sections
 SHARED_FLAGS += -Wl,--gc-sections
@@ -40,22 +43,25 @@ STM_SRCS += lib/FreeRTOS-Kernel/croutine.c \
             lib/FreeRTOS-Kernel/timers.c \
             lib/FreeRTOS-Kernel/portable/GCC/ARM_CM0/port.c \
             lib/FreeRTOS-Kernel/portable/MemMang/heap_4.c
-STM_SRCS += lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_rcc.c \
-            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_rcc_ex.c \
-            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal.c \
-            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_i2c.c \
-            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_i2c_ex.c \
-            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_gpio.c \
-            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_dma.c \
-            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_cortex.c \
-            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_pwr.c \
-            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_pwr_ex.c \
-            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_flash.c \
-            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_flash_ex.c \
+STM_SRCS += lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal.c \
+            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_spi.c \
+            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_spi_ex.c \
             lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_tim.c \
             lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_tim_ex.c \
             lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_uart.c \
-            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_uart_ex.c
+            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_uart_ex.c \
+            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_cortex.c \
+            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_dma.c \
+            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_flash.c \
+            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_flash_ex.c \
+            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_gpio.c \
+            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_pwr.c \
+            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_pwr_ex.c \
+            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_rcc.c \
+            lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal_rcc_ex.c
 STM_SRCS += stm32/idle_task_static_memory.c \
-						stm32/main.c
+						stm32/main.c \
+						stm32/setup.c \
+						ppu/stm.c \
+						stm32/input.c
 

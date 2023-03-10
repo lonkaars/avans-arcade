@@ -1,8 +1,8 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-#include "ppusim/mem.h"
 #include "ppu/internals.h"
+#include "ppusim/mem.h"
 
 hh_ppu_data_t *g_hh_ppusim_vram = NULL;
 
