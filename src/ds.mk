@@ -11,5 +11,5 @@ DESKTOP_SRCS += ppusim/sim.c \
 								ppusim/mem.c \
 								ppusim/pixel.c \
 								ppusim/work.c \
-								ds.c
-
+								ds.c \
+						    ppusim/input.c

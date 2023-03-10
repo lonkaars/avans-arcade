@@ -62,5 +62,6 @@ STM_SRCS += lib/STM32-base-STM32Cube/HAL/STM32F0xx/src/stm32f0xx_hal.c \
 STM_SRCS += stm32/idle_task_static_memory.c \
 						stm32/main.c \
 						stm32/setup.c \
-						ppu/stm.c
+						ppu/stm.c \
+						stm32/input.c
 
