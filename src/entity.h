@@ -12,4 +12,3 @@ typedef struct {
 	int8_t speed;	//10 default L/R MODifier
 	bool in_air;
 } hh_s_entity_player;
-

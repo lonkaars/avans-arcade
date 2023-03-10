@@ -1,9 +1,12 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "main.h"
 #include "ppu/ppu.h"
+#include "ppu/consts.h"
+#include "ppu/internals.h"
 #include "ppusim/mem.h"
 #include "ppusim/sim.h"
 #include "ppusim/work.h"
@@ -22,6 +25,31 @@ void hh_ppu_init() {
 
 	g_hh_ppusim_vram = malloc(sizeof(hh_ppu_data_t) * 0xffff);
 	memset(g_hh_ppusim_vram, 0x0000, 0xffff);
+	hh_ppu_load_tilemap();
+}
+
+void hh_ppu_load_tilemap() {
+	char* filename = "tiles.bin";
+	FILE* fp = fopen(filename,"rb");
+	if (!fp){
+		return;//error
+	}
+
+	fseek(fp, 0, SEEK_END);//goto EOF
+	int _size = ftell(fp)/HH_PPU_VRAM_TMM_SPRITE_SIZE;
+	fseek(fp, 0, 0);//goto start of file
+
+	for (int i = 0; i < _size; i++) {
+		uint8_t data[HH_PPU_VRAM_TMM_SPRITE_SIZE];
+
+		fread(data,HH_PPU_VRAM_TMM_SPRITE_SIZE,1,fp);
+		
+		hh_s_ppu_vram_data sprite = hh_ppu_2nat_sprite(data);
+		sprite.offset = i*HH_PPU_VRAM_TMM_SPRITE_SIZE;
+		hh_ppu_vram_write(sprite);
+		free(sprite.data);
+	}
+	fclose(fp);
 }
 
 void hh_ppu_deinit() {

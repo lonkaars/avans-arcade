@@ -19,4 +19,3 @@ extern hh_s_gamepad g_hh_controller_p2;
 
 /** @brief update g_hh_controller_p1 and 2 by reading buttons */
 void hh_input_read();
-
