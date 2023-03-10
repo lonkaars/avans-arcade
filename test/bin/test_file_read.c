@@ -16,8 +16,6 @@ void printData(uint8_t* in) {
 }
 
 void hh_ppu_load_tilemap() {
-
-	//TODO: lees bestand in mem
 	char* filename = "tiles.bin";
 	FILE* fp = fopen(filename,"rb");
 	if (!fp){
