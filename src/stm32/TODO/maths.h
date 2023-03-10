@@ -1,11 +1,14 @@
-#include <math.h>
+#pragma once
 
-typedef struct vec2{
-    float x,y;
-};
+// #include <math.h>
 
-/// @brief clamps x between min and max
-/// @param x value to clamp
-/// @param min 
-/// @param max 
-float clamp( float& x, float &min, float &max );
+typedef struct {
+    u_int32_t x,y;//fixed point at decimal 7lsb (world positions in pixels (with fixed decimal point))
+} vec2;
+
+typedef vec2 vec_cen;//centered
+typedef vec2 vec_cor;//left upper corner
+
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+#define CLAMP(N,LOWER,UPPER) (MIN(MAX(LOWER, N), UPPER))
