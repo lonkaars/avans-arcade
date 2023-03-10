@@ -31,6 +31,7 @@ before formatting as a failsafe.
 - library hooks that need specific symbol names are exempt from the naming
   conventions (e.g. `main` or `HAL_UART_MspInit`)
 - names are always in English
+- filenames should not be prefixed by anything.
 
 ## others
 
