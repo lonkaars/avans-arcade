@@ -9,6 +9,9 @@ void hh_ppu_init();
 /** @brief deinitialize ppu interface */
 void hh_ppu_deinit();
 
+/** @brief  */
+void hh_ppu_load_tilemap();
+
 /** @brief update single foreground sprite */
 void hh_ppu_update_foreground(unsigned index, hh_s_ppu_loc_fam_entry e);
 /** @brief update single background sprite */

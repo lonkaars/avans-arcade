@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-#include "maths.h"
-#include "hh_entity.h"
-
-bool hh_collision(const vec2& environment, const vec2& entity){
-    
-}
-=======
 #include <stdbool.h>
 
 #include "hh_entity.h"
@@ -47,4 +39,3 @@ void hh_solve_collision(vec2* pos_environment, hh_entity* entity){
     }
 }
 
->>>>>>> 458d620a4ae17c42e97413a49db6c1c5f53393e5

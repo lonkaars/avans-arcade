@@ -81,8 +81,8 @@ compile_commands.json: makefile stm32.mk ds.mk
 
 PHONY += format
 format:
-	clang-format -i $(LOCAL_SRCS)
-	clang-tidy --fix-errors $(LOCAL_SRCS)
+	clang-format -i $(LOCAL_SRCS) $(DESKTOP_SRCS)
+	clang-tidy --fix-errors $(LOCAL_SRCS) $(DESKTOP_SRCS)
 
 PHONY += clean
 clean:

@@ -1,9 +1,9 @@
 #pragma once
-
+#include <stdint.h>
 // #include <math.h>
 
 typedef struct {
-    u_int32_t x,y;
+    uint32_t x,y;
 } vec2;
 
 typedef vec2 vec_cen;//centered

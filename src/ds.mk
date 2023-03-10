@@ -10,5 +10,6 @@ endif
 DESKTOP_SRCS += ppusim/sim.c \
 								ppusim/mem.c \
 								ppusim/pixel.c \
-								ppusim/work.c
-
+								ppusim/work.c \
+								ds.c \
+						    ppusim/input.c
