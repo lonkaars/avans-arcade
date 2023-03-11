@@ -32,6 +32,7 @@ void hh_ppu_load_tilemap() {
 	char* filename = "tiles.bin";
 	FILE* fp = fopen(filename,"rb");
 	if (!fp){
+		printf("File error!");
 		return;//error
 	}
 
