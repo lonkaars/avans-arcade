@@ -1,3 +1,4 @@
+#pragma once
 //deal with loading/saving the correct level
 
 /** @brief  */
