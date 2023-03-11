@@ -14,7 +14,7 @@ entity ppu is port(
 	DATA : in std_logic_vector(PPU_RAM_BUS_DATA_WIDTH-1 downto 0);
 	R,G,B : out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0);
 	NVSYNC, NHSYNC : out std_logic; -- native VGA out
-	TVSYNC, TVBLANK, THSYNC, THBLANK : out std_logic); -- tiny VGA out
+	TVBLANK, THBLANK : out std_logic); -- tiny VGA out
 end ppu;
 
 architecture Behavioral of ppu is
@@ -189,7 +189,7 @@ architecture Behavioral of ppu is
 	signal BG_SHIFT_X : std_logic_vector(PPU_POS_H_WIDTH-1 downto 0);
 	signal BG_SHIFT_Y : std_logic_vector(PPU_POS_V_WIDTH-1 downto 0);
 	signal FG_FETCH : std_logic;
-	signal TINY_VBLANK, TINY_VSYNC, TINY_HBLANK, TINY_HSYNC,
+	signal TINY_VBLANK, TINY_HBLANK,
 	       NATIVE_VSYNC, NATIVE_HSYNC : std_logic;
 begin
 	SYSCLK <= CLK100;
@@ -205,9 +205,7 @@ begin
 	PAL_AI <= (others => '0');
 
 	TVBLANK <= TINY_VBLANK;
-	TVSYNC <= TINY_VSYNC;
 	THBLANK <= TINY_HBLANK;
-	THSYNC <= TINY_HSYNC;
 	NVSYNC <= NATIVE_VSYNC;
 	NHSYNC <= NATIVE_HSYNC;
 
@@ -334,9 +332,9 @@ begin
 		RESET => SYSRST,
 		X => X,
 		Y => Y,
-		VSYNC => TINY_VSYNC,
+		VSYNC => open,
 		VBLANK => TINY_VBLANK,
-		HSYNC => TINY_HSYNC,
+		HSYNC => open,
 		HBLANK => TINY_HBLANK);
 
 	native_vga_signal_generator : component ppu_vga_native port map( -- native vga signal generator (upscaler)
