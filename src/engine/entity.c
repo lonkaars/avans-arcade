@@ -1,7 +1,7 @@
 #include <stdbool.h>
 
-#include "hh_entity.h"
-#include "maths.h"
+#include "engine/hh_entity.h"
+#include "engine/maths.h"
 
 /*
     PLAYER: (pos on X)

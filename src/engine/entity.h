@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-#include "maths.h"
+#include "engine/maths.h"
 
 typedef struct {
     vec2 pos, vec;
