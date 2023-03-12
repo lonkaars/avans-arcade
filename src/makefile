@@ -31,7 +31,8 @@ LOCAL_SRCS += main.c \
 							ppu/internals.c \
 							ppu/ppu.c \
 							demo.c \
-							engine/engine.c
+							engine/engine.c \
+							engine/draw_screen.c
 
 CFLAGS += $(SHARED_FLAGS)
 LFLAGS += $(SHARED_FLAGS)
