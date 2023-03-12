@@ -48,15 +48,56 @@ architecture Behavioral of ppu_dispctl is
 	signal U_POS_Y : unsigned(PPU_SCREEN_T_POS_Y_WIDTH-1 downto 0) := (others => '0'); -- upscaled tiny y position
 	signal N_POS_X : unsigned(PPU_SCREEN_N_POS_X_WIDTH-1 downto 0) := (others => '0'); -- native x position
 	signal N_POS_Y : unsigned(PPU_SCREEN_N_POS_Y_WIDTH-1 downto 0) := (others => '0'); -- native y position
-	signal TMP_X : std_logic_vector(PPU_POS_H_WIDTH-1 downto 0) := (others => '0'); -- tiny screen pixel x
-	signal TMP_Y : std_logic_vector(PPU_POS_V_WIDTH-1 downto 0) := (others => '0'); -- tiny screen pixel y
-	signal TMP_RO, TMP_GO, TMP_BO : std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0) := (others => '0'); -- VGA color out
-	signal TMP_THBLANK, TMP_TVBLANK : std_logic := '0'; -- tiny sync signals
 
 	signal NACTIVE, NHACTIVE, NVACTIVE : std_logic := '0';
 	signal TACTIVE, THACTIVE, TVACTIVE : std_logic := '0';
 begin
-	-- native (TODO: +upscaled) VCOUNT and HCOUNT
+	-- tiny VCOUNT and HCOUNT
+	process(TPIXCLK, RESET)
+		variable TMP_THCOUNT, TMP_TVCOUNT : unsigned(PPU_VGA_SIGNAL_PIXEL_WIDTH-1 downto 0) := (others => '0');
+		variable TMP_THBLANK, TMP_TVBLANK : std_logic := '0';
+	begin
+		TVCOUNT <= TMP_TVCOUNT;
+		THCOUNT <= TMP_THCOUNT;
+
+		T_POS_X <= resize(TMP_THCOUNT - (PPU_VGA_H_PORCH_BACK / 4), T_POS_X'length) when N_POS_Y(0) = to_unsigned(PPU_VGA_V_PORCH_BACK, 1)(0) else
+		           resize(TMP_THCOUNT - ((PPU_VGA_H_PORCH_BACK + PPU_VGA_H_BLANK) / 4), T_POS_X'length); -- divide tiny x equally over two native scanlines
+		T_POS_Y <= resize(TMP_TVCOUNT - (PPU_VGA_V_PORCH_BACK / 2), T_POS_Y'length);
+
+		THBLANK <= TMP_THBLANK;
+		TVBLANK <= TMP_TVBLANK;
+
+		-- scanline buffer data in
+		DATA_I <= RI & GI & BI;
+		ADDR_I <= std_logic_vector(resize(T_POS_X, ADDR_I'length)) when T_POS_Y(0) = '0' else std_logic_vector(resize(T_POS_X, ADDR_I'length) + PPU_SCREEN_WIDTH);
+
+		if RESET = '1' then
+			TMP_THCOUNT := (others => '0');
+			TMP_TVCOUNT := (others => '0');
+			TMP_THBLANK := '0';
+			TMP_TVBLANK := '0';
+		elsif rising_edge(TPIXCLK) then
+			TMP_THCOUNT := TMP_THCOUNT + 1;
+			if TMP_THCOUNT >= PPU_VGA_H_TOTAL then
+				TMP_THCOUNT := (others => '0');
+
+				TMP_TVCOUNT := TMP_TVCOUNT + 1;
+				if TMP_TVCOUNT >= PPU_VGA_V_TOTAL then
+					TMP_TVCOUNT := (others => '0');
+				end if;
+
+				-- vertical display area (active)
+				if TMP_TVCOUNT = PPU_VGA_V_PORCH_BACK then TMP_TVBLANK := '0'; end if;
+				if TMP_TVCOUNT = PPU_VGA_V_PORCH_BACK + PPU_VGA_V_ACTIVE then TMP_TVBLANK := '1'; end if;
+			end if;
+
+			-- horizontal display area (active)
+			if TMP_THCOUNT = PPU_VGA_H_PORCH_BACK then TMP_THBLANK := '0'; end if;
+			if TMP_THCOUNT = PPU_VGA_H_PORCH_BACK + PPU_VGA_H_ACTIVE then TMP_THBLANK := '1'; end if;
+		end if;
+	end process;
+
+	-- native (+upscaled) VCOUNT and HCOUNT
 	process(NPIXCLK, RESET)
 		variable TMP_NHCOUNT, TMP_NVCOUNT : unsigned(PPU_VGA_SIGNAL_PIXEL_WIDTH-1 downto 0) := (others => '0');
 		variable TMP_NHACTIVE, TMP_NVACTIVE : std_logic := '0';
@@ -71,6 +112,14 @@ begin
 		NHSYNC <= TMP_NHSYNC;
 		N_POS_X <= resize(TMP_NHCOUNT - PPU_VGA_H_PORCH_BACK, N_POS_X'length) when TMP_NHACTIVE = '1' else (others => '0');
 		N_POS_Y <= resize(TMP_NVCOUNT - PPU_VGA_V_PORCH_BACK, N_POS_Y'length) when TMP_NVACTIVE = '1' else (others => '0');
+		U_POS_X <= resize(N_POS_X(N_POS_X'length-1 downto 1), U_POS_X'length);
+		U_POS_Y <= resize(N_POS_Y(N_POS_Y'length-1 downto 1), U_POS_Y'length);
+
+		-- scanline buffer data out
+		ADDR_O <= std_logic_vector(resize(U_POS_X, ADDR_I'length)) when U_POS_Y(0) = '0' else std_logic_vector(resize(U_POS_X, ADDR_I'length) + PPU_SCREEN_WIDTH);
+		RO <= DATA_O(11 downto 8) when NACTIVE = '1' else (others => '0');
+		GO <= DATA_O(7 downto 4) when NACTIVE = '1' else (others => '0');
+		BO <= DATA_O(3 downto 0) when NACTIVE = '1' else (others => '0');
 
 		if RESET = '1' then
 			TMP_NHCOUNT := (others => '0');
@@ -110,47 +159,8 @@ begin
 		end if;
 	end process;
 
-	-- tiny VCOUNT and HCOUNT
-	process(TPIXCLK, RESET)
-		variable TMP_THCOUNT, TMP_TVCOUNT: unsigned(PPU_VGA_SIGNAL_PIXEL_WIDTH-1 downto 0) := (others => '0');
-	begin
-		TVCOUNT <= TMP_TVCOUNT;
-		THCOUNT <= TMP_THCOUNT;
-		if RESET = '1' then
-			TMP_THCOUNT := (others => '0');
-			TMP_TVCOUNT := (others => '0');
-		elsif rising_edge(TPIXCLK) then
-			TMP_THCOUNT := TMP_THCOUNT + 1;
-			if TMP_THCOUNT >= PPU_VGA_H_TOTAL then
-				TMP_THCOUNT := (others => '0');
-
-				TMP_TVCOUNT := TMP_TVCOUNT + 1;
-				if TMP_TVCOUNT >= PPU_VGA_V_TOTAL then
-					TMP_TVCOUNT := (others => '0');
-				end if;
-			end if;
-		end if;
-	end process;
-
-	-- T_POS_X <= resize(THCOUNT - (PPU_VGA_H_PORCH_BACK / 4), T_POS_X'length) when N_POS_Y(0) = to_unsigned(PPU_VGA_V_PORCH_BACK, 1)(0) else
-	--            resize(THCOUNT - ((PPU_VGA_H_PORCH_BACK + PPU_VGA_H_BLANK) / 4), T_POS_X'length); -- divide tiny x equally over two native scanlines
-	-- T_POS_Y <= resize(TVCOUNT - (PPU_VGA_V_PORCH_BACK / 2), T_POS_Y'length);
-
-	-- DATA_I <= RI & GI & BI;
-	-- ADDR_I <= std_logic_vector(resize(T_POS_X, ADDR_I'length)) when T_POS_Y(0) = '0' else std_logic_vector(resize(T_POS_X, ADDR_I'length) + PPU_SCREEN_WIDTH);
-
-	-- TMP_X <= std_logic_vector(T_POS_X) when NACTIVE = '1' else (others => '0');
-	-- TMP_Y <= std_logic_vector(T_POS_Y) when NACTIVE = '1' else (others => '0');
-
-	U_POS_X <= resize(N_POS_X(N_POS_X'length-1 downto 1), U_POS_X'length);
-	U_POS_Y <= resize(N_POS_Y(N_POS_Y'length-1 downto 1), U_POS_Y'length);
-	-- U_POS_X <= resize(N_POS_X / 2, U_POS_X'length);
-	-- U_POS_Y <= resize(N_POS_Y / 2, U_POS_Y'length);
-
-	ADDR_O <= std_logic_vector(resize(U_POS_X, ADDR_I'length)) when U_POS_Y(0) = '0' else std_logic_vector(resize(U_POS_X, ADDR_I'length) + PPU_SCREEN_WIDTH);
-	TMP_RO <= DATA_O(11 downto 8) when NACTIVE = '1' else (others => '0');
-	TMP_GO <= DATA_O(7 downto 4) when NACTIVE = '1' else (others => '0');
-	TMP_BO <= DATA_O(3 downto 0) when NACTIVE = '1' else (others => '0');
+	X <= std_logic_vector(T_POS_X) when NACTIVE = '1' else (others => '0');
+	Y <= std_logic_vector(T_POS_Y) when NACTIVE = '1' else (others => '0');
 
 	scanline_buffer : component ppu_dispctl_slbuf port map(
 		clka => SYSCLK,
@@ -169,25 +179,4 @@ begin
     reset => RESET,
     clk_out1 => NPIXCLK,
     clk_out2 => TPIXCLK);
-
-	process(NPIXCLK, RESET)
-	begin
-		if RESET = '1' then
-			X <= (others => '0');
-			Y <= (others => '0');
-			RO <= (others => '0');
-			GO <= (others => '0');
-			BO <= (others => '0');
-			THBLANK <= '0';
-			TVBLANK <= '0';
-		elsif rising_edge(NPIXCLK) then
-			X <= TMP_X;
-			Y <= TMP_Y;
-			RO <= TMP_RO;
-			GO <= TMP_GO;
-			BO <= TMP_BO;
-			THBLANK <= TMP_THBLANK;
-			TVBLANK <= TMP_TVBLANK;
-		end if;
-	end process;
 end Behavioral;
