@@ -13,7 +13,7 @@ end ppu_dispctl_demo;
 
 architecture Behavioral of ppu_dispctl_demo is
 	component ppu_dispctl port( -- display controller
-		CLK : in std_logic; -- system clock
+		SYSCLK : in std_logic; -- system clock
 		RESET : in std_logic;
 
 		X : out std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- tiny screen pixel x
@@ -27,7 +27,7 @@ architecture Behavioral of ppu_dispctl_demo is
 	end component;
 begin
 	display_controller : component ppu_dispctl port map(
-		CLK => CLK100,
+		SYSCLK => CLK100,
 		RESET => RESET,
 		PREADY => '1',
 		X => open,

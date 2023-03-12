@@ -1,3 +1,6 @@
+create_clock -period 10.000 -name CLK100 -waveform {0.000 5.000} [get_ports CLK100]
+set_input_delay -clock [get_clocks CLK100] -min -add_delay 2.000 [get_ports RESET]
+set_input_delay -clock [get_clocks CLK100] -max -add_delay 3.000 [get_ports RESET]
 set_property IOSTANDARD LVCMOS33 [get_ports {B[3]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {B[2]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {B[1]}]
@@ -33,3 +36,5 @@ set_property PACKAGE_PIN G19 [get_ports {R[0]}]
 
 set_property PACKAGE_PIN T18 [get_ports RESET]
 set_property IOSTANDARD LVCMOS33 [get_ports RESET]
+
+
