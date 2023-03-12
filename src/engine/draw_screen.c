@@ -21,7 +21,7 @@ uint8_t hh_world_to_tile(vec2 pos){
 
 // remeber old value to know which part to update.
 vec2 previousViewport = { .x = 0, .y = 0 };
-void hh_draw_screen(vec2 viewport){
+void hh_draw_screen(vec_cor viewport){
 	if (viewport.x == previousViewport.x && viewport.y == previousViewport.y) return;
 	
 	hh_ppu_update_aux((hh_s_ppu_loc_aux){
