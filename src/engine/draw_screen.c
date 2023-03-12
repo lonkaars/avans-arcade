@@ -1,4 +1,5 @@
-#include "draw_screen.h"
+#include "engine/draw_screen.h"
+#include "engine/sprite_controller.h"
 
 uint8_t hh_world_to_tile(vec2 pos){
 	
@@ -37,8 +38,8 @@ void hh_draw_screen(vec_cor viewport){
 
 void hh_setup_screen(){
 	//(HH_map_size_X*HH_map_size_Y)
-	int size = 3200; // max X = 40 en max Y = 80
-	FILE* level = fopen("../test/bin/test_map.bin", "rb"); /* open binary file */
+	int size = 2400; // max X = 40 en max Y = 80
+	FILE* level = fopen("../test/bin/level1_test.bin", "rb"); /* open binary file */
 	if (!level) { /* check if file opened successfully */
 		fprintf(stderr, "Error: Failed to open file.\n");
 		return;
@@ -53,7 +54,7 @@ void hh_setup_screen(){
 		hh_ppu_update_background(BAM_index, (hh_s_ppu_loc_bam_entry){
 			.horizontal_flip = false,
 			.vertical_flip   = false,
-			.palette_index   = tile[BAM_index]+1,
+			.palette_index   = hh_get_palette(tile[BAM_index]),
 			.tilemap_index   = tile[BAM_index],
 		});
 	}

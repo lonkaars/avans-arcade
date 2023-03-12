@@ -11,10 +11,10 @@
 
 //TODO: pack data inside of sprite_palette LUT
 //HH_PPU_PALETTE_COUNT
-#define HH_SPRITE_COUNT 32
+#define HH_SPRITE_COUNT 40
 #define HH_PAL_IDX_SKY 0
 #define HH_PAL_IDX_BRICK 1
-uint8_t hh_g_sprite_palette[HH_SPRITE_COUNT] = {
+const static uint8_t hh_g_sprite_palette[HH_SPRITE_COUNT] = {
 	0,1,1,1,1,1,1,1,1,1, //1+9
 	1,1,1,1,1,1,1,1,1,1, //6+4
 	1,1,1,1,1,1,1,1,1,	//9
@@ -23,7 +23,7 @@ uint8_t hh_g_sprite_palette[HH_SPRITE_COUNT] = {
 };
 
 
-hh_ppu_loc_palette_table_t hh_g_palette = {
+const static hh_ppu_loc_palette_table_t hh_g_palette = {
 	{//palette info here
 		{0x1,0x2,0x3},
 		{0x0,0x0,0x0},
@@ -88,17 +88,19 @@ hh_ppu_loc_palette_table_t hh_g_palette = {
 		{0x0,0x0,0x0},
 		{0x0,0x0,0x0}},
 	{
+		{0x0,0xf,0xf},
 		{0xf,0xf,0xf},
-		{0xf,0xf,0xf},
-		{0x0,0x0,0x0},
-		{0x0,0x0,0x0},
-		{0x0,0x0,0x0},
-		{0x0,0x0,0x0},
-		{0x0,0x0,0x0},
+		{0xf,0x0,0xf},
+		{0xf,0xf,0x0},
+		{0xf,0x0,0x0},
+		{0x0,0xf,0x0},
+		{0x0,0x0,0xf},
 		{0x0,0x0,0x0}}
 };
 
-/** @brief return palette index that belongs to tilemap index */
-uint8_t hh_get_palette(uint16_t tile_idx);
+void hh_setup_palettes();
 
-bool hh_colidable(uint16_t tile_idx);
+/** @brief return palette index that belongs to tilemap index */
+uint8_t hh_get_palette(uint8_t tile_idx);
+
+bool hh_colidable(uint8_t tile_idx);

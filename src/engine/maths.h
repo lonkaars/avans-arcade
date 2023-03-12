@@ -9,6 +9,9 @@ typedef struct {
 typedef vec2 vec_cen;//centered
 typedef vec2 vec_cor;//left upper corner
 
+vec_cor vec_cen2cor(vec_cen in, vec2 halfDistance);
+vec_cor vec_cor2cen(vec_cen in, vec2 halfDistance);
+
 //fixed point at decimal 7lsb (world positions in pixels (with fixed decimal point))
 #define HH_MATH_FIXED_POINT 7
 
