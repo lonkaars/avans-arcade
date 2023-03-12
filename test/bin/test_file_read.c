@@ -18,19 +18,20 @@ void printData(uint8_t* in) {
 void hh_ppu_load_tilemap() {
 
 	
-	char* filename = "tiles.bin";
+	char* filename = "slime.bin";
 	FILE* fp = fopen(filename,"rb");
 	if (!fp){
 		return;//error
 	}
 
+	int sprite_size = (16 * 16);
 	fseek(fp, 0, SEEK_END);
-	int _size = ftell(fp)/HH_PPU_VRAM_TMM_SPRITE_SIZE;
-	fseek(fp, 0, 0);
+	int _size = ftell(fp)/sprite_size;
+	rewind(fp);
 	// printf("%i",_size);
 	for (int i = 0; i < _size; i++) {
-		uint8_t data[HH_PPU_VRAM_TMM_SPRITE_SIZE];
-		fread(data,HH_PPU_VRAM_TMM_SPRITE_SIZE,1,fp);
+		uint8_t data[sprite_size];
+		fread(data,1,sprite_size,fp);
 		
 		printData(data);
 	}
