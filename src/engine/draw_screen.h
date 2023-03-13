@@ -2,7 +2,7 @@
 
 
 // every function call for drawing the screen goes here.
-#include "../engine/maths.h"
+#include "engine/maths.h"
 #include "ppu/ppu.h"
 
 #include <stdio.h>

@@ -1,12 +1,18 @@
 #include <math.h>
 
 #include "demo.h"
-#include "entity.h"
 #include "input.h"
+#include "entity.h"
 #include "ppu/ppu.h"
 
-#define HH_DEMO_BALL_COUNT 1
-hh_s_ppu_loc_fam_entry g_hh_demo_balls[HH_DEMO_BALL_COUNT];
+#include "engine/maths.h"
+#include "engine/camera.h"
+#include "engine/entity.h"
+#include "engine/draw_screen.h"
+#include "engine/player_controller.h"
+#include "engine/sprite_controller.h"
+
+
 
 hh_s_entity_player g_hh_player_1 = {
 	.pos_x		 = 31000, // 0b0000 0001 0011 0110
@@ -32,64 +38,26 @@ uint8_t g_hh_data_send[3];
 int g_hh_tile_x;
 int g_hh_tile_y;
 
+typedef struct {
+	vec2 pos;
+	uint8_t idx;
+}hh_s_tiles;
+
+
+hh_entity hh_g_player, hh_g_player_new;
 void hh_demo_setup() {
-	// load sprites
-	hh_ppu_update_sprite(0, HH_DBG_SPRITE_BALL);
-	hh_ppu_update_sprite(1, HH_DBG_SPRITE_CHECKERBOARD);
 
-	// background pattern
-	hh_ppu_update_color(0, 1, (hh_ppu_rgb_color_t){0x4, 0x4, 0x4});
-	for (unsigned i = 0; i < HH_PPU_BG_CANVAS_TILES_H * HH_PPU_BG_CANVAS_TILES_V; i++) {
-		hh_ppu_update_background(i, (hh_s_ppu_loc_bam_entry){
-										.horizontal_flip = false,
-										.vertical_flip	 = false,
-										.palette_index	 = 0,
-										.tilemap_index	 = 1,
-									});
-	}
+	hh_setup_palettes();
+	hh_setup_screen();
 
-	// cool colors
-	hh_ppu_update_color(1, 1, (hh_ppu_rgb_color_t){0xf, 0x0, 0xf});
-	hh_ppu_update_color(2, 1, (hh_ppu_rgb_color_t){0xf, 0xf, 0xf});
-	hh_ppu_update_color(3, 1, (hh_ppu_rgb_color_t){0xf, 0x0, 0x0});
-	hh_ppu_update_color(4, 1, (hh_ppu_rgb_color_t){0x0, 0xf, 0xf});
-	hh_ppu_update_color(5, 1, (hh_ppu_rgb_color_t){0x0, 0x0, 0xf});
-
-	// balls
-	for (unsigned i = 0; i < HH_DEMO_BALL_COUNT; i++) {
-		g_hh_demo_balls[i].horizontal_flip = false;
-		g_hh_demo_balls[i].vertical_flip   = false;
-		g_hh_demo_balls[i].palette_index   = i + 1;
-		g_hh_demo_balls[i].tilemap_index   = 0;
-	}
 }
 
 void hh_demo_loop(unsigned long frame) {
-	hh_player_movement();
-	// input testing (no hitbox stuff)
-	// g_hh_player_1.pos_x  += ((-1 * g_hh_controller_p1.dpad_left) + (1 * g_hh_controller_p1.dpad_right)) * g_hh_player_1.speed; // -1 = L || 1 == R
-	// g_hh_player_1.pos_y  += ((-1 * g_hh_controller_p1.dpad_up) + (1 * g_hh_controller_p1.dpad_down)) * g_hh_player_1.speed; // -1 = D || 1 == U
 
+	// hh_player_movement();
 
-	// adjust map size
-	g_hh_pos_x = g_hh_player_1.pos_x / 100;
-	g_hh_pos_y = g_hh_player_1.pos_y / 100;
+	hh_player_actions();
 
-
-
-
-	// update player sprite on ppu
-	g_hh_demo_balls[0].position_x = g_hh_pos_x;
-	g_hh_demo_balls[0].position_y = g_hh_pos_y;
-	hh_ppu_update_foreground(0, g_hh_demo_balls[0]);
-
-	// set background pattern position
-	hh_ppu_update_aux((hh_s_ppu_loc_aux){
-		.bg_shift_x = (frame / 2) % HH_PPU_SPRITE_WIDTH,
-		.bg_shift_y = (frame / 8) % HH_PPU_SPRITE_HEIGHT,
-		.fg_fetch	= 0,
-		.sysreset	= 0,
-	});
 }
 
 // void sendData(uint8_t address, uint16_t data) {
