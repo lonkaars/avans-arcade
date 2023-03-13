@@ -33,6 +33,7 @@ LOCAL_SRCS += main.c \
 							demo.c \
 							engine/engine.c \
 							engine/sprite_controller.c \
+							engine/player_controller.c \
 							engine/draw_screen.c \
 							engine/camera.c \
 							engine/maths.c \

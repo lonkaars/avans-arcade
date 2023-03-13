@@ -1,7 +1,6 @@
 #include <stdint.h>
 
 #include "engine/sprite_controller.h"
-// #include "engine/maths.h"
 #include "ppu/types.h"
 #include "ppu/consts.h"
 #include "ppu/ppu.h"
@@ -16,4 +15,8 @@ void hh_setup_palettes(){
 			hh_ppu_update_color(idx,col,hh_g_palette[idx][col]);
 		}
 	}	
+}
+
+bool hh_colidable(uint8_t tile_idx){
+	return (hh_get_palette(tile_idx) != 0);
 }

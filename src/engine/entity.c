@@ -1,6 +1,6 @@
 #include <stdbool.h>
 
-#include "engine/hh_entity.h"
+#include "engine/entity.h"
 #include "engine/maths.h"
 
 /*
@@ -12,30 +12,35 @@
 
 */
 
-bool hh_collision(vec2* pos1, vec2* pos2){
-    if (pos2->x == CLAMP(pos2->x,pos1->x,pos1->x+1.0f)){// hit x
+bool hh_collision(vec_cor pos1, vec2 pos2){
+    if (pos2.x == CLAMP(pos2.x, pos1.x, pos1.x+16)){// hit x
         return true;
     }
 
-    if (pos2->y == CLAMP(pos2->y,pos1->y,pos1->y+0.99f)){// hit y
+    if (pos2.y == CLAMP(pos2.y, pos1.y, pos1.y+16)){// hit y
         return true;
     }
     return false;
 }
 
-void hh_solve_collision(vec2* pos_environment, hh_entity* entity){
-    if (entity->vec.x > 0.0f){
-        entity->pos.x = MIN(entity->pos.x,pos_environment->x-1.0f);
-        entity->vec.x = 0.0f;
-    } else if (entity->vec.x < 0.0f){
-        entity->pos.x = MAX(entity->pos.x,pos_environment->x+1.0f);
-        entity->vec.x = 0.0f;
-    } else if (entity->vec.y > 0.0f){
-        entity->pos.x = MIN(entity->pos.x,pos_environment->x-1.0f);
-        entity->vec.x = 0.0f;
-    } else if (entity->vec.y < 0.0f){
-        entity->pos.x = MAX(entity->pos.x,pos_environment->x+1.0f);
-        entity->vec.x = 0.0f;
-    }
+void hh_solve_collision(vec2 pos_environment, hh_entity* entity){
+	if (!hh_collision(pos_environment,entity->pos))
+		return;
+
+	printf("BONK!/n");
+	// if (entity->vec.y > 0){
+	// 	entity->pos.y = MAX(entity->pos.y,pos_environment.y);
+	// 	entity->vec.y = 0;
+	// } else {
+	// 	entity->pos.y = MIN(entity->pos.y,pos_environment.y);
+	// 	entity->vec.y = 0;
+	// }
+	// if (entity->vec.x <= 0){
+	// 	entity->pos.x = MIN(entity->pos.x,pos_environment.x-16);
+	// 	entity->vec.x = 0;
+	// } else {
+	// 	entity->pos.x = MAX(entity->pos.x,pos_environment.x+16);
+	// 	entity->vec.x = 0;
+	// } 
 }
 

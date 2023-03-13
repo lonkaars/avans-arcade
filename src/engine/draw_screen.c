@@ -3,20 +3,20 @@
 
 uint8_t hh_world_to_tile(vec2 pos){
 	
-    FILE* level = fopen("../test/bin/test_map.bin", "rb"); /* open binary file */
+    FILE* level = fopen("../test/bin/level1_test.bin", "rb"); /* open binary file */
     if (!level) { /* check if file opened successfully */
         fprintf(stderr, "Error: Failed to open file.\n");
         return 0;
     }
-	int index = (pos.y + pos.x);
+	int index = ((pos.y/16)*40 + pos.x/16);//TODO: remove magic number(s)
 	fseek(level, (index * sizeof(int)) + sizeof(int), SEEK_SET);
-	int* tile = (int*)malloc(sizeof(int));
-   fread(tile, sizeof(int), 1, level); // read 1 tile from binary
+	int tile;// = (int*)malloc(sizeof(int));
+   fread(&tile, sizeof(int), 1, level); // read 1 tile from binary
 
 	fclose(level);
-	int val = *tile;
-	free(tile);
-	return val;
+	// int val = tile;
+	// free(tile);
+	return tile;
 }
 
 
@@ -26,8 +26,8 @@ void hh_draw_screen(vec_cor viewport){
 	if (viewport.x == previousViewport.x && viewport.y == previousViewport.y) return;
 	
 	hh_ppu_update_aux((hh_s_ppu_loc_aux){
-		.bg_shift_x = viewport.x*HH_PPU_SPRITE_WIDTH,
-		.bg_shift_y = viewport.y*HH_PPU_SPRITE_HEIGHT,
+		.bg_shift_x = viewport.x,
+		.bg_shift_y = viewport.y,
 		.fg_fetch	= 0,
 		.sysreset	= 0,
 	});

@@ -32,7 +32,7 @@ void hh_ppu_load_tilemap() {
 	char* filename = "../test/bin/tiles.bin";
 	FILE* fp = fopen(filename,"rb");
 	if (!fp){
-		fprintf(stderr,"File error!");
+		fprintf(stderr,"Error: Failed to load tiles.");
 		return;//error
 	}
 	int sprite_size = (HH_PPU_SPRITE_WIDTH * HH_PPU_SPRITE_HEIGHT);

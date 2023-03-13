@@ -3,11 +3,13 @@
 // #include <math.h>
 
 typedef struct {
-    uint32_t x,y;
+	int32_t x,y;
 } vec2;
 
 typedef vec2 vec_cen;//centered
 typedef vec2 vec_cor;//left upper corner
+
+vec2 vec_add(vec2 a, vec2 b);
 
 vec_cor vec_cen2cor(vec_cen in, vec2 halfDistance);
 vec_cor vec_cor2cen(vec_cen in, vec2 halfDistance);
