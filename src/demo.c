@@ -9,11 +9,10 @@
 #include "engine/camera.h"
 #include "engine/entity.h"
 #include "engine/draw_screen.h"
+#include "engine/player_controller.h"
 #include "engine/sprite_controller.h"
 
 
-#define HH_DEMO_BALL_COUNT 1
-hh_s_ppu_loc_fam_entry g_hh_demo_balls[HH_DEMO_BALL_COUNT];
 
 hh_s_entity_player g_hh_player_1 = {
 	.pos_x		 = 31000, // 0b0000 0001 0011 0110
@@ -47,207 +46,17 @@ typedef struct {
 
 hh_entity hh_g_player, hh_g_player_new;
 void hh_demo_setup() {
-#if 0
-	// load sprites
-	// hh_ppu_update_sprite(0, HH_DBG_SPRITE_BALL);
-	// hh_ppu_update_sprite(1, HH_DBG_SPRITE_CHECKERBOARD);
-	hh_ppu_update_sprite(1, HH_SQUARE);
 
-	// background pattern
-	hh_ppu_update_color(0, 1, (hh_ppu_rgb_color_t){0x4, 0x4, 0x4});
-	for (unsigned i = 0; i < HH_PPU_BG_CANVAS_TILES_H * HH_PPU_BG_CANVAS_TILES_V; i++) {
-		hh_ppu_update_background(i, (hh_s_ppu_loc_bam_entry){
-										.horizontal_flip = false,
-										.vertical_flip	 = false,
-										.palette_index	 = 0,
-										.tilemap_index	 = 1,
-									});
-	}
-
-	// cool colors
-	// hh_ppu_update_color(1, 1, (hh_ppu_rgb_color_t){0xf, 0x0, 0xf});
-	// hh_ppu_update_color(2, 1, (hh_ppu_rgb_color_t){0xf, 0xf, 0xf});
-	// hh_ppu_update_color(3, 1, (hh_ppu_rgb_color_t){0xf, 0x0, 0x0});
-	// hh_ppu_update_color(4, 1, (hh_ppu_rgb_color_t){0x0, 0xf, 0xf});
-	// hh_ppu_update_color(5, 1, (hh_ppu_rgb_color_t){0x0, 0x0, 0xf});
-
-	for (int i = 0; i < 8; i++)
-	{
-		hh_ppu_update_color(1,i,HH_SLIME[i]);
-	}
-	
-
-	// balls
-#else
-	hh_g_player = (hh_entity){
-		.pos = {32,32},
-		.vec = {0,0},
-		.hp = 1,
-		.speed = 1,
-		.is_grounded = false
-	};
-
-	for (unsigned i = 0; i < HH_DEMO_BALL_COUNT; i++) {
-		g_hh_demo_balls[i].horizontal_flip = false;
-		g_hh_demo_balls[i].vertical_flip   = false;
-		g_hh_demo_balls[i].palette_index   = 7;
-		g_hh_demo_balls[i].tilemap_index   = 20;
-	}
 	hh_setup_palettes();
 	hh_setup_screen();
-#endif
+
 }
 
 void hh_demo_loop(unsigned long frame) {
 	// hh_player_movement();
 
-	// adjust map size
-	// g_hh_pos_x = g_hh_player_1.pos_x / 100;
-	// g_hh_pos_y = g_hh_player_1.pos_y / 100;
+	hh_player_actions();
 
-	// input testing (no hitbox stuff)
-	// g_hh_pos_x += (-1 * g_hh_controller_p1.dpad_left) + (1 * g_hh_controller_p1.dpad_right); // -1 = L || 1 == R
-	// g_hh_pos_y += (-1 * g_hh_controller_p1.dpad_up) + (1 * g_hh_controller_p1.dpad_down); // -1 = D || 1 == U
-
-
-
-	hh_g_player.vec = (vec2){.x = (-1 * g_hh_controller_p1.dpad_left) + (1 * g_hh_controller_p1.dpad_right),
-	.y = (-1 * g_hh_controller_p1.dpad_up) + (1 * g_hh_controller_p1.dpad_down) };
-	// const int8_t maa = 3;
-	// const int8_t mbb = -3;
-	// if (g_hh_controller_p1.dpad_up)
-
-	// if (g_hh_controller_p1.dpad_down)
-
-	// if (g_hh_controller_p1.dpad_left) {
-	// 	hh_g_player.vec.x += mbb;
-	// 	// g_hh_demo_balls[0].horizontal_flip = true;
-	// }
-	// if (g_hh_controller_p1.dpad_right) {
-	// 	hh_g_player.vec.x += maa;
-	// 	// g_hh_demo_balls[0].horizontal_flip = true;
-	// }
-	if (g_hh_controller_p1.button_primary /*&& hh_g_player.is_grounded*/) //JUMP
-		hh_g_player.vec.y += -6;
-	// // if (g_hh_controller_p1.button_secondary)
-
-
-	hh_g_player.vec.y += 1; //gravity
-
-
-	//END OF VECTOR CHANGES
-	// hh_g_player.vec.y = CLAMP(hh_g_player.vec.y,-32,32);
-	// hh_g_player.vec.x = CLAMP(hh_g_player.vec.x,-32,32);
-
-	hh_g_player_new.pos = (vec2){
-		.x = hh_g_player.pos.x + hh_g_player.vec.x,
-		.y = hh_g_player.pos.y + hh_g_player.vec.y,
-	};
-
-
-	
-
-	// const uint8_t empty = 0;
-	// hh_s_tiles tiles[9];
-	// const vec2 tile_offset[9] = {
-	// 	(vec2){-16,-16},(vec2){0,-16},(vec2){+16,-16},
-	// 	(vec2){-16,0},  (vec2){0,0},  (vec2){+16,0},
-	// 	(vec2){-16,+16},(vec2){0,+16},(vec2){+16,+16},
-	// };
-
-	// for (int i = 0; i < 9; i++) {
-	// 	vec2 temp_pos = vec_add(hh_g_player.pos, tile_offset[i]);
-	// 	temp_pos =(vec2){
-	// 		.x = temp_pos.x,
-	// 		.y = temp_pos.y,
-	// 	};
-	// 	hh_s_tiles tile = {
-	// 		.pos = temp_pos,
-	// 		.idx = hh_world_to_tile(temp_pos)
-	// 	};
-
-	// 	if(hh_colidable(tile.idx)) {
-	// 		tiles[i]=tile;
-	// 		// printf(" collidable near!");
-	// 	} else {
-	// 		tiles[i].idx = 0;
-	// 	}
-	// }
-	/*
-	012
-	345
-	678
-	*/
-	
-	// for (int i = 0; i < 9; i++)
-	// {
-	// 	if (tiles[i].idx != 0){
-	// 		hh_solve_collision(tiles[i].pos, &hh_g_player);
-	// 	}
-	// }
-
-	hh_g_player_new.is_grounded = false;
-
-	// solves x collision
-	if (hh_g_player.vec.x <= 0) {
-		if (hh_colidable(hh_world_to_tile((vec2){.x=hh_g_player_new.pos.x + 0, .y=hh_g_player.pos.y + 0})) || 
-			hh_colidable(hh_world_to_tile((vec2){.x=hh_g_player_new.pos.x + 0, .y=hh_g_player.pos.y + 15}))) {
-			hh_g_player_new.pos.x = (hh_g_player_new.pos.x & ~15) + 16,
-			hh_g_player_new.vec.x = 0;
-		}
-	} else {
-		if (hh_colidable(hh_world_to_tile((vec2){.x=hh_g_player_new.pos.x + 16, .y=hh_g_player.pos.y + 0})) || 
-			hh_colidable(hh_world_to_tile((vec2){.x=hh_g_player_new.pos.x + 16, .y=hh_g_player.pos.y + 15}))) {
-			hh_g_player_new.pos.x = hh_g_player_new.pos.x & ~15, // <-- magic comma, NOT TOUCHY
-			hh_g_player_new.vec.x = 0;
-		}
-	}
-
-	//solves y collision
-	if (hh_g_player.vec.y <= 0) {
-		if (hh_colidable(hh_world_to_tile((vec2){.x=hh_g_player_new.pos.x + 0, .y=hh_g_player_new.pos.y + 0})) || 
-			hh_colidable(hh_world_to_tile((vec2){.x=hh_g_player_new.pos.x + 0, .y=hh_g_player_new.pos.y + 15}))) {
-			hh_g_player_new.pos.y = (hh_g_player_new.pos.y & ~15) + 16,
-			hh_g_player_new.vec.y = 0;
-		}
-	} else {
-		if (hh_colidable(hh_world_to_tile((vec2){.x=hh_g_player_new.pos.x + 0, .y=hh_g_player_new.pos.y + 16})) || 
-			hh_colidable(hh_world_to_tile((vec2){.x=hh_g_player_new.pos.x + 16, .y=hh_g_player_new.pos.y + 15}))) {
-			hh_g_player_new.pos.y = hh_g_player_new.pos.y & ~15,
-			hh_g_player_new.vec.y = 0;
-			hh_g_player_new.is_grounded = true;
-		}
-	}
-
-	hh_g_player = hh_g_player_new;
-
-
-
-	vec_cor cam_pos;//value in tiles
-	// cam_pos = (vec2){0,0};
-	cam_pos = hh_update_camera(hh_g_player.pos,(vec2){0,0},(vec2){.x=20*16,.y=30*16});//TODO: remove magic number(s)
-	printf("%i, %i:%i, %i\n",hh_g_player.pos.x,hh_g_player.pos.y,cam_pos.x,cam_pos.y);
-	hh_draw_screen(cam_pos);
-	// update player sprite on ppu
-	g_hh_demo_balls[0].position_x = (hh_g_player.pos.x-cam_pos.x);
-	g_hh_demo_balls[0].position_y = hh_g_player.pos.y-cam_pos.y;
-	hh_ppu_update_foreground(0, g_hh_demo_balls[0]);
-
-	// for (int i = 0; i < HH_DEMO_BALL_COUNT; i++){
-	// 	g_hh_demo_balls[i].position_x = hh_g_player.pos.x +16*i;
-	// 	g_hh_demo_balls[i].position_y = hh_g_player.pos.y;
-	// 	hh_ppu_update_foreground(i, g_hh_demo_balls[i]);
-		
-	// }
-	
-
-	// set background pattern position
-	// hh_ppu_update_aux((hh_s_ppu_loc_aux){
-	// 	.bg_shift_x = (frame / 2) % HH_PPU_SPRITE_WIDTH,
-	// 	.bg_shift_y = (frame / 8) % HH_PPU_SPRITE_HEIGHT,
-	// 	.fg_fetch	= 0,
-	// 	.sysreset	= 0,
-	// });
 }
 
 // void sendData(uint8_t address, uint16_t data) {

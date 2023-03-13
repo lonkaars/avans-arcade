@@ -28,19 +28,19 @@ void hh_solve_collision(vec2 pos_environment, hh_entity* entity){
 		return;
 
 	printf("BONK!/n");
-	// if (entity->vec.y > 0){
+	// if (entity->vel.y > 0){
 	// 	entity->pos.y = MAX(entity->pos.y,pos_environment.y);
-	// 	entity->vec.y = 0;
+	// 	entity->vel.y = 0;
 	// } else {
 	// 	entity->pos.y = MIN(entity->pos.y,pos_environment.y);
-	// 	entity->vec.y = 0;
+	// 	entity->vel.y = 0;
 	// }
-	// if (entity->vec.x <= 0){
+	// if (entity->vel.x <= 0){
 	// 	entity->pos.x = MIN(entity->pos.x,pos_environment.x-16);
-	// 	entity->vec.x = 0;
+	// 	entity->vel.x = 0;
 	// } else {
 	// 	entity->pos.x = MAX(entity->pos.x,pos_environment.x+16);
-	// 	entity->vec.x = 0;
+	// 	entity->vel.x = 0;
 	// } 
 }
 
