@@ -18,7 +18,7 @@ hh_s_entity_player g_hh_player_1 = {
 	.pos_x		 = 31000, // 0b0000 0001 0011 0110
 	.pos_y		 = 21000,
 	.radius		 = 8,
-	.speed		 = 1,
+	.speed		 = 100,
 	.direction_x = 1,
 	.rotation	 = 8,
 	.in_air		 = false,
@@ -53,6 +53,7 @@ void hh_demo_setup() {
 }
 
 void hh_demo_loop(unsigned long frame) {
+
 	// hh_player_movement();
 
 	hh_player_actions();
@@ -72,7 +73,7 @@ void hh_demo_loop(unsigned long frame) {
 
 void hh_player_movement() {
 	int8_t directionX = (-1 * g_hh_controller_p1.dpad_left) + (1 * g_hh_controller_p1.dpad_right); // -1 = L || 1 == R
-	int8_t directionY = (-1 * g_hh_controller_p1.dpad_down) + (1 * g_hh_controller_p1.dpad_up);	   // -1 = D || 1 == U
+	int8_t directionY = (-1 * g_hh_controller_p1.dpad_up) + (1 * g_hh_controller_p1.dpad_down);	   // -1 = D || 1 == U
 
 	uint8_t i, j;
 	uint8_t rotation = 0; // 0-7
@@ -110,11 +111,11 @@ void hh_player_movement() {
 
 	if (g_hh_player_1.in_air == false && directionX != 0) {
 		if (directionX == 1) {
-			tileColX = ((g_hh_player_1.pos_x / 100) + g_hh_player_1.radius) / 20;
-			modTileX = (g_hh_player_1.pos_x + (100 * g_hh_player_1.radius)) % 2000;
+			tileColX = ((g_hh_player_1.pos_x / 100) + g_hh_player_1.radius) / 16;
+			modTileX = (g_hh_player_1.pos_x + (100 * g_hh_player_1.radius)) % 1600;
 		} else if (directionX == -1) {
-			tileColX = ((g_hh_player_1.pos_x / 100) - g_hh_player_1.radius) / 20;
-			modTileX = (g_hh_player_1.pos_x - (100 * g_hh_player_1.radius)) % 2000;
+			tileColX = ((g_hh_player_1.pos_x / 100) - g_hh_player_1.radius) / 16;
+			modTileX = (g_hh_player_1.pos_x - (100 * g_hh_player_1.radius)) % 1600;
 		}
 
 		if (HH_DEMO_HITBOX_TILEMAP[tileColY][tileColX + directionX] != 1) {
@@ -133,6 +134,11 @@ void hh_player_movement() {
 	{
 	}
 
+
+	if(directionY != 0)
+	{
+	//	g_hh_player_1.pos_y = g_hh_player_1.pos_y + (directionY * g_hh_player_1.speed * 2); // NEW x set
+	}
 	// collision map floor (y-axis) (falling)
 	//  if falling no jump press (implement)
 	/*
