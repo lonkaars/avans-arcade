@@ -3,7 +3,7 @@ RM = rm -f
 TARGET = main
 
 # platform is ds (desktop) or stm (stm32)
-PLATFORM = ds
+PLATFORM = stm
 # if your editor uses compile_commands.json for autocomplete, you should run `make compile_commands.json` again
 
 HOST=$(strip $(shell uname -o))
@@ -27,17 +27,7 @@ LFLAGS += -lm
 CFLAGS += $(if $(STM), -DHH_TARGET_STM32, )
 CFLAGS += $(if $(DESKTOP), -DHH_TARGET_DESKTOP, )
 
-LOCAL_SRCS += main.c \
-							ppu/internals.c \
-							ppu/ppu.c \
-							demo.c \
-							engine/engine.c \
-							engine/sprite_controller.c \
-							engine/player_controller.c \
-							engine/draw_screen.c \
-							engine/camera.c \
-							engine/maths.c \
-							engine/entity.c
+LOCAL_SRCS += main.c
 
 CFLAGS += $(SHARED_FLAGS)
 LFLAGS += $(SHARED_FLAGS)
