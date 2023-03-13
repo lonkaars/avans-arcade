@@ -5,20 +5,35 @@
 #include "input.h"
 #include "ppu/ppu.h"
 
-#define HH_DEMO_BALL_COUNT 1
+#define HH_DEMO_BALL_COUNT 2
 hh_s_ppu_loc_fam_entry g_hh_demo_balls[HH_DEMO_BALL_COUNT];
 
 hh_s_entity_player g_hh_player_1 = {
-	.pos_x		 = 31000, // 0b0000 0001 0011 0110
-	.pos_y		 = 21000,
-	.radius		 = 8,
+	.pos_x		 = 11000, 
+	.pos_y		 = 5000,
+	.radius		 = 4,
 	.speed		 = 100,
+	.air_speed   = 80,
 	.direction_x = 1,
+	.accelY 		 = 0,
 	.rotation	 = 8,
 	.in_air		 = false,
 };
 
+hh_s_entity_enemy g_hh_enemy_1 = {
+	.pos_x		 = 16000, 
+	.pos_y		 = 20000,
+	.radius		 = 4,
+	.speed		 = 100,
+	.direction_x = 1,
+	.accelY 		 = 0,
+	.in_air		 = false,
+};
+
 void hh_player_movement();
+
+int hh_background_collision_x(hh_s_entity_player tempEntity);
+hh_s_entity_player hh_background_collision_y_player(hh_s_entity_player tempEntity);
 
 uint16_t g_hh_pos_x; // 0b0000 0001 0011 0110
 uint16_t g_hh_pos_y;
@@ -68,7 +83,7 @@ void hh_demo_loop(unsigned long frame) {
 	hh_player_movement();
 	// input testing (no hitbox stuff)
 	// g_hh_player_1.pos_x  += ((-1 * g_hh_controller_p1.dpad_left) + (1 * g_hh_controller_p1.dpad_right)) * g_hh_player_1.speed; // -1 = L || 1 == R
-	// g_hh_player_1.pos_y  += ((-1 * g_hh_controller_p1.dpad_up) + (1 * g_hh_controller_p1.dpad_down)) * g_hh_player_1.speed; // -1 = D || 1 == U
+	g_hh_player_1.pos_y  += ((-1 * g_hh_controller_p1.dpad_up) + (1 * g_hh_controller_p1.dpad_down)) * g_hh_player_1.speed; // -1 = D || 1 == U
 
 
 	// adjust map size
@@ -76,12 +91,14 @@ void hh_demo_loop(unsigned long frame) {
 	g_hh_pos_y = g_hh_player_1.pos_y / 100;
 
 
-
-
 	// update player sprite on ppu
 	g_hh_demo_balls[0].position_x = g_hh_pos_x;
 	g_hh_demo_balls[0].position_y = g_hh_pos_y;
+
+	g_hh_demo_balls[1].position_x = 220;
+	g_hh_demo_balls[1].position_y = 220;
 	hh_ppu_update_foreground(0, g_hh_demo_balls[0]);
+	hh_ppu_update_foreground(1, g_hh_demo_balls[1]);
 
 	// set background pattern position
 	hh_ppu_update_aux((hh_s_ppu_loc_aux){
@@ -107,6 +124,12 @@ void hh_player_movement() {
 	int8_t directionX = (-1 * g_hh_controller_p1.dpad_left) + (1 * g_hh_controller_p1.dpad_right); // -1 = L || 1 == R
 	int8_t directionY = (-1 * g_hh_controller_p1.dpad_up) + (1 * g_hh_controller_p1.dpad_down);	   // -1 = D || 1 == U
 
+	if(g_hh_controller_p1.button_primary == 1 && g_hh_player_1.accelY == 0 && g_hh_player_1.in_air == false)
+	{
+		g_hh_player_1.accelY = 25;
+	}
+
+
 	uint8_t i, j;
 	uint8_t rotation = 0; // 0-7
 
@@ -124,63 +147,162 @@ void hh_player_movement() {
 			rotation++;
 		}
 	}
-	// direction calc
-	if (directionX != 0) // update direction if player is not idle
+	// X-axis calc
+	if (directionX != 0) // update direction and position if player is not idle 
 	{
 		g_hh_player_1.direction_x = directionX;
+		g_hh_player_1.pos_x = hh_background_collision_x(g_hh_player_1);
 	}
-	// collision map x-axis
 
+	
+	g_hh_player_1 = hh_background_collision_y_player(g_hh_player_1);
+
+}
+
+
+int hh_background_collision_x(hh_s_entity_player tempEntity){
 	// tile calc including radius and direction for background coliision
 
 	uint16_t tileColX;
-	uint16_t tileColY = (g_hh_player_1.pos_y / 100) / 16;
+	uint16_t tileColY = (tempEntity.pos_y / 100) / 8;
 	;
 
 	// remaining space between grid and exact
 	uint8_t modTileX;
-	uint8_t modTileY;
 
-	if (g_hh_player_1.in_air == false && directionX != 0) {
-		if (directionX == 1) {
-			tileColX = ((g_hh_player_1.pos_x / 100) + g_hh_player_1.radius) / 16;
-			modTileX = (g_hh_player_1.pos_x + (100 * g_hh_player_1.radius)) % 1600;
-		} else if (directionX == -1) {
-			tileColX = ((g_hh_player_1.pos_x / 100) - g_hh_player_1.radius) / 16;
-			modTileX = (g_hh_player_1.pos_x - (100 * g_hh_player_1.radius)) % 1600;
-		}
 
-		if (HH_DEMO_HITBOX_TILEMAP[tileColY][tileColX + directionX] != 1) {
-			g_hh_player_1.pos_x = g_hh_player_1.pos_x + (directionX * g_hh_player_1.speed); // NEW x set
-		}
-
-		else if (HH_DEMO_HITBOX_TILEMAP[tileColY][tileColX + directionX] == 1) {
-			if (modTileX < g_hh_player_1.speed) {
-				g_hh_player_1.pos_x = g_hh_player_1.pos_x + (directionX * modTileX); // NEW x set
+		
+	if (tempEntity.direction_x == 1) {
+		tileColX = ((tempEntity.pos_x / 100) + tempEntity.radius) / 8;
+		modTileX = 800 -((tempEntity.pos_x + (100 * tempEntity.radius)) % 800);
+	} else if (tempEntity.direction_x == -1) {
+		tileColX = ((tempEntity.pos_x / 100) - tempEntity.radius )/ 8;
+		modTileX = (tempEntity.pos_x - (100 * tempEntity.radius)) % 800;
+	}
+	
+	tileColY = (( tempEntity.pos_y / 100) + tempEntity.radius) / 8; //bottom of player box
+	
+	if (HH_DEMO_HITBOX_TILEMAP[tileColY][tileColX + tempEntity.direction_x] != 1) {
+		tileColY = (( tempEntity.pos_y / 100) - tempEntity.radius) / 8; //bottom of player box
+		if (HH_DEMO_HITBOX_TILEMAP[tileColY][tileColX + tempEntity.direction_x] != 1) {
+			if(tempEntity.in_air== true){
+				tempEntity.pos_x= tempEntity.pos_x + (tempEntity.direction_x * tempEntity.air_speed); // 80% of max speed if in air
 			} else {
-				g_hh_player_1.pos_x = g_hh_player_1.pos_x + (directionX * g_hh_player_1.speed); // NEW x set
+				tempEntity.pos_x= tempEntity.pos_x + (tempEntity.direction_x * tempEntity.speed); // 80% of max speed if in air
+			}
+		} else {
+			if(tempEntity.in_air == true){
+				if (modTileX < tempEntity.air_speed) {
+					tempEntity.pos_x = tempEntity.pos_x + (tempEntity.direction_x * modTileX); // NEW x set
+				} else {
+					tempEntity.pos_x= tempEntity.pos_x + (tempEntity.direction_x * tempEntity.air_speed); //
+				}
+			} else {
+				if (modTileX < g_hh_player_1.speed) {
+					tempEntity.pos_x= tempEntity.pos_x + (tempEntity.direction_x * modTileX); // NEW x set
+				} else {
+					tempEntity.pos_x = tempEntity.pos_x + (tempEntity.direction_x * tempEntity.speed); // 
+				}
 			}
 		}
-
-	} else // if in air different all borders have to be checked
-	{
+	} else if (HH_DEMO_HITBOX_TILEMAP[tileColY][tileColX + tempEntity.direction_x] == 1) {
+		if(tempEntity.in_air == true){
+			if (modTileX < tempEntity.air_speed) {
+				tempEntity.pos_x = tempEntity.pos_x + (tempEntity.direction_x * modTileX); // NEW x set
+			} else {
+				tempEntity.pos_x = tempEntity.pos_x + (tempEntity.direction_x * tempEntity.air_speed); //
+			}
+		} else {
+			if (modTileX < g_hh_player_1.speed) {
+				tempEntity.pos_x = tempEntity.pos_x + (tempEntity.direction_x * modTileX); // NEW x set
+			} else {
+				tempEntity.pos_x= tempEntity.pos_x + (tempEntity.direction_x * tempEntity.speed); // 
+			}
+		}
 	}
 
+	
+	return tempEntity.pos_x;
 
-	if(directionY != 0)
+}
+
+hh_s_entity_player hh_background_collision_y_player(hh_s_entity_player tempEntity){
+
+	uint16_t tileColX;
+	uint16_t tileColY;
+	
+
+	// remaining space between grid and exact
+		uint8_t modTileY;
+
+	if(g_hh_controller_p1.button_primary == 1 && tempEntity.accelY == 0 && tempEntity.in_air == false)
 	{
-	//	g_hh_player_1.pos_y = g_hh_player_1.pos_y + (directionY * g_hh_player_1.speed * 2); // NEW x set
+//		tempEntity.accelY = 25;
 	}
-	// collision map floor (y-axis) (falling)
-	//  if falling no jump press (implement)
-	/*
-	tileColY = (( g_hh_player_1.pos_y / 100) + g_hh_player_1.radius) / 16; //bottom of player box
-	modTileY = 1;
-	if(HH_DEMO_HITBOX_TILEMAP[tileColY+1][tileColX] != 1) //rework after jumping
-	{
-		g_hh_player_1.pos_y = g_hh_player_1.pos_y + 5 ;// NEW y set //makew var gravity
-		//playerStat = falling; //for later use of graphics/sound
+	
+	tileColY = (( tempEntity.pos_y / 100) + tempEntity.radius) / 8; //bottom of player box
+	tileColX = ((tempEntity.pos_x / 100) + tempEntity.radius) / 8; //right of player
+	modTileY = ((tempEntity.pos_y + (100 * tempEntity.radius)) % 800); //bottom of box
+
+	//rework arfter jumping
+	if(tempEntity.accelY <= 0){ //falling
+		if(HH_DEMO_HITBOX_TILEMAP[tileColY+1][tileColX] != 1) {//check bottom right first
+			tileColX = ((tempEntity.pos_x / 100) - tempEntity.radius) / 8;
+			if(HH_DEMO_HITBOX_TILEMAP[tileColY+1][tileColX] != 1)	{
+				tempEntity.in_air = true;
+				tempEntity.pos_y = tempEntity.pos_y - (tempEntity.accelY * 8) ;// NEW y set 
+				if (tempEntity.accelY > -35){
+					tempEntity.accelY--;
+				}
+			}
+			else	{
+				if(modTileY < tempEntity.accelY * -8) {
+					tempEntity.pos_y = tempEntity.pos_y + (modTileY) ;// NEW y set 
+				} else {
+					tempEntity.pos_y = tempEntity.pos_y - (tempEntity.accelY * 8) ;// NEW y set 
+				}
+				tempEntity.in_air = false;
+				tempEntity.accelY = 0;
+			}
+		}
+		else	{
+			if(modTileY < tempEntity.accelY * -8) {
+				tempEntity.pos_y = tempEntity.pos_y + (modTileY) ;// NEW y set 
+			} else {
+				tempEntity.pos_y = tempEntity.pos_y - (tempEntity.accelY * 8) ;// NEW y set 
+			}
+			tempEntity.in_air = false;
+			tempEntity.accelY = 0;
+		}
 	}
-	*/
-	// else if(HH_DEMO_HITBOX_TILEMAP[])
+	else{ //jumping
+		tileColY = (( tempEntity.pos_y / 100) - tempEntity.radius) / 8; //top of player box
+		modTileY = 800 -((tempEntity.pos_y + (100 * tempEntity.radius)) % 800); //top of box
+			if(HH_DEMO_HITBOX_TILEMAP[tileColY-1][tileColX] != 1) {//check bottom right first
+				tileColX = ((tempEntity.pos_x / 100) - tempEntity.radius) / 8;
+				if(HH_DEMO_HITBOX_TILEMAP[tileColY-1][tileColX] != 1)	{
+					tempEntity.pos_y = tempEntity.pos_y - (tempEntity.accelY * 8) ;// NEW y set 
+					tempEntity.in_air = true;
+					tempEntity.accelY--;
+				}	else	{
+				if(modTileY < tempEntity.accelY * -8) {
+					tempEntity.pos_y = tempEntity.pos_y - (modTileY) ;// NEW y set 
+				} else {
+					tempEntity.pos_y = tempEntity.pos_y - (tempEntity.accelY * 8) ;
+				}
+				tempEntity.accelY = 0;
+				}
+			}
+			else	{
+				if(modTileY < tempEntity.accelY * -8) {
+					tempEntity.pos_y = tempEntity.pos_y - (modTileY) ;// NEW y set //makew var gravity
+				} else {
+					tempEntity.pos_y = tempEntity.pos_y - (tempEntity.accelY * 8) ;// NEW y set //makew var gravity
+				}
+				tempEntity.accelY = 0;
+			}
+		
+	}
+
+	return tempEntity;
 }
