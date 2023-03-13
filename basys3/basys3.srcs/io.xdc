@@ -46,5 +46,5 @@ set_property IOSTANDARD LVCMOS33 [get_ports VBLANK]
 set_property IOSTANDARD LVCMOS33 [get_ports WEN]
 
 set_property PACKAGE_PIN C16 [get_ports VBLANK]
-set_property PACKAGE_PIN V13 [get_ports WEN]
+set_property PACKAGE_PIN A14 [get_ports WEN]
 
