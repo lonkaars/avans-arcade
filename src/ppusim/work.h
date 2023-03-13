@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <pthread.h>
 
 #include "ppu/consts.h"
 

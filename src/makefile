@@ -4,6 +4,7 @@ TARGET = main
 
 # platform is ds (desktop) or stm (stm32)
 PLATFORM = ds
+# if your editor uses compile_commands.json for autocomplete, you should run `make compile_commands.json` again
 
 HOST=$(strip $(shell uname -o))
 
@@ -29,7 +30,14 @@ CFLAGS += $(if $(DESKTOP), -DHH_TARGET_DESKTOP, )
 LOCAL_SRCS += main.c \
 							ppu/internals.c \
 							ppu/ppu.c \
-							demo.c
+							demo.c \
+							engine/engine.c \
+							engine/sprite_controller.c \
+							engine/player_controller.c \
+							engine/draw_screen.c \
+							engine/camera.c \
+							engine/maths.c \
+							engine/entity.c
 
 CFLAGS += $(SHARED_FLAGS)
 LFLAGS += $(SHARED_FLAGS)
@@ -74,14 +82,14 @@ flash: $(TARGET).bin
 $(TARGET): $(OBJS)
 	$(LD) $^ $(LFLAGS) -o $@
 
-compile_commands.json:
+compile_commands.json: makefile stm32.mk ds.mk
 	compiledb make -Bn
 	../scripts/compiledb-full-path-mingw.sh compile_commands.json
 
 PHONY += format
 format:
-	clang-format -i $(LOCAL_SRCS)
-	clang-tidy --fix-errors $(LOCAL_SRCS)
+	clang-format -i $(LOCAL_SRCS) $(DESKTOP_SRCS)
+	clang-tidy --fix-errors $(LOCAL_SRCS) $(DESKTOP_SRCS)
 
 PHONY += clean
 clean:

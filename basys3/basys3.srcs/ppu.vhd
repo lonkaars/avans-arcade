@@ -144,8 +144,8 @@ architecture Behavioral of ppu is
 		
 		R,G,B : out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0)); -- VGA color out
 	end component;
-	component ppu_dispctl port( -- display controller
-		CLK : in std_logic; -- system clock
+	component ppu_dispctl port(
+		SYSCLK : in std_logic; -- system clock
 		RESET : in std_logic;
 
 		X : out std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- tiny screen pixel x
@@ -299,7 +299,7 @@ begin
 		B => UB);
 
 	display_controller : component ppu_dispctl port map(
-		CLK => SYSCLK,
+		SYSCLK => SYSCLK,
 		RESET => SYSRST,
 		PREADY => PL_READY,
 		X => X,
