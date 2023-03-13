@@ -2,8 +2,7 @@
     "configurations": [
         {
             "name": "src",
-            "compileCommands": "${workspaceFolder}/src/compile_commands.json",
-            "configurationProvider": "ms-vscode.makefile-tools"
+            "compileCommands": "${workspaceFolder}/src/compile_commands.json"
         }
     ],
     "version": 4
