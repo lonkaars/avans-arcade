@@ -29,20 +29,21 @@ void hh_ppu_init() {
 }
 
 void hh_ppu_load_tilemap() {
-	char* filename = "tiles.bin";
+	char* filename = "../test/bin/tiles.bin";
 	FILE* fp = fopen(filename,"rb");
 	if (!fp){
+		fprintf(stderr,"Error: Failed to load tiles.");
 		return;//error
 	}
-
+	int sprite_size = (HH_PPU_SPRITE_WIDTH * HH_PPU_SPRITE_HEIGHT);
 	fseek(fp, 0, SEEK_END);//goto EOF
-	int _size = ftell(fp)/HH_PPU_VRAM_TMM_SPRITE_SIZE;
+	int _size = ftell(fp)/sprite_size;
 	fseek(fp, 0, 0);//goto start of file
 
 	for (int i = 0; i < _size; i++) {
-		uint8_t data[HH_PPU_VRAM_TMM_SPRITE_SIZE];
+		uint8_t data[sprite_size];
 
-		fread(data,HH_PPU_VRAM_TMM_SPRITE_SIZE,1,fp);
+		fread(data,sizeof(uint8_t),sprite_size,fp);
 		
 		hh_s_ppu_vram_data sprite = hh_ppu_2nat_sprite(data);
 		sprite.offset = i*HH_PPU_VRAM_TMM_SPRITE_SIZE;
