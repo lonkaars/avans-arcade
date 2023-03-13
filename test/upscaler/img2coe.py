@@ -9,8 +9,8 @@ def pixeldata():
   pixels = image.load()
   pixarr = []
   w,h = image.size
-  for x in range(w):
-    for y in range(h):
+  for y in range(h):
+    for x in range(w):
       color = pixels[x, y]
       crushed_color = ((color[0] >> 4) << 8 | (color[1] >> 4) << 4 | (color[2] >> 4) << 0)
       pixarr.append(crushed_color)

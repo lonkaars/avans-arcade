@@ -1,2 +1,4 @@
 img.coe: img.png
-	./bitmap-ball.py $< > $@
+
+%.coe: %.png
+	./img2coe.py $< > $@

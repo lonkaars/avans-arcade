@@ -32,6 +32,7 @@ architecture Behavioral of ppu_dispctl_demo is
 		addra : in std_logic_vector (16 downto 0);
 		douta : out std_logic_vector (11 downto 0));
 	end component;
+	signal PREADY : std_logic := '0';
 	signal ADDR : std_logic_vector (16 downto 0);
 	signal DATA : std_logic_vector (11 downto 0);
 	signal X : std_logic_vector(PPU_POS_H_WIDTH-1 downto 0);
@@ -41,7 +42,17 @@ architecture Behavioral of ppu_dispctl_demo is
 	alias DATA_G is DATA(7 downto 4);
 	alias DATA_B is DATA(3 downto 0);
 begin
-	ADDR <= std_logic_vector(resize(unsigned(X) + unsigned(Y) * to_unsigned(PPU_SCREEN_WIDTH, ADDR'length), ADDR'length));
+	ADDR <= std_logic_vector(resize(unsigned(X) + (unsigned(Y) * to_unsigned(PPU_SCREEN_WIDTH, ADDR'length)), ADDR'length));
+
+	process(CLK100)
+		variable counter : unsigned(3 downto 0) := (others => '0');
+	begin
+		if rising_edge(CLK100) then
+			counter := counter + 1;
+			if counter = 5 then PREADY <= '1'; end if;
+			if counter = 6 then PREADY <= '0'; end if;
+		end if;
+	end process;
 
 	test_img : component ppu_dispctl_test_img port map(
 		clka => CLK100,
@@ -51,7 +62,7 @@ begin
 	display_controller : component ppu_dispctl port map(
 		SYSCLK => CLK100,
 		RESET => RESET,
-		PREADY => '1',
+		PREADY => PREADY,
 		X => X,
 		Y => Y,
 		RI => DATA_R,
