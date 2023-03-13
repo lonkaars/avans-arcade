@@ -11,21 +11,20 @@ entity top is port (
 	SPI_CS : in std_logic;   -- incoming select of SPI
 	WEN : in std_logic; -- PPU VRAM write enable
 	R,G,B : out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0);
-	NVSYNC, NHSYNC : out std_logic; -- native VGA out
-	TVBLANK, THBLANK : out std_logic); -- tiny VGA out
+	VSYNC, HSYNC : out std_logic; -- VGA sync out
+	VBLANK : out std_logic); -- vblank for synchronization
 end top;
 
 architecture Behavioral of top is
 	component ppu port(
 		CLK100 : in std_logic; -- system clock
 		RESET : in std_logic; -- global (async) system reset
-		EN : in std_logic; -- PPU VRAM enable (enable ADDR and DATA tri-state drivers)
 		WEN : in std_logic; -- PPU VRAM write enable
 		ADDR : in std_logic_vector(PPU_RAM_BUS_ADDR_WIDTH-1 downto 0); -- PPU VRAM ADDR
 		DATA : in std_logic_vector(PPU_RAM_BUS_DATA_WIDTH-1 downto 0);
 		R,G,B : out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0);
-		NVSYNC, NHSYNC : out std_logic; -- native VGA out
-		TVBLANK, THBLANK : out std_logic); -- tiny VGA out
+		VSYNC, HSYNC : out std_logic; -- VGA sync out
+		VBLANK : out std_logic); -- vblank for synchronization
 	end component;
 	component spi port (
 		SYSCLK : in std_logic; -- clock basys3 100MHz
@@ -49,15 +48,13 @@ begin
 	picture_processing_unit: component ppu port map(
 		CLK100 => SYSCLK,
 		RESET => RESET,
-		EN => '1',
 		WEN => WEN,
 		ADDR => SPI_DATA_ADDR,
 		DATA => SPI_DATA_DATA,
 		R => R,
 		G => G,
 		B => B,
-		NVSYNC => NVSYNC,
-		NHSYNC => NHSYNC,
-		TVBLANK => TVBLANK,
-		THBLANK => THBLANK);
+		VSYNC => VSYNC,
+		HSYNC => HSYNC,
+		VBLANK => VBLANK);
 end Behavioral;
