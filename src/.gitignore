@@ -3,5 +3,5 @@ main.elf
 main.bin
 main
 main.exe
-static/
-*.bin
+static/*.bin
+
