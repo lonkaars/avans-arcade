@@ -9,17 +9,20 @@
 ||
 |APU PWM out|||A15|JB7|
 ||
-|Player 1 up|PA10|D2|
-|Player 1 down|PB3|D3|
-|Player 1 left|PB5|D4|
-|Player 1 right|PB4|D5|
-|Player 1 primary|PB10|D6|
-|Player 1 secondary|PA8|D7|
+|Player 1 up|PB10|D6|
+|Player 1 down|PA10|D2|
+|Player 1 left|PB4|D5|
+|Player 1 right|PA8|D7|
+|Player 1 primary|PB5|D4|
+|Player 1 secondary|PB3|D3|
 ||
-|Player 2 up|PA0|A0
-|Player 2 down|PA1|A1
-|Player 2 left|PA4|A2
-|Player 2 right|PB0|A3
-|Player 2 primary|PC1|A4
-|Player 2 secondary|PC0|A5
+|Player 2 up|PC1|A4
+|Player 2 down|PA0|A0
+|Player 2 left|PB0|A3
+|Player 2 right|PC0|A5
+|Player 2 primary|PA4|A2
+|Player 2 secondary|PA1|A1
+||
+|System reset|||T18|BTNU (button up)|
+|System clock|||W5|
 
