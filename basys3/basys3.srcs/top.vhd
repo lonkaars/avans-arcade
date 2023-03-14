@@ -8,7 +8,6 @@ entity top is port (
 	RESET : in std_logic; -- global (async) system reset
 	SPI_CLK : in std_logic; -- incoming clock of SPI 
 	SPI_MOSI : in std_logic; -- incoming data of SPI
-	SPI_CS : in std_logic;   -- incoming select of SPI
 	WEN : in std_logic; -- PPU VRAM write enable
 	R,G,B : out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0);
 	VSYNC, HSYNC : out std_logic; -- VGA sync out
@@ -30,7 +29,7 @@ architecture Behavioral of top is
 		SYSCLK : in std_logic; -- clock basys3 100MHz
 		SPI_CLK : in std_logic; -- incoming clock of SPI 
 		SPI_MOSI : in std_logic; -- incoming data of SPI
-		SPI_CS : in std_logic;   -- incoming select of SPI
+		RESET : in std_logic; -- async reset
 		DATA : out std_logic_vector(PPU_RAM_BUS_ADDR_WIDTH+PPU_RAM_BUS_DATA_WIDTH-1 downto 0)); --  data read
 	end component;
 
@@ -40,9 +39,9 @@ architecture Behavioral of top is
 begin
 	serial_peripheral_interface: component spi port map(
 		SYSCLK => SYSCLK,
+		RESET => RESET,
 		SPI_CLK => SPI_CLK,
 		SPI_MOSI => SPI_MOSI,
-		SPI_CS => '1',
 		DATA => SPI_DATA);
 
 	picture_processing_unit: component ppu port map(

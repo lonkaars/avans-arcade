@@ -2,9 +2,9 @@ set_property IOSTANDARD LVCMOS33 [get_ports SPI_MOSI]
 set_property IOSTANDARD LVCMOS33 [get_ports SPI_CS]
 set_property IOSTANDARD LVCMOS33 [get_ports SPI_CLK]
 
-set_property PACKAGE_PIN A15 [get_ports SPI_CLK]
+set_property PACKAGE_PIN J2 [get_ports SPI_CLK]
 set_property PACKAGE_PIN C15 [get_ports SPI_CS]
-set_property PACKAGE_PIN A17 [get_ports SPI_MOSI]
+set_property PACKAGE_PIN L1 [get_ports SPI_MOSI]
 
 set_property IOSTANDARD LVCMOS33 [get_ports SYSCLK]
 set_property IOSTANDARD LVCMOS33 [get_ports RESET]
@@ -46,5 +46,6 @@ set_property IOSTANDARD LVCMOS33 [get_ports VBLANK]
 set_property IOSTANDARD LVCMOS33 [get_ports WEN]
 
 set_property PACKAGE_PIN C16 [get_ports VBLANK]
-set_property PACKAGE_PIN A14 [get_ports WEN]
+set_property PACKAGE_PIN J1 [get_ports WEN]
+
 
