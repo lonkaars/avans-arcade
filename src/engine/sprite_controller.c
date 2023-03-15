@@ -10,11 +10,13 @@ uint8_t hh_get_palette(uint8_t tile_idx) {
 }
 
 void hh_setup_palettes(){
+	//TODO: use simpler function
 	for (int idx = 0; idx < HH_PPU_PALETTE_COUNT; idx++) {
 		for (int col = 0; col < HH_PPU_PALETTE_COLOR_COUNT; col++) {
 			hh_ppu_update_color(idx,col,hh_g_palette[idx][col]);
 		}
-	}	
+	}
+	// hh_ppu_update_palette_table(hh_g_palette);
 }
 
 bool hh_colidable(uint8_t tile_idx){

@@ -37,7 +37,8 @@ LOCAL_SRCS += main.c \
 							engine/draw_screen.c \
 							engine/camera.c \
 							engine/maths.c \
-							engine/entity.c
+							engine/entity.c \
+							engine/title_screen.c
 
 CFLAGS += $(SHARED_FLAGS)
 LFLAGS += $(SHARED_FLAGS)
