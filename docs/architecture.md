@@ -25,8 +25,9 @@ The PPU is responsible for rendering the graphics and displaying them on the scr
 For example, if the PPU is unable to keep up with the processing speed of the STM32, the graphics may lag or appear distorted, causing the game to become unplayable. Similarly, if there is a delay in communication between the STM32 and PPU, it could result in a mismatch between the game logic and the displayed graphics, leading to confusion for the player.
 
 To ensure a smooth and enjoyable gaming experience, it is essential to address any potential issues with the PPU and communication between the STM32 and PPU during the development process. This may involve optimizing the code for both components, adjusting the communication protocol, or adding buffer systems to prevent lag or synchronization issues.
+
 ### architecture ( top level)
-![Top level architecture](../assets/TopLevelArchi);
+![Top level architecture](../assets/TopLevel.PNG.);
 
 
 
