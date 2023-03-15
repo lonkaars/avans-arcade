@@ -26,14 +26,40 @@ For example, if the PPU is unable to keep up with the processing speed of the ST
 
 To ensure a smooth and enjoyable gaming experience, it is essential to address any potential issues with the PPU and communication between the STM32 and PPU during the development process. This may involve optimizing the code for both components, adjusting the communication protocol, or adding buffer systems to prevent lag or synchronization issues.
 
-### architecture ( top level)
+# architecture ( top level)
 ![Top level architecture](../assets/TopLevel.PNG.);
 
+## STM32
+### game engine
+### user input
+### PPU communication
+### APU communication
+### level editing pipeline
+
+## FPGA (PPU)
+### PPU
+### SPI
+### APU
+
+## Screen
+### VGA
 
 
+# design document (mid-low level)
+## STM32
+### game engine
+### user input
+### PPU communication
+### APU communication
+### level editing pipeline
 
-### design document (mid-low level)
+## FPGA (PPU)
+### PPU
+### SPI
+### APU
 
+## Screen
+### VGA
 # General system architecture
 
 ![Top-down system architecture diagram](../assets/architecture-level-1.svg)
