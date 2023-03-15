@@ -15,6 +15,7 @@ Done
 |Regular dash|Implement in sprint 3|
 |Super punch|Implement in sprint 3|
 |Smoke bomb|Implement in sprint 3|
+|Dubble Jump|Implement in sprint 3|
 
 ## Levels
 | feature | status |
