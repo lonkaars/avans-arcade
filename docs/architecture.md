@@ -401,7 +401,7 @@ optional:
 
 - envelope (ADSR)
 
-![ADSR envelope](https://upload.wikimedia.org/wikipedia/commons/e/ea/ADSR_parameter.svg)
+<!-- ![ADSR envelope](https://upload.wikimedia.org/wikipedia/commons/e/ea/ADSR_parameter.svg) -->
 
 This image shows an advanced method of generating tones. In our case this is only an indication as to how it could be done, we will actually only be looking at the sustained tone part for simplicity sakes.
 In order to get the correct graph forms, some data points can be stored in a LUT (Look Up Table). This allows the saving of computation power at the cost of some ROM space.
