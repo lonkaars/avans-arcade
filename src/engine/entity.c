@@ -3,6 +3,10 @@
 #include "engine/entity.h"
 #include "engine/maths.h"
 
+#ifdef HH_TARGET_DESKTOP
+#include <stdio.h>
+#endif
+
 /*
     PLAYER: (pos on X)
     ,___,

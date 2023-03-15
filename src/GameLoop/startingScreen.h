@@ -1,13 +1,11 @@
 #pragma once
 
+#include "GameLoop/shop.h"
 #include <stdint.h>
 #include <stdbool.h>
 
-typedef enum {
-	hh_e_STATE_SHOW,
-	hh_e_STATE_Input,
-	hh_e_STATE_END
-} hh_e_screenStates;
+// TODO: fix naming of enum consts
+typedef hh_e_ShopStates hh_e_screenStates;
 
 
 bool hh_show_startingScreen();

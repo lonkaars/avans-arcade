@@ -61,10 +61,11 @@ void hh_setup_screen(){
 }
 
 void hh_setup_startingScreen(){
+	return;
 	int size = 300; // 40 x as tiles 30 y as tiles
 	FILE* level = fopen("../test/bin/startingScreen.bin", "rb"); /* open binary file */
 	if (!level) { /* check if file opened successfully */
-		fprintf(stderr, "Error: Failed to open file.\n");
+		fprintf(stderr, "Error: Failed to open file. AAAA\n");
 		return;
 	}
 	fseek(level, (0* sizeof(int)) + sizeof(int), SEEK_SET);
