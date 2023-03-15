@@ -19,3 +19,8 @@ uint8_t hh_world_to_tile(vec2 pos);
 void hh_draw_screen(vec2 viewport);
 /** @brief send data to BAM memory from binary level */
 void hh_setup_screen();
+/** @brief send starting screen data to BAM memory from binary level */
+void hh_setup_startingScreen();
+
+/** @brief send shop screen data to BAM memory from binary level */
+void hh_setup_shopScreen();

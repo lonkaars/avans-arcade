@@ -3,7 +3,7 @@
 #include "engine/draw_screen.h"
 #include "engine/sprite_controller.h"
 #include "engine/player_controller.h"
-
+#include "engine/bullet.h"
 #include "input.h"
 
 void hh_player_actions() {
@@ -29,6 +29,17 @@ void hh_player_actions() {
 	// hh_input_read();
 	player.vel = (vec2){.x = (-1 * g_hh_controller_p1.dpad_left) + (1 * g_hh_controller_p1.dpad_right),
 	.y = (-1 * g_hh_controller_p1.dpad_up) + (1 * g_hh_controller_p1.dpad_down) };
+
+	// shooting code
+	static Bullet bullet;
+	if(g_hh_controller_p1.button_primary){
+			bullet.isActive = false;
+			shootBullet(player.vel, &bullet);
+	}
+	else{
+		updateBullet(&bullet, 1);
+
+	}
 	// const int8_t maa = 3;
 	// const int8_t mbb = -3;
 	// if (g_hh_controller_p1.dpad_up)
