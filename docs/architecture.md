@@ -1,3 +1,38 @@
+# Hooded Havic: Miniboss Mania
+![intro arcade game](../assets/hh_introScreen.png)
+
+# introduction
+Welcome to Hooded Havoc: Miniboss Mania, an exciting 2D platformer game created by our team Joshua, Loek, Bjorn, Frenk and Niels! This game was developed using the STM32 microcontroller as the game engine and the FPGA as the Picture Processing Unit (PPU).
+
+In Hooded Havoc: Miniboss Mania, you will take on the role of a brave hero who must battle through multiple levels filled with challenging obstacles and formidable minibosses. With smooth gameplay and engaging graphics, you will feel immersed in a world of adventure and excitement.
+
+Our use of the STM32 microcontroller and FPGA PPU allowed us to create a unique and innovative gaming experience. The STM32 provides efficient and reliable processing power, while the FPGA ensures that our graphics are rendered smoothly and accurately.
+
+So get ready to embark on a thrilling journey through Hooded Havoc: Miniboss Mania, and see how far you can make it!
+## Objective
+The objective of Hooded Havoc: Miniboss Mania is to guide the hero through multiple levels, defeating minibosses and overcoming obstacles along the way. The ultimate goal is to reach the final boss and defeat them to retrieve the stolen staff.
+
+To achieve this objective, the player must use their platforming skills to jump, run, and dodge obstacles while also battling enemies and minibosses. Each level presents a unique challenge that will require the player to adapt and strategize to overcome.
+
+As the player progresses through the game, they will unlock new abilities and power-ups that will aid them in their journey. The player must use these abilities wisely to defeat the minibosses and ultimately save the world.
+
+So, the objective of Hooded Havoc: Miniboss Mania is not only to provide an exciting and engaging gaming experience but also to challenge players to use their skills and strategic thinking to overcome obstacles and emerge victorious.
+## Problem statement
+One potential problem that could arise in the development of Hooded Havoc: Miniboss Mania is related to the PPU and communication between the STM32 and PPU.
+
+The PPU is responsible for rendering the graphics and displaying them on the screen, while the STM32 is responsible for processing the game logic and input from the player. However, if there is a problem with the communication between these two components, it could lead to synchronization issues and graphical glitches that could affect the player's experience.
+
+For example, if the PPU is unable to keep up with the processing speed of the STM32, the graphics may lag or appear distorted, causing the game to become unplayable. Similarly, if there is a delay in communication between the STM32 and PPU, it could result in a mismatch between the game logic and the displayed graphics, leading to confusion for the player.
+
+To ensure a smooth and enjoyable gaming experience, it is essential to address any potential issues with the PPU and communication between the STM32 and PPU during the development process. This may involve optimizing the code for both components, adjusting the communication protocol, or adding buffer systems to prevent lag or synchronization issues.
+### architecture ( top level)
+![Top level architecture](../assets/TopLevelArchi);
+
+
+
+
+### design document (mid-low level)
+
 # General system architecture
 
 ![Top-down system architecture diagram](../assets/architecture-level-1.svg)
