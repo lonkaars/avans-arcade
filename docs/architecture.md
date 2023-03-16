@@ -31,6 +31,17 @@ To ensure a smooth and enjoyable gaming experience, it is essential to address a
 
 ## STM32
 ### game engine
+The game engine is designed to run a 2D platformer game. The game engine has to manage all the different game states. To do this it will utilize a finite state machine (FSM). The game engine will also cover de input handling from the player, the game logic for example enemy handling or the powerup handling it will also send out data to the APU (Audio processing unit) so that the right sounds will be played. 
+
+FSM is a useful tool for managing game states and transitions. The game has many different states such as: title screen, shop and gameplay state. Each state represents a particular configuration from the with different logic and variables.  
+
+The state machine is designed to have the following states:
+1.	Initialization: The initialization state will be responsible for initializing all game-related variables and subsystems, including the FPGA-based picture processing unit.
+2.	Title Screen: The title screen state will display the game's title screen and wait for user input to start the game or access the options menu.
+3.	Options: The options state will allow the user to configure game settings, such as sound and graphics options.
+4.	Game Play: The game play state will be responsible for running the game logic and updating the game state.
+5.	Game Over: The game over state will display the game over screen and wait for user input to restart the game or return to the title screen.
+
 ### user input
 ### PPU communication
 ### APU communication
