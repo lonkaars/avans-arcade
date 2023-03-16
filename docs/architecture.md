@@ -1,8 +1,9 @@
-# Hooded Havic: Miniboss Mania
+<!-- # Hooded Havic: Miniboss Mania -->
 
 ![intro arcade game](../assets/hh_introScreen.png)
 
-# introduction
+# Introduction
+
 Welcome to Hooded Havoc: Miniboss Mania, an exciting 2D platformer game created by our team Joshua, Loek, Bjorn, Frenk and Niels! This game was developed using the STM32 microcontroller as the game engine and the FPGA as the Picture Processing Unit (PPU).
 
 In Hooded Havoc: Miniboss Mania, you will take on the role of a brave hero who must battle through multiple levels filled with challenging obstacles and formidable minibosses. With smooth gameplay and engaging graphics, you will feel immersed in a world of adventure and excitement.
@@ -10,7 +11,9 @@ In Hooded Havoc: Miniboss Mania, you will take on the role of a brave hero who m
 Our use of the STM32 microcontroller and FPGA PPU allowed us to create a unique and innovative gaming experience. The STM32 provides efficient and reliable processing power, while the FPGA ensures that our graphics are rendered smoothly and accurately.
 
 So get ready to embark on a thrilling journey through Hooded Havoc: Miniboss Mania, and see how far you can make it!
+
 ## Objective
+
 The objective of Hooded Havoc: Miniboss Mania is to guide the hero through multiple levels, defeating minibosses and overcoming obstacles along the way. The ultimate goal is to reach the final boss and defeat them to retrieve the stolen staff.
 
 To achieve this objective, the player must use their platforming skills to jump, run, and dodge obstacles while also battling enemies and minibosses. Each level presents a unique challenge that will require the player to adapt and strategize to overcome.
@@ -18,28 +21,31 @@ To achieve this objective, the player must use their platforming skills to jump,
 As the player progresses through the game, they will unlock new abilities and power-ups that will aid them in their journey. The player must use these abilities wisely to defeat the minibosses and ultimately save the world.
 
 So, the objective of Hooded Havoc: Miniboss Mania is not only to provide an exciting and engaging gaming experience but also to challenge players to use their skills and strategic thinking to overcome obstacles and emerge victorious.
+
 ## Problem statement
+
 One potential problem that could arise in the development of Hooded Havoc: Miniboss Mania is related to the PPU and communication between the STM32 and PPU.
 
 The PPU is responsible for rendering the graphics and displaying them on the screen, while the STM32 is responsible for processing the game logic and input from the player. However, if there is a problem with the communication between these two components, it could lead to synchronization issues and graphical glitches that could affect the player's experience.
 
-The existing hardware components available for building this project consists
-of:
 For example, if the PPU is unable to keep up with the processing speed of the STM32, the graphics may lag or appear distorted, causing the game to become unplayable. Similarly, if there is a delay in communication between the STM32 and PPU, it could result in a mismatch between the game logic and the displayed graphics, leading to confusion for the player.
 
 To ensure a smooth and enjoyable gaming experience, it is essential to address any potential issues with the PPU and communication between the STM32 and PPU during the development process. This may involve optimizing the code for both components, adjusting the communication protocol, or adding buffer systems to prevent lag or synchronization issues.
 
 # General system architecture
 
-The Raspberry Pi is by far the most powerful component out of these 4, but
-because one of the project requirements is that no general-purpose operating
-system is used, utilizing the Raspberry Pi will involve writing low-level
-drivers for its interfaces, which will likely cost a lot of effort.
+The existing hardware components available for building this project consists
+of:
 
 - Raspberry Pi
 - Nucleo STM32 development board
 - Basys3 FPGA development board
 - Arduino Uno R3
+
+The Raspberry Pi is by far the most powerful component out of these 4, but
+because one of the project requirements is that no general-purpose operating
+system is used, utilizing the Raspberry Pi will involve writing low-level
+drivers for its interfaces, which will likely cost a lot of effort.
 
 As to not risk project failure due to hardware constraints, the decision was
 made to use the STM32 microcontroller and FPGA in combination, as these two are
@@ -59,7 +65,19 @@ show what the complete system looks like. The scope of this project only
 includes the components inside the area marked "game console" and the gamepad
 components.
 
-# Game controllers
+# STM32 software
+
+The game engine will be designed to support 2D games. The engine will use a state machine to manage game states and transitions between them. The state machine will be implemented using a finite state machine (FSM) design pattern. The engine will also include support for handling user input, game logic, and sound.
+
+FSM is a useful tool for managing game states and transitions. A game can have many different states, such as a title screen, a level selection screen, a loading screen, and various gameplay states. Each state represents a particular configuration of the game, with different sets of variables, objects, and logic
+
+The state machine will be designed with the following states:
+
+1. Initialization: The initialization state will be responsible for initializing all game-related variables and subsystems, including the FPGA-based picture processing unit.
+2. Title Screen: The title screen state will display the game's title screen and wait for user input to start the game or access the options menu.
+3. Options: The options state will allow the user to configure game settings, such as sound and graphics options.
+4. Game Play: The game play state will be responsible for running the game logic and updating the game state.
+5. Game Over: The game over state will display the game over screen and wait for user input to restart the game or return to the title screen.
 
 ## Input
 
@@ -95,19 +113,13 @@ The buttons will be connected as follows:
 
 To implement the input in the game, the input should be checked at the start of each game cycle. In this case there are no interrupts needed.
 
-# STM32 software
+## PPU communication
 
-The game engine will be designed to support 2D games. The engine will use a state machine to manage game states and transitions between them. The state machine will be implemented using a finite state machine (FSM) design pattern. The engine will also include support for handling user input, game logic, and sound.
+The SPI module will be configured that sends 8 bits per cycle and at a speed of 1.0 MB/s. The STM32 Cube IDE SPI module does not include a slave select line so a pin has to configured manually to fullfill this purpose. Every data transfer consists out of 4 times 8 bits, so 32 bits in total. The first byte is the address and the other 3 bytes consist the data.
 
-FSM is a useful tool for managing game states and transitions. A game can have many different states, such as a title screen, a level selection screen, a loading screen, and various gameplay states. Each state represents a particular configuration of the game, with different sets of variables, objects, and logic
+## SPI
 
-The state machine will be designed with the following states:
-
-1. Initialization: The initialization state will be responsible for initializing all game-related variables and subsystems, including the FPGA-based picture processing unit.
-2. Title Screen: The title screen state will display the game's title screen and wait for user input to start the game or access the options menu.
-3. Options: The options state will allow the user to configure game settings, such as sound and graphics options.
-4. Game Play: The game play state will be responsible for running the game logic and updating the game state.
-5. Game Over: The game over state will display the game over screen and wait for user input to restart the game or return to the title screen.
+The FPGA uses 3 JMOD pins to receive the SPI data. The FPGA does not have a IP-Core for SPI. To receive the data the module has 3 synchronisers for the incoming SPI clock, data and slave select. The data will be read via the SPI protocol and shifted untill all 32 bits are read. 
 
 # PPU
 
@@ -403,6 +415,15 @@ Format:
 
 [custompputimings]: https://docs.google.com/spreadsheets/d/1MU6K4c4PtMR_JXIpc3I0ZJdLZNnoFO7G2P3olCz6LSc
 
+## PPU communication
+
+To comunicate with the FPGA via the STM32 a protocol is needed. After [research](research.md#Input) of different possible protocols, SPI was the best option for this problem. As there is only one master and one slave, four data lines are needed at maximum. The STM32 will be the master and the FPGA will be the slave. The STM32 has a configurable SPI module that is easily configurable unlike the FPGA. Futhermore, the MISO line is not needed because the FPGA does not send any big data to the STM32. The slave select line will operate as a write enable.
+
+## SPI
+
+The FPGA will configure as a slave of the SPI protocol. The FPGA (Basys3) does not have a IP-Core that supports external SPI communication so the SPI slave has to be designed. The module requires three inputs as mentioned before in the [STM32](architecture.md#STM32) section.  
+
+
 # APU
 
 The Audio Processing Unit (APU) is programmed on the FPGA, here it will produce different signals on the audio output. These signals come in a few forms, as listed below.
@@ -459,22 +480,3 @@ and background layers of the PPU. This means that the global tilemap can fit up
 to 1024 tiles in total, each being 16x16 pixels (the example uses 4x4 tiles for
 illustration purposes).
 
-
-### PPU communication
-
-To comunicate with the FPGA via the STM32 a protocol is needed. After [research](research.md#Input) of different possible protocols, SPI was the best option for this problem. As there is only one master and one slave, four data lines are needed at maximum. The STM32 will be the master and the FPGA will be the slave. The STM32 has a configurable SPI module that is easily configurable unlike the FPGA. Futhermore, the MISO line is not needed because the FPGA does not send any big data to the STM32. The slave select line will operate as a write enable.
-
-
-
-### SPI
-
-The FPGA will configure as a slave of the SPI protocol. THe FPGA (Basys3) does not have a IP-Core that supports external SPI communication so the SPI slave has to be designed. The module requires three inputs as mentioned before in the [STM32](architecture.md#STM32) section.  
-
-
-### PPU communication
-
-The SPI module will be configured that sends 8 bits per cycle and at a speed of 1.0 MB/s. The STM32 Cube IDE SPI module does not include a slave select line so a pin has to configured manually to fullfill this purpose. Every data transfer consists out of 4 times 8 bits, so 32 bits in total. The first byte is the address and the other 3 bytes consist the data.
-
-
-### SPI
-The FPGA uses 3 JMOD pins to receive the SPI data. The FPGA does not have a IP-Core for SPI. To receive the data the module has 3 synchronisers for the incoming SPI clock, data and slave select. The data will be read via the SPI protocol and shifted untill all 32 bits are read. 
