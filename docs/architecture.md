@@ -458,3 +458,23 @@ To index tiles from the tilemap, 10 bits will be used for both the foreground
 and background layers of the PPU. This means that the global tilemap can fit up
 to 1024 tiles in total, each being 16x16 pixels (the example uses 4x4 tiles for
 illustration purposes).
+
+
+### PPU communication
+
+To comunicate with the FPGA via the STM32 a protocol is needed. After [research](research.md#Input) of different possible protocols, SPI was the best option for this problem. As there is only one master and one slave, four data lines are needed at maximum. The STM32 will be the master and the FPGA will be the slave. The STM32 has a configurable SPI module that is easily configurable unlike the FPGA. Futhermore, the MISO line is not needed because the FPGA does not send any big data to the STM32. The slave select line will operate as a write enable.
+
+
+
+### SPI
+
+The FPGA will configure as a slave of the SPI protocol. THe FPGA (Basys3) does not have a IP-Core that supports external SPI communication so the SPI slave has to be designed. The module requires three inputs as mentioned before in the [STM32](architecture.md#STM32) section.  
+
+
+### PPU communication
+
+The SPI module will be configured that sends 8 bits per cycle and at a speed of 1.0 MB/s. The STM32 Cube IDE SPI module does not include a slave select line so a pin has to configured manually to fullfill this purpose. Every data transfer consists out of 4 times 8 bits, so 32 bits in total. The first byte is the address and the other 3 bytes consist the data.
+
+
+### SPI
+The FPGA uses 3 JMOD pins to receive the SPI data. The FPGA does not have a IP-Core for SPI. To receive the data the module has 3 synchronisers for the incoming SPI clock, data and slave select. The data will be read via the SPI protocol and shifted untill all 32 bits are read. 
