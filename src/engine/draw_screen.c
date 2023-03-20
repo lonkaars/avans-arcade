@@ -60,3 +60,29 @@ void hh_setup_screen(){
 	}
 	free(tile);
 }
+void hh_clear_screen(){
+	// (HH_PPU_SCREEN_HEIGHT*HH_PPU_SCREEN_WIDTH)/(HH_PPU_SPRITE_HEIGHT*HH_PPU_SPRITE_WIDTH)
+	for (int i = 0; i < HH_PPU_BG_CANVAS_TILES_H*HH_PPU_BG_CANVAS_TILES_V; i++) {
+		hh_s_ppu_loc_bam_entry temp = {
+			.vertical_flip=false,.horizontal_flip = false,
+			.palette_index = 3,.tilemap_index = 0
+		};
+		hh_ppu_update_background(i,temp);
+		hh_ppu_update_color(3,0,(hh_ppu_rgb_color_t){0x0,0x0,0x0});
+	}
+	hh_ppu_update_aux((hh_s_ppu_loc_aux){
+		.bg_shift_x = 0,
+		.bg_shift_y = 0,
+		.fg_fetch	= 0,
+		.sysreset	= 0,
+	});
+}
+
+void hh_clear_sprite(){
+	for (int i = 0; i < HH_PPU_FG_SPRITE_COUNT; i++) {
+		hh_ppu_update_foreground(i,(hh_s_ppu_loc_fam_entry){
+			.position_x = -16,
+			.position_y = -16,
+		});
+	}
+}

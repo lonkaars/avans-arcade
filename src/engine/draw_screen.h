@@ -19,3 +19,8 @@ uint8_t hh_world_to_tile(vec2 pos);
 void hh_draw_screen(vec2 viewport);
 /** @brief send data to BAM memory from binary level */
 void hh_setup_screen();
+
+/** @brief send black screen to background memory */
+void hh_clear_screen();
+/** @brief clears all sprite data */
+void hh_clear_sprite();

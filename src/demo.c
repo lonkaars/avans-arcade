@@ -11,7 +11,17 @@
 #include "engine/draw_screen.h"
 #include "engine/player_controller.h"
 #include "engine/sprite_controller.h"
+#include "GameLoop/startingScreen.h"
 
+
+typedef enum {
+	hh_e_STATE_startingScreen,
+	hh_e_STATE_Shop,
+	hh_e_STATE_Gameplay,
+	hh_e_STATE_GameOver,
+	hh_e_STATE_HighScore
+} hh_e_GameState;
+hh_e_GameState hh_gameStates;
 
 
 
@@ -37,7 +47,7 @@ hh_entity hh_g_player, hh_g_player_new;
 void hh_demo_setup() {
 
 	hh_setup_palettes();
-	hh_setup_screen();
+	// hh_setup_screen();
 
 
 }
@@ -45,8 +55,46 @@ void hh_demo_setup() {
 void hh_demo_loop(unsigned long frame) {
 
 	
-	hh_player_actions();
-	
+	switch (hh_gameStates)
+	{
+	case hh_e_STATE_startingScreen:
+		bool ret = hh_show_startingScreen();
+		if(ret){
+			hh_gameStates = hh_e_STATE_Shop;
+		}	
+		break;
+	case hh_e_STATE_Shop:
+		// TODO:
+		//  if(hh_show_Shop()){
+			hh_clear_screen();
+			hh_clear_sprite();
+			hh_setup_screen();
+			hh_clear_sprite();
+			hh_gameStates = hh_e_STATE_Gameplay;
+		// }
+		// function: new level is chosen goto level
+		break;
+	case hh_e_STATE_Gameplay:
+		hh_player_actions();
+
+		// TODO:
+		// function: if level complete goto shop
+		// function: if player is dead goto game over
+		break;
+	case hh_e_STATE_GameOver:
+		// TODO:
+		// function: show game over screen
+		// function: after time goto high score
+		break;
+	case hh_e_STATE_HighScore:
+		// TODO:
+		// fucntion: show all previously scored points
+		// function: button pressed goto starting screen
+		break;
+	default:
+			hh_gameStates = hh_e_STATE_startingScreen;
+		break;
+	}
 }
 
 // void sendData(uint8_t address, uint16_t data) {

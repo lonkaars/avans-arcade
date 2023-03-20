@@ -6,7 +6,11 @@
 
 #include "input.h"
 
+#include "engine/bullet.h"
 void hh_player_actions() {
+	static Bullet bullet ={
+		.isActive=false,
+	};
 	static hh_entity player={
 		.hp = 4,
 		.speed = 6,
@@ -17,13 +21,13 @@ void hh_player_actions() {
 		.vel = (vec2){0,0},
 		.vec = (vec2){0,0},
 		.render = {
-			.frame0 = 20,
-			.palette = 7,
+			.frame0 = 80,
+			.palette = 3,
 			.fam = (hh_s_ppu_loc_fam_entry){
 				.horizontal_flip = false,
 				.vertical_flip = false,
-				.palette_index = 7,
-				.tilemap_index = 2,
+				.palette_index = 2,
+				.tilemap_index = 60,
 			}
 		}
 	}, player_new = {0};
@@ -114,6 +118,10 @@ void hh_player_actions() {
 		 player.vel.y += 1; //gravity
 	}
 
+	if(g_hh_controller_p1.button_secondary==true){
+		shootBullet(player.pos,&bullet);
+	}
+	updateBullet(&bullet,5);
 
 
 	
@@ -202,7 +210,7 @@ void hh_player_actions() {
 	// 		hh_solve_collision(tiles[i].pos, &player);
 	// 	}
 	// }
-	
+
 	player =  hh_background_collision ( player, player_new);
 	
 	//player = player_new;
@@ -221,9 +229,22 @@ void hh_player_actions() {
 
 	player.render.fam.tilemap_index = 2;//TODO: these two lines should be redundant
 	player.render.fam.palette_index = 7;
-	hh_ppu_update_foreground(0, player.render.fam);
+	// hh_ppu_update_foreground(0, player.render.fam);
 
-	hh_ppu_update_foreground(1, enemy.render.fam);
+	for (int i = 0; i < 4; i++)
+	{
+		hh_s_ppu_loc_fam_entry temp = player.render.fam;
+		temp.position_x = player.render.fam.position_x+(!(player.vel.x>0)?-1:1)*(i%2?8:-8);
+		temp.position_y = player.render.fam.position_y+(i>1?0:-16);
+		temp.tilemap_index = player.render.frame0 + i;
+		temp.palette_index = player.render.palette;
+		temp.horizontal_flip = !(player.vel.x>0);
+		hh_ppu_update_foreground(i,temp);
+	}
+	
+
+
+	hh_ppu_update_foreground(4, enemy.render.fam);
 
 }
 
