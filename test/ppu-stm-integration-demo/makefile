@@ -1,4 +1,6 @@
-data.h: data.txt
+all: test-background-color.h test-image.h
+
+%.h: %.txt
 	echo "#pragma once" > $@
 	echo "#include <stdint.h>" >> $@
 	(printf "#define HH_PPUINTDEMO_LENGTH "; wc -l < $<) >> $@

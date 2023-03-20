@@ -2,7 +2,7 @@
 
 |function|stm32 soc name|stm32 header name|fpga soc name|fpga header name|
 |-|-|-|-|-|
-|SPI MOSI|PA7|D11|L1|JA2|
+|SPI MOSI|PA7|D11|L2|JA2|
 |SPI CLK|PA5|D13|J2|JA3|
 ||
 |PPU VRAM WEN|PA9|D8|J1|JA1|

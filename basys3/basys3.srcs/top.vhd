@@ -9,6 +9,8 @@ entity top is port (
 	SPI_CLK : in std_logic; -- incoming clock of SPI 
 	SPI_MOSI : in std_logic; -- incoming data of SPI
 	WEN : in std_logic; -- PPU VRAM write enable
+	DBG_DISP_ADDR : in std_logic; -- display address/data switch (debug)
+	DBG_LEDS_OUT : out std_logic_vector(15 downto 0); -- debug address/data output leds
 	R,G,B : out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0);
 	VSYNC, HSYNC : out std_logic; -- VGA sync out
 	VBLANK : out std_logic); -- vblank for synchronization
@@ -43,6 +45,8 @@ begin
 		SPI_CLK => SPI_CLK,
 		SPI_MOSI => SPI_MOSI,
 		DATA => SPI_DATA);
+
+	DBG_LEDS_OUT <= SPI_DATA_ADDR when DBG_DISP_ADDR = '1' else SPI_DATA_DATA;
 
 	picture_processing_unit: component ppu port map(
 		CLK100 => SYSCLK,

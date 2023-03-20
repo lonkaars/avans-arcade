@@ -20,10 +20,10 @@ end ppu_dispctl;
 
 architecture Behavioral of ppu_dispctl is
 	component ppu_dispctl_pixclk is port ( 
-		clk_out1 : out std_logic;
-		clk_out2 : out std_logic;
+		npxclk : out std_logic;
+		tpxclk : out std_logic;
 		reset : in std_logic;
-		clk_in1 : in std_logic);
+		sysclk : in std_logic);
 	end component;
 	component ppu_dispctl_slbuf port( -- scanline buffer
 		clka : in std_logic;
@@ -159,8 +159,8 @@ begin
 		rstb_busy => open);
 
 	pixel_clock: component ppu_dispctl_pixclk port map(
-    clk_in1 => SYSCLK,
+    sysclk => SYSCLK,
     reset => RESET,
-    clk_out1 => NPIXCLK,
-    clk_out2 => TPIXCLK);
+    npxclk => NPIXCLK,
+    tpxclk => TPIXCLK);
 end Behavioral;
