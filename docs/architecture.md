@@ -1,14 +1,82 @@
+<!-- # Hooded Havic: Miniboss Mania -->
+
+![intro arcade game](../assets/hh_introScreen.png)
+
+# Introduction
+
+Welcome to Hooded Havoc: Miniboss Mania, an exciting 2D platformer game created by our team Joshua, Loek, Bjorn, Frenk and Niels! This game was developed using the STM32 microcontroller as the game engine and the FPGA as the Picture Processing Unit (PPU).
+
+In Hooded Havoc: Miniboss Mania, you will take on the role of a brave hero who must battle through multiple levels filled with challenging obstacles and formidable minibosses. With smooth gameplay and engaging graphics, you will feel immersed in a world of adventure and excitement.
+
+Our use of the STM32 microcontroller and FPGA PPU allowed us to create a unique and innovative gaming experience. The STM32 provides efficient and reliable processing power, while the FPGA ensures that our graphics are rendered smoothly and accurately.
+
+So get ready to embark on a thrilling journey through Hooded Havoc: Miniboss Mania, and see how far you can make it!
+
+## Objective
+
+The objective of Hooded Havoc: Miniboss Mania is to guide the hero through multiple levels, defeating minibosses and overcoming obstacles along the way. The ultimate goal is to reach the final boss and defeat them to retrieve the stolen staff.
+
+To achieve this objective, the player must use their platforming skills to jump, run, and dodge obstacles while also battling enemies and minibosses. Each level presents a unique challenge that will require the player to adapt and strategize to overcome.
+
+As the player progresses through the game, they will unlock new abilities and power-ups that will aid them in their journey. The player must use these abilities wisely to defeat the minibosses and ultimately save the world.
+
+So, the objective of Hooded Havoc: Miniboss Mania is not only to provide an exciting and engaging gaming experience but also to challenge players to use their skills and strategic thinking to overcome obstacles and emerge victorious.
+
+## Problem statement
+
+One potential problem that could arise in the development of Hooded Havoc: Miniboss Mania is related to the PPU and communication between the STM32 and PPU.
+
+The PPU is responsible for rendering the graphics and displaying them on the screen, while the STM32 is responsible for processing the game logic and input from the player. However, if there is a problem with the communication between these two components, it could lead to synchronization issues and graphical glitches that could affect the player's experience.
+
+For example, if the PPU is unable to keep up with the processing speed of the STM32, the graphics may lag or appear distorted, causing the game to become unplayable. Similarly, if there is a delay in communication between the STM32 and PPU, it could result in a mismatch between the game logic and the displayed graphics, leading to confusion for the player.
+
+To ensure a smooth and enjoyable gaming experience, it is essential to address any potential issues with the PPU and communication between the STM32 and PPU during the development process. This may involve optimizing the code for both components, adjusting the communication protocol, or adding buffer systems to prevent lag or synchronization issues.
+
 # General system architecture
+
+The existing hardware components available for building this project consists
+of:
+
+- Raspberry Pi
+- Nucleo STM32 development board
+- Basys3 FPGA development board
+- Arduino Uno R3
+
+The Raspberry Pi is by far the most powerful component out of these 4, but
+because one of the project requirements is that no general-purpose operating
+system is used, utilizing the Raspberry Pi will involve writing low-level
+drivers for its interfaces, which will likely cost a lot of effort.
+
+As to not risk project failure due to hardware constraints, the decision was
+made to use the STM32 microcontroller and FPGA in combination, as these two are
+both familiar and still relatively powerful platforms. Because audio and video
+consist of data streams that require constant output, the audio and graphics
+processing is outsourced to the FPGA. All other game logic processing such as
+world loading, or map and entity interactions is done on the STM32
+microcontroller.
+
+Our game also supports an optional second player, as is shown in the following
+diagram.
 
 ![Top-down system architecture diagram](../assets/architecture-level-1.svg)
 
-Important notes:
+In the above diagram, the "display" and "speaker" components are included to
+show what the complete system looks like. The scope of this project only
+includes the components inside the area marked "game console" and the gamepad
+components.
 
-- Gamepad 2 is optionally connected
-- The PPU and APU are implemented on the FPGA
-- The game logic and PPU/APU control logic runs on the STM32 only
+# STM32 software
 
-# Game controllers
+The game engine is designed to run a 2D platformer game. The game engine has to manage all the different game states. To do this it will utilize a finite state machine (FSM). The game engine will also cover de input handling from the player, the game logic for example enemy handling or the powerup handling it will also send out data to the APU (Audio processing unit) so that the right sounds will be played. 
+
+FSM is a useful tool for managing game states and transitions. The game has many different states such as: title screen, shop and gameplay state. Each state represents a particular configuration from the with different logic and variables.  
+
+The state machine is designed to have the following states:
+1.	Initialization: The initialization state will be responsible for initializing all game-related variables and subsystems, including the FPGA-based picture processing unit.
+2.	Title Screen: The title screen state will display the game's title screen and wait for user input to start the game or access the options menu.
+3.	Options: The options state will allow the user to configure game settings, such as sound and graphics options.
+4.	Game Play: The game play state will be responsible for running the game logic and updating the game state.
+5.	Game Over: The game over state will display the game over screen and wait for user input to restart the game or return to the title screen.
 
 ## Input
 
@@ -44,23 +112,23 @@ The buttons will be connected as follows:
 
 To implement the input in the game, the input should be checked at the start of each game cycle. In this case there are no interrupts needed.
 
-# STM32 software
+## PPU communication
 
-The game engine will be designed to support 2D games. The engine will use a state machine to manage game states and transitions between them. The state machine will be implemented using a finite state machine (FSM) design pattern. The engine will also include support for handling user input, game logic, and sound.
+The SPI module will be configured that sends 8 bits per cycle and at a speed of 1.0 MB/s. The STM32 Cube IDE SPI module does not include a slave select line so a pin has to configured manually to fullfill this purpose. Every data transfer consists out of 4 times 8 bits, so 32 bits in total. The first byte is the address and the other 3 bytes consist the data.
 
-FSM is a useful tool for managing game states and transitions. A game can have many different states, such as a title screen, a level selection screen, a loading screen, and various gameplay states. Each state represents a particular configuration of the game, with different sets of variables, objects, and logic
+## SPI
 
-The state machine will be designed with the following states:
-
-1. Initialization: The initialization state will be responsible for initializing all game-related variables and subsystems, including the FPGA-based picture processing unit.
-2. Title Screen: The title screen state will display the game's title screen and wait for user input to start the game or access the options menu.
-3. Options: The options state will allow the user to configure game settings, such as sound and graphics options.
-4. Game Play: The game play state will be responsible for running the game logic and updating the game state.
-5. Game Over: The game over state will display the game over screen and wait for user input to restart the game or return to the title screen.
+The FPGA uses 3 JMOD pins to receive the SPI data. The FPGA does not have a IP-Core for SPI. To receive the data the module has 3 synchronisers for the incoming SPI clock, data and slave select. The data will be read via the SPI protocol and shifted untill all 32 bits are read. 
 
 # PPU
 
-Here's a list of features our PPU has:
+As mentioned in the [research document](research.md#graphics), the PPU designed
+for this project is heavily inspired by the NES's PPU. Because our game does
+need slightly different graphical capabilities, the differences between the NES
+PPU and our custom PPU are highlighted here. Readers of this section are
+expected to know basic operation of the NES's PPU.
+
+PPU features:
 
 - 320x240 @ 60Hz VGA output (upscaled to 640x480)
 - single tilemap with room for 1024 tiles of 16x16 pixels
@@ -71,8 +139,7 @@ Here's a list of features our PPU has:
 - sprites are always drawn on top of the background layer
 - PPU control using DMA (dual-port asynchronous RAM)
 - tiles can be flipped using FAM or BAM
-- no frame buffer
-- vertical and horizontal sync and blank output
+- vertical and horizontal blank output
 
 Notable differences:
 
@@ -80,60 +147,63 @@ Notable differences:
 - NES OAM equivalent is called FAM (foreground attribute register)
 - 320x240 @ 60Hz output
   
-  Since we're using VGA, we can't use custom resolutions without an
-  upscaler/downscaler. This resolution was chosen because it's exactly half of
-  the lowest standard VGA resolution 640x480.
+  Since the FPGA board we're using has a VGA port, the PPU outputs VGA. VGA
+  does not support custom resolutions. This resolution was chosen because it's
+  exactly half of the lowest standard VGA resolution 640x480. This allows the
+  PPU to use nearest-neighbor upscaling, which will lead to a simpler hardware
+  implementation.
 - No scanline sprite limit  
   
-  Unless not imposing any sprite limit makes the hardware implementation
-  impossible, or much more difficult, this is a restriction that will likely
-  lead to frustrating debugging sessions, so will not be replicated in our
-  custom PPU.
+  This was a hardware limitation of the original NES, which our PPU design does
+  not have.
 - Sprites are 16x16
   
   Most NES games already tile multiple 8x8 tiles together into "metatiles" to
-  create the illusion of larger sprites. This was likely done to save on memory
-  costs as RAM was expensive in the '80s, but since we're running on an FPGA
-  cost is irrelevant.
+  create the illusion of larger sprites. This however is wasteful of the
+  available foreground sprites, so this PPU has 16x16 pixel sprites by default.
 - Single 1024 sprite tilemap shared between foreground and background sprites
   
   The NES OAM registers contain a bit to select which tilemap to use (of two),
   which effectively expands each tile's index address by one byte. Instead of
   creating the illusion of two separate memory areas for tiles, having one
-  large tilemap seems like a more sensible solution to indexed tiles.
+  large tilemap is a simpler solution.
 - 8 total palettes, with 8 colors each
   
-  More colors is better. Increasing the total palette count is a very memory
-  intensive operation, while increasing the palette color count is likely slower
-  when looking up color values for each pixel on real hardware.
+  More colors allows for nicer looking graphics. Increasing the palette color
+  count is a very memory intensive operation as this inflates the entire
+  tilemap, while increasing the total palette count increases FPGA utilization.
+  Keeping in mind that these palettes can be modified at any point during
+  runtime, an 8x8 palette table is likely big enough.
 - Sprites can be positioned partially off-screen on all screen edges using only
   the offset bits in the FAM register
   
   The NES has a separate PPUMASK register to control special color effects, and
   to shift sprites off the left and top screen edges, as the sprite offsets
-  count from 0. Our PPU's FAM sprite offset bits count from -15, so the sprite
+  count from 0. Our PPU's FAM sprite offset bits count from -16, so the sprite
   can shift past the top and left screen edges, as well as the standard bottom
   and right edges.
-- No status line register, only V-sync and H-sync outputs are supplied back to
-  CPU
+- No status line register, only V-blank and H-blank outputs are supplied back
+  to CPU
   
-  The NES status line register contains some handy lines, such as a buggy
-  status line for reaching the max sprite count per scanline, and a status line
-  for detecting collisions between background and foreground sprites. Our PPU
-  doesn't have a scanline limit, and all hitbox detection is done in software.
-  Software hacks involving swapping tiles during a screen draw cycle can still
-  be achieved by counting the V-sync and H-sync pulses using interrupts.
+  The NES status line register contains a buggy status line for reaching the
+  max sprite count per scanline, and a status line for detecting collisions
+  between background and foreground sprites. Our PPU doesn't have a scanline
+  limit, and all hitbox detection is done in software. Software hacks involving
+  swapping tiles during a screen draw cycle can still be achieved by counting
+  the V-blank and H-blank pulses using interrupts.
 - No background scrolling splits
   
   This feature allows only part of the background canvas to be scrolled, while
   another portion stays still. This was used to draw HUD elements on the
   background layer for displaying things like health bars or score counters.
-  Since we are working with a higher foreground sprite limit, we'll use regular
+  Since this PPU has a higher foreground sprite limit, the game uses regular
   foreground sprites to display HUD elements.
 - Sprites are always drawn on top of the background layer
   
-  Our game doesn't need this capability for any visual effects. Leaving this
-  feature out will lead to a simpler hardware design
+  The NES PPU has the capability to draw 'foreground' sprites both behind and
+  in front of the background layer. Our game doesn't need this capability for
+  any visual effects. Leaving this feature out will lead to a simpler hardware
+  design.
 - Sprites are positioned relative to the viewport, not the background layer
   
   This leads to a simpler hardware architecture for the foreground sprite
@@ -149,20 +219,18 @@ Notable differences:
 
 Important notes:
 
-- The STM32 can reset the PPU. This line will also be connected to a physical
-  button on the FPGA.
 - The STM32 uses direct memory access to control the PPU.
 - The PPU's native resolution is 320x240. It works in this resolution as if it
   is a valid VGA signal. The STM32 is also only aware of this resolution. This
   resolution is referred to as "tiny" resolution. Because VGA-compatible LCD's
   likely don't support this resolution due to low clock speed, a built-in
-  pixel-perfect 2X upscaler is chained after the PPU's "tiny" output. This
+  pixel-perfect 2X upscaler is internally connected before the output. This
   means that the display sees the resolution as 640x480, but the PPU and STM32
   only work in 320x240.
-- The STM32 receives the TVSYNC and THSYNC lines from the PPU. These are the
-  VSYNC and HSYNC lines from the tiny VGA signal generator. These lines can be
+- The STM32 receives the TVBLANK and THBLANK lines from the PPU. These are the
+  VBLANK and HBLANK lines from the "tiny" VGA resolution. These lines can be
   used to trigger interrupts for counting frames, and to make sure no
-  read/write conflicts occur for protected memory regions in the PPU.
+  simultanious reads and writes occur in the PPU.
 - NVSYNC, NHSYNC and the RGB signals refer to the output of the native VGA
   signal generator.
 
@@ -181,12 +249,12 @@ Important notes:
      sprite with non-transparent color at current pixel in order, fallback to
      background)
      - (Palette lookup) lookup palette color using palette register
-     - (VGA signal generator) output real color to VGA signal generator
+     - (Display controller) output upscaled tiny display signal
 - The pipeline stages with two clock cycles contain an address set and memory
   read step.
-- The pipeline takes 5 clock ticks in total. About 18 are available during each
-  pixel. For optimal display compatibility, the output color signal should be
-  stable before 50% of the pixel clock pulse width (9 clock ticks).
+- The pipeline takes 5 clock ticks in total. About 16 are available during each
+  pixel. Since each scanline is buffered in the upscaler, all available clock
+  cycles can be used (if necessary).
 - Since the "sprite info" and "sprite render" steps are fundamentally different
   for the foreground and background layer, these components will be combined
   into one for each layer respectively. They are separated in the above diagram
@@ -197,6 +265,7 @@ Important notes:
   the RAM in it's own cache memory. The cache updates are fetched during the
   VBLANK time between each frame.
 
+<!--
 ### Level 3
 
 This diagram has several flaws, but a significant amount of time has already
@@ -227,6 +296,7 @@ Important notes:
   CIDX signal based on the EN signal from the compositor.
 - All DATA and ADDR lines are shared between all RAM ports. WEN inputs are
   controlled by the address decoder.
+-->
 
 ## Registers
 
@@ -344,6 +414,15 @@ Format:
 
 [custompputimings]: https://docs.google.com/spreadsheets/d/1MU6K4c4PtMR_JXIpc3I0ZJdLZNnoFO7G2P3olCz6LSc
 
+## PPU communication
+
+To comunicate with the FPGA via the STM32 a protocol is needed. After [research](research.md#Input) of different possible protocols, SPI was the best option for this problem. As there is only one master and one slave, four data lines are needed at maximum. The STM32 will be the master and the FPGA will be the slave. The STM32 has a configurable SPI module that is easily configurable unlike the FPGA. Futhermore, the MISO line is not needed because the FPGA does not send any big data to the STM32. The slave select line will operate as a write enable.
+
+## SPI
+
+The FPGA will configure as a slave of the SPI protocol. The FPGA (Basys3) does not have a IP-Core that supports external SPI communication so the SPI slave has to be designed. The module requires three inputs as mentioned before in the [STM32](architecture.md#STM32) section.  
+
+
 # APU
 
 The Audio Processing Unit (APU) is programmed on the FPGA, here it will produce different signals on the audio output. These signals come in a few forms, as listed below.
@@ -370,7 +449,7 @@ optional:
 
 - envelope (ADSR)
 
-![ADSR envelope](https://upload.wikimedia.org/wikipedia/commons/e/ea/ADSR_parameter.svg)
+<!-- ![ADSR envelope](https://upload.wikimedia.org/wikipedia/commons/e/ea/ADSR_parameter.svg) -->
 
 This image shows an advanced method of generating tones. In our case this is only an indication as to how it could be done, we will actually only be looking at the sustained tone part for simplicity sakes.
 In order to get the correct graph forms, some data points can be stored in a LUT (Look Up Table). This allows the saving of computation power at the cost of some ROM space.
@@ -399,3 +478,4 @@ To index tiles from the tilemap, 10 bits will be used for both the foreground
 and background layers of the PPU. This means that the global tilemap can fit up
 to 1024 tiles in total, each being 16x16 pixels (the example uses 4x4 tiles for
 illustration purposes).
+
