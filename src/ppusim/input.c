@@ -13,4 +13,5 @@ void hh_input_read() {
 	g_hh_controller_p1.dpad_left  = kb[SDL_SCANCODE_A];
 	g_hh_controller_p1.dpad_right = kb[SDL_SCANCODE_D];
 	g_hh_controller_p1.button_primary = kb[SDL_SCANCODE_SPACE];
+	g_hh_controller_p1.button_secondary = kb[SDL_SCANCODE_R];
 }

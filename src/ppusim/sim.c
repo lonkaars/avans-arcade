@@ -29,7 +29,8 @@ void hh_ppu_init() {
 }
 
 void hh_ppu_load_tilemap() {
-	char* filename = "../test/bin/tiles.bin";
+	//TODO: remove magic file name here
+	char* filename = "static/tiles.bin";
 	FILE* fp = fopen(filename,"rb");
 	if (!fp){
 		fprintf(stderr,"Error: Failed to load tiles.");
