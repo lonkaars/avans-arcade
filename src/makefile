@@ -78,7 +78,15 @@ $(TARGET).bin: $(TARGET).elf
 
 PHONY += flash
 flash: $(TARGET).bin
-	st-flash --reset write $(TARGET).bin 0x08000000
+	st-flash --reset write $< 0x08000000
+
+# see definition of g_hh_tilemap_rom in stm32/setup.c
+PHONY += rom
+rom: static/tilemap.bin
+	st-flash --reset write $< 0x08033000
+
+static/tilemap.bin static/tilemap.h &:
+	$(MAKE) -C static all
 
 %-ds.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
@@ -98,5 +106,9 @@ format:
 PHONY += clean
 clean:
 	$(RM) $(TARGET).bin $(TARGET).elf $(OBJS)
+
+PHONY += distclean
+distclean: clean
+	$(MAKE) -C static clean
 
 .PHONY: $(PHONY)

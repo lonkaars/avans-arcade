@@ -10,9 +10,11 @@
 #include "ppusim/mem.h"
 #include "ppusim/sim.h"
 #include "ppusim/work.h"
+#include "tilemap.h"
 
 SDL_Window *g_hh_window		= NULL;
 SDL_Renderer *g_hh_renderer = NULL;
+uint32_t* g_hh_tilemap_rom = NULL;
 
 void hh_ppu_init() {
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
@@ -29,6 +31,7 @@ void hh_ppu_init() {
 }
 
 void hh_ppu_load_tilemap() {
+	g_hh_tilemap_rom = NULL; // TODO: read/copy file (static/tilemap.bin)
 	//TODO: remove magic file name here
 	char* filename = "static/tiles.bin";
 	FILE* fp = fopen(filename,"rb");
