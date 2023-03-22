@@ -54,7 +54,7 @@
 				"args": [ "" ],
 			},
 			"command": "make",
-			"args": [ "compile_commands" ],
+			"args": [ "compile_commands.json" ],
 			"type": "shell"
 		},
 		{
