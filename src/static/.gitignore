@@ -1,0 +1,4 @@
+**/*.bin
+**/*.meta
+manifest.txt
+tilemap.h

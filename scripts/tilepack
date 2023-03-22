@@ -1,0 +1,22 @@
+#!/bin/python3
+# read bytes from input and pack into ppu format
+# each input sprite is 256 bytes
+
+import sys
+import struct
+
+i = 0
+word = 0x0000
+for byte in sys.stdin.buffer.read():
+	pixel_idx = i % 5
+	word |= (byte & 0b111) << 3 * pixel_idx
+
+	if i % 5 == 4 or i == 0xff:
+		sys.stdout.buffer.write(struct.pack('!H', word))
+		word = 0x0000
+
+	i += 1
+	if i > 0xff: i = 0
+
+sys.stdout.buffer.flush()
+
