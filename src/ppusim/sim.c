@@ -27,39 +27,27 @@ void hh_ppu_init() {
 
 	g_hh_ppusim_vram = malloc(sizeof(hh_ppu_data_t) * 0xffff);
 	memset(g_hh_ppusim_vram, 0x0000, 0xffff);
+	hh_ppusim_load_tilemap();
+
 	hh_ppu_load_tilemap();
 }
 
-void hh_ppu_load_tilemap() {
-	g_hh_tilemap_rom = NULL; // TODO: read/copy file (static/tilemap.bin)
-	//TODO: remove magic file name here
-	char* filename = "static/tiles.bin";
-	FILE* fp = fopen(filename,"rb");
-	if (!fp){
-		fprintf(stderr,"Error: Failed to load tiles.");
-		return;//error
-	}
-	int sprite_size = (HH_PPU_SPRITE_WIDTH * HH_PPU_SPRITE_HEIGHT);
-	fseek(fp, 0, SEEK_END);//goto EOF
-	int _size = ftell(fp)/sprite_size;
-	fseek(fp, 0, 0);//goto start of file
+void hh_ppusim_load_tilemap() {
+	FILE* fp = fopen("static/tilemap.bin", "rb");
 
-	for (int i = 0; i < _size; i++) {
-		uint8_t data[sprite_size];
+	fseek(fp, 0, SEEK_END);
+	size_t file_size = ftell(fp);
+	rewind(fp);
 
-		fread(data,sizeof(uint8_t),sprite_size,fp);
-		
-		hh_s_ppu_vram_data sprite = hh_ppu_2nat_sprite(data);
-		sprite.offset = i*HH_PPU_VRAM_TMM_SPRITE_SIZE;
-		hh_ppu_vram_write(sprite);
-		free(sprite.data);
-	}
+	g_hh_tilemap_rom = malloc(file_size);
+	fread(g_hh_tilemap_rom, file_size, 1, fp);
 	fclose(fp);
 }
 
 void hh_ppu_deinit() {
 	free(g_hh_ppusim_threads);
 	free(g_hh_ppusim_vram);
+	free(g_hh_tilemap_rom);
 
 	SDL_DestroyRenderer(g_hh_renderer);
 	SDL_DestroyWindow(g_hh_window);
