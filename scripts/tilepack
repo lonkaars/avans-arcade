@@ -11,8 +11,8 @@ for byte in sys.stdin.buffer.read():
 	pixel_idx = i % 5
 	word |= (byte & 0b111) << 3 * pixel_idx
 
-	if i % 5 == 4 or i == 0xff:
-		sys.stdout.buffer.write(struct.pack('!H', word))
+	if pixel_idx == 4 or i == 0xff:
+		sys.stdout.buffer.write(struct.pack('<H', word))
 		word = 0x0000
 
 	i += 1
