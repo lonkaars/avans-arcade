@@ -12,7 +12,7 @@
 //TODO: pack data inside of sprite_palette LUT
 //HH_PPU_PALETTE_COUNT
 #define HH_SPRITE_COUNT 80
-#define HH_PAL_IDX_SKY 0
+#define HH_PAL_IDX_SKY 512
 #define HH_PAL_IDX_BRICK 1
 const static uint8_t hh_g_sprite_palette[HH_SPRITE_COUNT] = {
 	//TODO: make a buffer of 16 no-collider sprites (instead of the current 1)
@@ -31,6 +31,7 @@ const static uint8_t hh_g_sprite_palette[HH_SPRITE_COUNT] = {
 	6,6,6,6,/*6,6,6,6,6,6, //title_screen large letters
 	6,6,6,6,*/
 	//other palettes here:
+	// [HH_PAL_IDX_SKY] = 0,
 };
 
 
@@ -67,9 +68,9 @@ const static hh_ppu_loc_palette_table_t hh_g_palette = {
 		{0x1,0x1,0x1},
 		{0x4,0x2,0x5},
 		{0x7,0x3,0x7},
-		{0x1,0x1,0x3}, 
 		{0xe,0xe,0xe}, 
-		{0x0,0x0,0x0}, 
+		{0xe,0xe,0xe}, //elemental
+		{0x0,0x0,0x0},
 		{0x0,0x0,0x0}},
 	{
 		{0x0,0x0,0x0},
