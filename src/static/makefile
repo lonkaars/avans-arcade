@@ -2,7 +2,8 @@ XXD := xxd
 TILEPACK := ../../scripts/tilepack
 MANIFEST2HEADER := ../../scripts/manifest2header.awk
 
-INPUT += shop.hex \
+INPUT += air.hex \
+			shop.hex \
 			slime.hex \
 			world.hex
 USER_META += world.h
@@ -21,7 +22,7 @@ all: tilemap.bin tilemap.h
 	wc -c $< | tr '.' ' ' | awk '1 { print $$2" "$$1 / 104 }' > $@
 
 manifest.txt: $(OUT_BIN) $(OUT_META)
-	cat $(OUT_META) | sort > $@
+	cat $(OUT_META) > $@
 
 tilemap.bin: manifest.txt $(OUT_BIN)
 	awk '1 { print $$1".bin" }' $< | xargs cat > $@
