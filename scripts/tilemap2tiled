@@ -1,0 +1,42 @@
+#!/bin/python3
+# read packed tilemap file from argv[1] and output pngs
+
+import sys
+import io
+import struct
+from PIL import Image
+
+color_map = (
+	(0x00, 0x00, 0x00),
+	(0x24, 0x24, 0x24),
+	(0x49, 0x49, 0x49),
+	(0x6d, 0x6d, 0x6d),
+	(0x92, 0x92, 0x92),
+	(0xb6, 0xb6, 0xb6),
+	(0xda, 0xda, 0xda),
+	(0xff, 0xff, 0xff),
+)
+
+img = Image.new('RGB', (16, 16))
+
+buf = ""
+with open(sys.argv[1], "rb") as f:
+	buf = f.read()
+
+i = 0
+sprite_idx = 0
+for x in range(0, len(buf), 2):
+	word = 0x0000
+	word |= buf[x]
+	word |= buf[x+1] << 8
+
+	for p in range(5):
+		img.putpixel((i % 16, i // 16), color_map[(word >> (p * 3)) & 0b111])
+		i += 1
+		if i > 0xff:
+			i = 0
+			img.save(f"tiled/{sys.argv[1].replace('.bin','')}_{str(sprite_idx).zfill(2)}.png", format="PNG")
+			img = Image.new('RGB', (16, 16))
+			sprite_idx += 1
+			break
+

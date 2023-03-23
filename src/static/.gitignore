@@ -2,3 +2,5 @@
 **/*.meta
 manifest.txt
 tilemap.h
+tiled/*
+tiled.mk

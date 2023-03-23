@@ -1,6 +1,8 @@
 XXD := xxd
 TILEPACK := ../../scripts/tilepack
 MANIFEST2HEADER := ../../scripts/manifest2header.awk
+TILEDMK := ../../scripts/tiled.mk.awk
+TILEMAP2TILED := ../../scripts/tilemap2tiled
 
 INPUT += air.hex \
 			shop.hex \
@@ -31,5 +33,10 @@ tilemap.h: manifest.txt
 	$(MANIFEST2HEADER) $< > $@
 	cat $(USER_META) >> $@
 
+tiled.mk: manifest.txt
+	$(TILEDMK) < $< > $@
+
+include tiled.mk
+
 clean:
-	$(RM) $(OUT_BIN) $(OUT_META) manifest.txt tilemap.h tilemap.bin
+	$(RM) -r $(OUT_BIN) $(OUT_META) manifest.txt tilemap.h tilemap.bin tiled.mk tiled
