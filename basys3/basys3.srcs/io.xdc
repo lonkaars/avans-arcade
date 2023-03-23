@@ -1,9 +1,7 @@
 set_property IOSTANDARD LVCMOS33 [get_ports SPI_MOSI]
-set_property IOSTANDARD LVCMOS33 [get_ports SPI_CS]
 set_property IOSTANDARD LVCMOS33 [get_ports SPI_CLK]
 
 set_property PACKAGE_PIN J2 [get_ports SPI_CLK]
-set_property PACKAGE_PIN C15 [get_ports SPI_CS]
 set_property PACKAGE_PIN L2 [get_ports SPI_MOSI]
 
 set_property IOSTANDARD LVCMOS33 [get_ports SYSCLK]

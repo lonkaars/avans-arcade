@@ -25,7 +25,7 @@ hh_s_ppu_vram_data hh_ppu_2nat_bam(hh_s_ppu_loc_bam_entry e) {
 
 	data[0] = HH_RESIZE(e.tilemap_index, 9, 0) << 0 | HH_RESIZE(e.palette_index, 2, 0) << 10 | e.vertical_flip << 13 | e.horizontal_flip << 14;
 
-	hh_s_ppu_vram_data out = {.data = data, .size = HH_PPU_VRAM_FAM_ENTRY_SIZE};
+	hh_s_ppu_vram_data out = {.data = data, .size = HH_PPU_VRAM_BAM_ENTRY_SIZE};
 	return out;
 }
 
