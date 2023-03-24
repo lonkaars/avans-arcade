@@ -45,7 +45,7 @@ void hh_solve_collision(vec2 pos_environment, hh_entity* entity){
 }
 hh_entity hh_background_collision (hh_entity temp_old_entity,hh_entity temp_new_entity){
 
-		temp_old_entity.is_grounded = false;
+		temp_new_entity.is_grounded = false;
  
 // solves x collision
 	if (temp_old_entity.vel.x <= 0) {
@@ -74,11 +74,13 @@ hh_entity hh_background_collision (hh_entity temp_old_entity,hh_entity temp_new_
 			hh_colidable(hh_world_to_tile((vec2){.x=temp_new_entity.pos.x + 15, .y=temp_new_entity.pos.y + 15}))) {
 			temp_new_entity.pos.y = temp_new_entity.pos.y & ~15,
 			temp_new_entity.vel.y = 0;
-			temp_old_entity.is_grounded = true;
+			temp_new_entity.is_grounded = true;
 		}
 	}
-	temp_old_entity.pos = temp_new_entity.pos; 
-	temp_old_entity.vel = temp_new_entity.vel;
+	temp_old_entity = temp_new_entity;
+	// temp_old_entity.is_grounded = temp_new_entity.is_grounded;
+	// temp_old_entity.pos = temp_new_entity.pos; 
+	// temp_old_entity.vel = temp_new_entity.vel;
 	return temp_old_entity;
 }
 

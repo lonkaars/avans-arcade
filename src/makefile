@@ -40,6 +40,7 @@ LOCAL_SRCS += main.c \
 							engine/entity.c \
 							engine/bullet.c \
 							engine/title_screen.c \
+							engine/animator.c \
 							GameLoop/shop.c \
 							GameLoop/startingScreen.c
 
