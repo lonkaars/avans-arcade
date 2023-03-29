@@ -235,20 +235,11 @@ Important notes:
 
 ## Pipeline stage reference
 
-This table describes which components use which lines during pipeline stages
-1-5. The pipeline stages happen for every pixel, and is run on the system clock
-(100 MHz).
+![Pipeline stage diagram](../assets/ppu-pipeline.svg)
 
-|Stage|Component|Action|To|Type|
-|-|-|-|-|-|
-|1|`ppu_sprite_bg`|write|BAM address|bus|
-|2|`ppu_sprite_bg`|read|BAM data|bus|
-|2|`ppu_sprite_fg`|write|TMM address|bus|
-|3|`ppu_sprite_bg`|write|TMM address|bus|
-|3|`ppu_sprite_fg`|read|TMM data|bus|
-|4|`ppu_sprite_bg`|read|TMM data|bus|
-|5|`ppu_pceg`|write|pixel done|flag|
-|6|`ppu_pceg`|write|pixel ready|flag|
+This diagram describes which components use which lines during pipeline stages
+0-9. The pipeline stage counter is reset after every pixel, and is run on the
+system clock (100 MHz).
 
 ## Registers
 

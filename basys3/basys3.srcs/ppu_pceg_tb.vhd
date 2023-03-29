@@ -4,6 +4,7 @@ library unisim;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use unisim.vcomponents.all;
+use work.ppu_pceg_consts.all;
 
 entity ppu_pceg_tb is
 end ppu_pceg_tb;
@@ -12,26 +13,22 @@ architecture behavioral of ppu_pceg_tb is
 	component ppu_pceg port(
 		CLK : in std_logic; -- system clock
 		RESET : in std_logic; -- async reset
-		SPRITE_BG : out std_logic; -- sprite info fetch + sprite pixel fetch
-		SPRITE_FG : out std_logic; -- sprite pixel fetch
+		SPRITE_BG : out ppu_sprite_bg_pl_state := PL_BG_IDLE; -- sprite info fetch + sprite pixel fetch
+		SPRITE_FG : out ppu_sprite_fg_pl_state := PL_FG_IDLE; -- sprite pixel fetch
 		DONE : out std_logic; -- last pipeline stage done
 		READY : out std_logic); -- rgb buffer propagation ready
 	end component;
 	signal CLK : std_logic := '0';
 	signal RESET : std_logic := '0';
-	signal SPRITE_BG : std_logic;
-	signal SPRITE_FG : std_logic;
-	signal DONE : std_logic;
-	signal READY : std_logic;
 
 begin
 	uut : ppu_pceg port map(
 		CLK => CLK,
 		RESET => RESET,
-		SPRITE_BG => SPRITE_BG,
-		SPRITE_FG => SPRITE_FG,
-		DONE => DONE,
-		READY => READY);
+		SPRITE_BG => open,
+		SPRITE_FG => open,
+		DONE => open,
+		READY => open);
 
 	tb : process
 	begin

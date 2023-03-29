@@ -5,6 +5,7 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 use work.ppu_consts.all;
+use work.ppu_pceg_consts.all;
 
 -- TODO: add input stable / output stable pipeline stages if this doesn't work with propagation delays
 entity ppu_sprite_fg is -- foreground sprite
@@ -14,8 +15,7 @@ entity ppu_sprite_fg is -- foreground sprite
 		-- inputs
 		CLK : in std_logic; -- system clock
 		RESET : in std_logic; -- reset internal memory and clock counters
-		PL_CLK : in std_logic; -- pipeline clock
-		PL_RESET : in std_logic; -- reset pipeline clock counters
+		PL_STAGE : in ppu_sprite_fg_pl_state; -- pipeline stage
 		OE : in std_logic; -- output enable (of CIDX)
 		X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 		Y : in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
@@ -135,12 +135,10 @@ begin
 
 	inaccurate_occlusion_shims: if IDX >= PPU_ACCURATE_FG_SPRITE_COUNT generate
 		-- state machine for synchronizing pipeline stages
-		type states is (PL_TMM_ADDR, PL_TMM_DATA);
-		signal state : states := PL_TMM_ADDR;
 	begin
 		HIT <= SPRITE_ACTIVE;
 		-- only fetch if OE is high, and during the second pipeline stage
-		TMM_ADDR <= R_TMM_ADDR when OE = '1' and state = PL_TMM_ADDR else (others => 'Z');
+		TMM_ADDR <= R_TMM_ADDR when OE = '1' and PL_STAGE = PL_FG_TMM_ADDR else (others => 'Z');
 		T_TMM_ADDR <= std_logic_vector(TILEMAP_WORD + to_unsigned(TILEMAP_WORD_OFFSET, PPU_TMM_ADDR_WIDTH)); -- TMM address
 
 		-- TMM DATA
@@ -152,24 +150,19 @@ begin
 													R_TMM_DATA(14 downto 12) when 4,
 													(others => '0') when others;
 
-		process(PL_CLK, RESET, PL_RESET)
+		process(CLK, RESET)
 		begin
-			if RESET = '1' or PL_RESET = '1' then
-				-- reset state
-				state <= PL_TMM_ADDR;
-				if RESET = '1' then
-					-- reset internal pipeline registers
-					R_TMM_ADDR <= (others => '0');
-					R_TMM_DATA <= (others => '0');
-				end if;
+			if RESET = '1' then
+				-- reset internal pipeline registers
+				R_TMM_ADDR <= (others => '0');
+				R_TMM_DATA <= (others => '0');
 			elsif rising_edge(CLK) then
-				case state is
-					when PL_TMM_ADDR =>
-						state <= PL_TMM_DATA;
+				case PL_STAGE is
+					when PL_FG_TMM_ADDR =>
 						R_TMM_ADDR <= T_TMM_ADDR;
-					when PL_TMM_DATA =>
-						state <= PL_TMM_ADDR;
+					when PL_FG_TMM_DATA =>
 						R_TMM_DATA <= T_TMM_DATA;
+					when others => null;
 				end case;
 			end if;
 		end process;

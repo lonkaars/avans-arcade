@@ -15,7 +15,8 @@ entity ppu_dispctl is port(
 
 	RO,GO,BO : out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- VGA color out
 	NVSYNC, NHSYNC : out std_logic; -- VGA sync out
-	THBLANK, TVBLANK : out std_logic); -- tiny sync signals
+	THBLANK, TVBLANK : out std_logic; -- tiny sync signals
+	ACTIVE : out std_logic); -- screen currently active (currently same for tiny/native, TODO: offset tiny for first scanline)
 end ppu_dispctl;
 
 architecture Behavioral of ppu_dispctl is
@@ -145,6 +146,7 @@ begin
 			if TMP_NHCOUNT = PPU_VGA_H_PORCH_BACK + PPU_VGA_H_ACTIVE + PPU_VGA_H_SYNC then TMP_NHSYNC := '0'; end if;
 		end if;
 	end process;
+	ACTIVE <= NACTIVE;
 
 	scanline_buffer : component ppu_dispctl_slbuf port map(
 		clka => SYSCLK,

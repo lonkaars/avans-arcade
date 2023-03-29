@@ -49,7 +49,6 @@ package ppu_consts is
 	constant PPU_TMM_CACHE_FETCH_A_COUNT : natural := PPU_TMM_CACHE_FETCH_C_COUNT * PPU_FG_SPRITE_COUNT; -- amount of clocks to fetch new TMM cache
 	constant PPU_TMM_CACHE_FETCH_A_WIDTH : natural := ceil_log2(PPU_TMM_CACHE_FETCH_A_COUNT);
 	constant PPU_ACCURATE_FG_SPRITE_COUNT : natural := 16;
-	constant PPU_PL_TOTAL_STAGES : natural := 14;
 	-- VGA signal timings (https://tomverbeure.github.io/video_timings_calculator)
 	constant PPU_VGA_H_ACTIVE : natural := PPU_NATIVE_SCREEN_WIDTH;
 	constant PPU_VGA_H_PORCH_FRONT : natural := 96;

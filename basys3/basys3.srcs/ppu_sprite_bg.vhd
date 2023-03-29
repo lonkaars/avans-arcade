@@ -5,13 +5,14 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 use work.ppu_consts.all;
+use work.ppu_pceg_consts.all;
 
 -- TODO: add input stable / output stable pipeline stages if this doesn't work with propagation delays
 entity ppu_sprite_bg is port(
 	-- inputs
-	CLK : in std_logic; -- pipeline clock
+	CLK : in std_logic; -- system clock
 	RESET : in std_logic; -- reset clock counter
-	PL_RESET : in std_logic; -- reset pipeline clock counters
+	PL_STAGE : in ppu_sprite_bg_pl_state; -- pipeline stage
 	OE : in std_logic; -- output enable (of CIDX)
 	X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 	Y : in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
@@ -45,10 +46,6 @@ architecture Behavioral of ppu_sprite_bg is
 	signal T_TMM_ADDR, R_TMM_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0) := (others => '0');
 	signal T_TMM_DATA, R_TMM_DATA : std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0) := (others => '0');
 
-	-- state machine for synchronizing pipeline stages
-	type states is (PL_BAM_ADDR, PL_BAM_DATA, PL_TMM_ADDR, PL_TMM_DATA);
-	signal state : states := PL_BAM_ADDR;
-
 	-- docs/architecture.md#background-attribute-memory
 	alias BAM_DATA_FLIP_H is R_BAM_DATA(14); -- flip horizontally
 	alias BAM_DATA_FLIP_V is R_BAM_DATA(13); -- flip vertically
@@ -68,8 +65,8 @@ architecture Behavioral of ppu_sprite_bg is
 begin
 	-- output drivers
 	CIDX <= T_CIDX when OE = '1' else (others => 'Z');
-	BAM_ADDR <= R_BAM_ADDR when state = PL_BAM_ADDR else (others => 'Z');
-	TMM_ADDR <= R_TMM_ADDR when state = PL_TMM_ADDR else (others => 'Z');
+	BAM_ADDR <= R_BAM_ADDR when PL_STAGE = PL_BG_BAM_ADDR else (others => 'Z');
+	TMM_ADDR <= R_TMM_ADDR when PL_STAGE = PL_BG_TMM_ADDR else (others => 'Z');
 	T_BAM_DATA <= BAM_DATA;
 	T_TMM_DATA <= TMM_DATA;
 	-- CIDX combination
@@ -109,32 +106,25 @@ begin
 		                    (others => '0') when others;
 
 	-- state machine (pipeline stage counter) + sync r/w
-	process(CLK, RESET, PL_RESET)
+	process(CLK, RESET)
 	begin
-		if RESET = '1' or PL_RESET = '1' then
-			-- reset state
-			state <= PL_BAM_ADDR;
-			if RESET = '1' then
-				-- reset internal pipeline registers
-				R_BAM_ADDR <= (others => '0');
-				R_BAM_DATA <= (others => '0');
-				R_TMM_ADDR <= (others => '0');
-				R_TMM_DATA <= (others => '0');
-			end if;
+		if RESET = '1' then
+			-- reset internal pipeline registers
+			R_BAM_ADDR <= (others => '0');
+			R_BAM_DATA <= (others => '0');
+			R_TMM_ADDR <= (others => '0');
+			R_TMM_DATA <= (others => '0');
 		elsif rising_edge(CLK) then
-			case state is
-				when PL_BAM_ADDR =>
-					state <= PL_BAM_DATA;
+			case PL_STAGE is
+				when PL_BG_BAM_ADDR =>
 					R_BAM_ADDR <= T_BAM_ADDR;
-				when PL_BAM_DATA =>
-					state <= PL_TMM_ADDR;
+				when PL_BG_BAM_DATA =>
 					R_BAM_DATA <= T_BAM_DATA;
-				when PL_TMM_ADDR =>
-					state <= PL_TMM_DATA;
+				when PL_BG_TMM_ADDR =>
 					R_TMM_ADDR <= T_TMM_ADDR;
-				when PL_TMM_DATA =>
-					state <= PL_BAM_ADDR;
+				when PL_BG_TMM_DATA =>
 					R_TMM_DATA <= T_TMM_DATA;
+				when others => null;
 			end case;
 		end if;
 	end process;

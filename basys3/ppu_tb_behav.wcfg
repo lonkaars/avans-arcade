@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="ppu_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="ppu_consts" />
+            <top_module name="ppu_pceg_consts" />
+            <top_module name="ppu_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="924.298300 us"></ZoomStartTime>
+      <ZoomEndTime time="943.298301 us"></ZoomEndTime>
+      <Cursor1Time time="932.318300 us"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="167"></NameColumnWidth>
+      <ValueColumnWidth column_width="149"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="6" />
+   <wvobject type="group" fp_name="group136">
+      <obj_property name="label">clks</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/CLK100">
+         <obj_property name="ElementShortName">CLK100</obj_property>
+         <obj_property name="ObjectShortName">CLK100</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/NPIXCLK">
+         <obj_property name="ElementShortName">NPIXCLK</obj_property>
+         <obj_property name="ObjectShortName">NPIXCLK</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/TPIXCLK">
+         <obj_property name="ElementShortName">TPIXCLK</obj_property>
+         <obj_property name="ObjectShortName">TPIXCLK</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group150">
+      <obj_property name="label">ppu top</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/RESET">
+         <obj_property name="ElementShortName">RESET</obj_property>
+         <obj_property name="ObjectShortName">RESET</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/WEN">
+         <obj_property name="ElementShortName">WEN</obj_property>
+         <obj_property name="ObjectShortName">WEN</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/ADDR">
+         <obj_property name="ElementShortName">ADDR[15:0]</obj_property>
+         <obj_property name="ObjectShortName">ADDR[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/DATA">
+         <obj_property name="ElementShortName">DATA[15:0]</obj_property>
+         <obj_property name="ObjectShortName">DATA[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/R">
+         <obj_property name="ElementShortName">R[3:0]</obj_property>
+         <obj_property name="ObjectShortName">R[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/G">
+         <obj_property name="ElementShortName">G[3:0]</obj_property>
+         <obj_property name="ObjectShortName">G[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/B">
+         <obj_property name="ElementShortName">B[3:0]</obj_property>
+         <obj_property name="ObjectShortName">B[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/VSYNC">
+         <obj_property name="ElementShortName">VSYNC</obj_property>
+         <obj_property name="ObjectShortName">VSYNC</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/HSYNC">
+         <obj_property name="ElementShortName">HSYNC</obj_property>
+         <obj_property name="ObjectShortName">HSYNC</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/VBLANK">
+         <obj_property name="ElementShortName">VBLANK</obj_property>
+         <obj_property name="ObjectShortName">VBLANK</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/SYSCLK">
+         <obj_property name="ElementShortName">SYSCLK</obj_property>
+         <obj_property name="ObjectShortName">SYSCLK</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/SYSRST">
+         <obj_property name="ElementShortName">SYSRST</obj_property>
+         <obj_property name="ObjectShortName">SYSRST</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/ppu_tb/uut/PL_SPRITE_FG">
+         <obj_property name="ElementShortName">PL_SPRITE_FG</obj_property>
+         <obj_property name="ObjectShortName">PL_SPRITE_FG</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/ppu_tb/uut/PL_SPRITE_BG">
+         <obj_property name="ElementShortName">PL_SPRITE_BG</obj_property>
+         <obj_property name="ObjectShortName">PL_SPRITE_BG</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/PL_DONE">
+         <obj_property name="ElementShortName">PL_DONE</obj_property>
+         <obj_property name="ObjectShortName">PL_DONE</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/PL_READY">
+         <obj_property name="ElementShortName">PL_READY</obj_property>
+         <obj_property name="ObjectShortName">PL_READY</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/TMM_WEN">
+         <obj_property name="ElementShortName">TMM_WEN</obj_property>
+         <obj_property name="ObjectShortName">TMM_WEN</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/BAM_WEN">
+         <obj_property name="ElementShortName">BAM_WEN</obj_property>
+         <obj_property name="ObjectShortName">BAM_WEN</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/FAM_WEN">
+         <obj_property name="ElementShortName">FAM_WEN</obj_property>
+         <obj_property name="ObjectShortName">FAM_WEN</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/PAL_WEN">
+         <obj_property name="ElementShortName">PAL_WEN</obj_property>
+         <obj_property name="ObjectShortName">PAL_WEN</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/AUX_WEN">
+         <obj_property name="ElementShortName">AUX_WEN</obj_property>
+         <obj_property name="ObjectShortName">AUX_WEN</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/TMM_W_ADDR">
+         <obj_property name="ElementShortName">TMM_W_ADDR[15:0]</obj_property>
+         <obj_property name="ObjectShortName">TMM_W_ADDR[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/TMM_R_ADDR">
+         <obj_property name="ElementShortName">TMM_R_ADDR[15:0]</obj_property>
+         <obj_property name="ObjectShortName">TMM_R_ADDR[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/BAM_W_ADDR">
+         <obj_property name="ElementShortName">BAM_W_ADDR[10:0]</obj_property>
+         <obj_property name="ObjectShortName">BAM_W_ADDR[10:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/BAM_R_ADDR">
+         <obj_property name="ElementShortName">BAM_R_ADDR[10:0]</obj_property>
+         <obj_property name="ObjectShortName">BAM_R_ADDR[10:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/TMM_R_DATA">
+         <obj_property name="ElementShortName">TMM_R_DATA[14:0]</obj_property>
+         <obj_property name="ObjectShortName">TMM_R_DATA[14:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/BAM_R_DATA">
+         <obj_property name="ElementShortName">BAM_R_DATA[14:0]</obj_property>
+         <obj_property name="ObjectShortName">BAM_R_DATA[14:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/FAM_W_ADDR">
+         <obj_property name="ElementShortName">FAM_W_ADDR[7:0]</obj_property>
+         <obj_property name="ObjectShortName">FAM_W_ADDR[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/PAL_W_ADDR">
+         <obj_property name="ElementShortName">PAL_W_ADDR[5:0]</obj_property>
+         <obj_property name="ObjectShortName">PAL_W_ADDR[5:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/AUX_W_ADDR">
+         <obj_property name="ElementShortName">AUX_W_ADDR[0:0]</obj_property>
+         <obj_property name="ObjectShortName">AUX_W_ADDR[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/CIDX">
+         <obj_property name="ElementShortName">CIDX[5:0]</obj_property>
+         <obj_property name="ObjectShortName">CIDX[5:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/BG_EN">
+         <obj_property name="ElementShortName">BG_EN</obj_property>
+         <obj_property name="ObjectShortName">BG_EN</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/FG_EN">
+         <obj_property name="ElementShortName">FG_EN[127:0]</obj_property>
+         <obj_property name="ObjectShortName">FG_EN[127:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/FG_HIT">
+         <obj_property name="ElementShortName">FG_HIT[127:0]</obj_property>
+         <obj_property name="ObjectShortName">FG_HIT[127:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/X">
+         <obj_property name="ElementShortName">X[8:0]</obj_property>
+         <obj_property name="ObjectShortName">X[8:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/Y">
+         <obj_property name="ElementShortName">Y[7:0]</obj_property>
+         <obj_property name="ObjectShortName">Y[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/UR">
+         <obj_property name="ElementShortName">UR[3:0]</obj_property>
+         <obj_property name="ObjectShortName">UR[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/UG">
+         <obj_property name="ElementShortName">UG[3:0]</obj_property>
+         <obj_property name="ObjectShortName">UG[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/UB">
+         <obj_property name="ElementShortName">UB[3:0]</obj_property>
+         <obj_property name="ObjectShortName">UB[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/BG_SHIFT_X">
+         <obj_property name="ElementShortName">BG_SHIFT_X[8:0]</obj_property>
+         <obj_property name="ObjectShortName">BG_SHIFT_X[8:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/BG_SHIFT_Y">
+         <obj_property name="ElementShortName">BG_SHIFT_Y[7:0]</obj_property>
+         <obj_property name="ObjectShortName">BG_SHIFT_Y[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/FG_FETCH">
+         <obj_property name="ElementShortName">FG_FETCH</obj_property>
+         <obj_property name="ObjectShortName">FG_FETCH</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/NVSYNC">
+         <obj_property name="ElementShortName">NVSYNC</obj_property>
+         <obj_property name="ObjectShortName">NVSYNC</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/NHSYNC">
+         <obj_property name="ElementShortName">NHSYNC</obj_property>
+         <obj_property name="ObjectShortName">NHSYNC</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/THBLANK">
+         <obj_property name="ElementShortName">THBLANK</obj_property>
+         <obj_property name="ObjectShortName">THBLANK</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/TVBLANK">
+         <obj_property name="ElementShortName">TVBLANK</obj_property>
+         <obj_property name="ObjectShortName">TVBLANK</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/PCEG_RESET">
+         <obj_property name="ElementShortName">PCEG_RESET</obj_property>
+         <obj_property name="ObjectShortName">PCEG_RESET</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group149">
+      <obj_property name="label">background sprite</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/background_sprite/CLK">
+         <obj_property name="ElementShortName">CLK</obj_property>
+         <obj_property name="ObjectShortName">CLK</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/background_sprite/RESET">
+         <obj_property name="ElementShortName">RESET</obj_property>
+         <obj_property name="ObjectShortName">RESET</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/PL_STAGE">
+         <obj_property name="ElementShortName">PL_STAGE</obj_property>
+         <obj_property name="ObjectShortName">PL_STAGE</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/background_sprite/OE">
+         <obj_property name="ElementShortName">OE</obj_property>
+         <obj_property name="ObjectShortName">OE</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/X">
+         <obj_property name="ElementShortName">X[8:0]</obj_property>
+         <obj_property name="ObjectShortName">X[8:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/Y">
+         <obj_property name="ElementShortName">Y[7:0]</obj_property>
+         <obj_property name="ObjectShortName">Y[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/BG_SHIFT_X">
+         <obj_property name="ElementShortName">BG_SHIFT_X[8:0]</obj_property>
+         <obj_property name="ObjectShortName">BG_SHIFT_X[8:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/BG_SHIFT_Y">
+         <obj_property name="ElementShortName">BG_SHIFT_Y[7:0]</obj_property>
+         <obj_property name="ObjectShortName">BG_SHIFT_Y[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/BAM_ADDR">
+         <obj_property name="ElementShortName">BAM_ADDR[10:0]</obj_property>
+         <obj_property name="ObjectShortName">BAM_ADDR[10:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/BAM_DATA">
+         <obj_property name="ElementShortName">BAM_DATA[14:0]</obj_property>
+         <obj_property name="ObjectShortName">BAM_DATA[14:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TMM_ADDR">
+         <obj_property name="ElementShortName">TMM_ADDR[15:0]</obj_property>
+         <obj_property name="ObjectShortName">TMM_ADDR[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TMM_DATA">
+         <obj_property name="ElementShortName">TMM_DATA[14:0]</obj_property>
+         <obj_property name="ObjectShortName">TMM_DATA[14:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/CIDX">
+         <obj_property name="ElementShortName">CIDX[5:0]</obj_property>
+         <obj_property name="ObjectShortName">CIDX[5:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/T_BAM_ADDR">
+         <obj_property name="ElementShortName">T_BAM_ADDR[10:0]</obj_property>
+         <obj_property name="ObjectShortName">T_BAM_ADDR[10:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/R_BAM_ADDR">
+         <obj_property name="ElementShortName">R_BAM_ADDR[10:0]</obj_property>
+         <obj_property name="ObjectShortName">R_BAM_ADDR[10:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/T_BAM_DATA">
+         <obj_property name="ElementShortName">T_BAM_DATA[14:0]</obj_property>
+         <obj_property name="ObjectShortName">T_BAM_DATA[14:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/R_BAM_DATA">
+         <obj_property name="ElementShortName">R_BAM_DATA[14:0]</obj_property>
+         <obj_property name="ObjectShortName">R_BAM_DATA[14:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/T_TMM_ADDR">
+         <obj_property name="ElementShortName">T_TMM_ADDR[15:0]</obj_property>
+         <obj_property name="ObjectShortName">T_TMM_ADDR[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/R_TMM_ADDR">
+         <obj_property name="ElementShortName">R_TMM_ADDR[15:0]</obj_property>
+         <obj_property name="ObjectShortName">R_TMM_ADDR[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/T_TMM_DATA">
+         <obj_property name="ElementShortName">T_TMM_DATA[14:0]</obj_property>
+         <obj_property name="ObjectShortName">T_TMM_DATA[14:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/R_TMM_DATA">
+         <obj_property name="ElementShortName">R_TMM_DATA[14:0]</obj_property>
+         <obj_property name="ObjectShortName">R_TMM_DATA[14:0]</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/PIXEL_ABS_X">
+         <obj_property name="ElementShortName">PIXEL_ABS_X</obj_property>
+         <obj_property name="ObjectShortName">PIXEL_ABS_X</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/PIXEL_ABS_Y">
+         <obj_property name="ElementShortName">PIXEL_ABS_Y</obj_property>
+         <obj_property name="ObjectShortName">PIXEL_ABS_Y</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/TILE_IDX_X">
+         <obj_property name="ElementShortName">TILE_IDX_X</obj_property>
+         <obj_property name="ObjectShortName">TILE_IDX_X</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/TILE_IDX_Y">
+         <obj_property name="ElementShortName">TILE_IDX_Y</obj_property>
+         <obj_property name="ObjectShortName">TILE_IDX_Y</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TILE_PIDX_X">
+         <obj_property name="ElementShortName">TILE_PIDX_X[3:0]</obj_property>
+         <obj_property name="ObjectShortName">TILE_PIDX_X[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TRANS_TILE_PIDX_X">
+         <obj_property name="ElementShortName">TRANS_TILE_PIDX_X[3:0]</obj_property>
+         <obj_property name="ObjectShortName">TRANS_TILE_PIDX_X[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TILE_PIDX_Y">
+         <obj_property name="ElementShortName">TILE_PIDX_Y[3:0]</obj_property>
+         <obj_property name="ObjectShortName">TILE_PIDX_Y[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TRANS_TILE_PIDX_Y">
+         <obj_property name="ElementShortName">TRANS_TILE_PIDX_Y[3:0]</obj_property>
+         <obj_property name="ObjectShortName">TRANS_TILE_PIDX_Y[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/TRANS_TILE_PIDX">
+         <obj_property name="ElementShortName">TRANS_TILE_PIDX</obj_property>
+         <obj_property name="ObjectShortName">TRANS_TILE_PIDX</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/TILEMAP_WORD_OFFSET">
+         <obj_property name="ElementShortName">TILEMAP_WORD_OFFSET</obj_property>
+         <obj_property name="ObjectShortName">TILEMAP_WORD_OFFSET</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/PIXEL_BIT_OFFSET">
+         <obj_property name="ElementShortName">PIXEL_BIT_OFFSET</obj_property>
+         <obj_property name="ObjectShortName">PIXEL_BIT_OFFSET</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TMM_DATA_PAL_IDX">
+         <obj_property name="ElementShortName">TMM_DATA_PAL_IDX[2:0]</obj_property>
+         <obj_property name="ObjectShortName">TMM_DATA_PAL_IDX[2:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/T_CIDX">
+         <obj_property name="ElementShortName">T_CIDX[5:0]</obj_property>
+         <obj_property name="ObjectShortName">T_CIDX[5:0]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group142">
+      <obj_property name="label">display coordinates</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/T_POS_X">
+         <obj_property name="ElementShortName">T_POS_X[8:0]</obj_property>
+         <obj_property name="ObjectShortName">T_POS_X[8:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/T_POS_Y">
+         <obj_property name="ElementShortName">T_POS_Y[7:0]</obj_property>
+         <obj_property name="ObjectShortName">T_POS_Y[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/U_POS_X">
+         <obj_property name="ElementShortName">U_POS_X[8:0]</obj_property>
+         <obj_property name="ObjectShortName">U_POS_X[8:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/U_POS_Y">
+         <obj_property name="ElementShortName">U_POS_Y[7:0]</obj_property>
+         <obj_property name="ObjectShortName">U_POS_Y[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/N_POS_X">
+         <obj_property name="ElementShortName">N_POS_X[9:0]</obj_property>
+         <obj_property name="ObjectShortName">N_POS_X[9:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/N_POS_Y">
+         <obj_property name="ElementShortName">N_POS_Y[8:0]</obj_property>
+         <obj_property name="ObjectShortName">N_POS_Y[8:0]</obj_property>
+      </wvobject>
+      <wvobject type="group" fp_name="group276">
+         <obj_property name="label">active</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/NACTIVE">
+            <obj_property name="ElementShortName">NACTIVE</obj_property>
+            <obj_property name="ObjectShortName">NACTIVE</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/NHACTIVE">
+            <obj_property name="ElementShortName">NHACTIVE</obj_property>
+            <obj_property name="ObjectShortName">NHACTIVE</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/NVACTIVE">
+            <obj_property name="ElementShortName">NVACTIVE</obj_property>
+            <obj_property name="ObjectShortName">NVACTIVE</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/TACTIVE">
+            <obj_property name="ElementShortName">TACTIVE</obj_property>
+            <obj_property name="ObjectShortName">TACTIVE</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/THACTIVE">
+            <obj_property name="ElementShortName">THACTIVE</obj_property>
+            <obj_property name="ObjectShortName">THACTIVE</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/TVACTIVE">
+            <obj_property name="ElementShortName">TVACTIVE</obj_property>
+            <obj_property name="ObjectShortName">TVACTIVE</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/ACTIVE">
+            <obj_property name="ElementShortName">ACTIVE</obj_property>
+            <obj_property name="ObjectShortName">ACTIVE</obj_property>
+         </wvobject>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group115">
+      <obj_property name="label">pipeline stages</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/pipeline_clock_edge_generator/CLK">
+         <obj_property name="ElementShortName">CLK</obj_property>
+         <obj_property name="ObjectShortName">CLK</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/pipeline_clock_edge_generator/RESET">
+         <obj_property name="ElementShortName">RESET</obj_property>
+         <obj_property name="ObjectShortName">RESET</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/ppu_tb/uut/pipeline_clock_edge_generator/SPRITE_BG">
+         <obj_property name="ElementShortName">SPRITE_BG</obj_property>
+         <obj_property name="ObjectShortName">SPRITE_BG</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/ppu_tb/uut/pipeline_clock_edge_generator/SPRITE_FG">
+         <obj_property name="ElementShortName">SPRITE_FG</obj_property>
+         <obj_property name="ObjectShortName">SPRITE_FG</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/pipeline_clock_edge_generator/DONE">
+         <obj_property name="ElementShortName">DONE</obj_property>
+         <obj_property name="ObjectShortName">DONE</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/pipeline_clock_edge_generator/READY">
+         <obj_property name="ElementShortName">READY</obj_property>
+         <obj_property name="ObjectShortName">READY</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group126">
+      <obj_property name="label">aux</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/aux/CLK">
+         <obj_property name="ElementShortName">CLK</obj_property>
+         <obj_property name="ObjectShortName">CLK</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/aux/RESET">
+         <obj_property name="ElementShortName">RESET</obj_property>
+         <obj_property name="ObjectShortName">RESET</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/aux/AUX_WEN">
+         <obj_property name="ElementShortName">AUX_WEN</obj_property>
+         <obj_property name="ObjectShortName">AUX_WEN</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/aux/AUX_ADDR">
+         <obj_property name="ElementShortName">AUX_ADDR[0:0]</obj_property>
+         <obj_property name="ObjectShortName">AUX_ADDR[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/aux/AUX_DATA">
+         <obj_property name="ElementShortName">AUX_DATA[15:0]</obj_property>
+         <obj_property name="ObjectShortName">AUX_DATA[15:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/aux/BG_SHIFT_X">
+         <obj_property name="ElementShortName">BG_SHIFT_X[8:0]</obj_property>
+         <obj_property name="ObjectShortName">BG_SHIFT_X[8:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/aux/BG_SHIFT_Y">
+         <obj_property name="ElementShortName">BG_SHIFT_Y[7:0]</obj_property>
+         <obj_property name="ObjectShortName">BG_SHIFT_Y[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/aux/FG_FETCH">
+         <obj_property name="ElementShortName">FG_FETCH</obj_property>
+         <obj_property name="ObjectShortName">FG_FETCH</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/aux/INT_REG">
+         <obj_property name="ElementShortName">INT_REG[31:0]</obj_property>
+         <obj_property name="ObjectShortName">INT_REG[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+</wave_config>

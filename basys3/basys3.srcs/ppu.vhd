@@ -3,6 +3,7 @@ library work;
 
 use ieee.std_logic_1164.all;
 use work.ppu_consts.all;
+use work.ppu_pceg_consts.all;
 
 entity ppu is port(
 	CLK100 : in std_logic; -- system clock
@@ -16,12 +17,11 @@ entity ppu is port(
 end ppu;
 
 architecture Behavioral of ppu is
-	-- TODO: separate SPRITE_BG and SPRITE_FG lines (foreground_sprite only needs 2 clock cycles)
-	component ppu_pceg port( -- pipeline clock edge generator
+	component ppu_pceg port(
 		CLK : in std_logic; -- system clock
 		RESET : in std_logic; -- async reset
-		SPRITE_BG : out std_logic; -- sprite info fetch + sprite pixel fetch
-		SPRITE_FG : out std_logic; -- sprite pixel fetch
+		SPRITE_BG : out ppu_sprite_bg_pl_state := PL_BG_IDLE; -- sprite info fetch + sprite pixel fetch
+		SPRITE_FG : out ppu_sprite_fg_pl_state := PL_FG_IDLE; -- sprite pixel fetch
 		DONE : out std_logic; -- last pipeline stage done
 		READY : out std_logic); -- rgb buffer propagation ready
 	end component;
@@ -79,9 +79,9 @@ architecture Behavioral of ppu is
 	end component;
 	component ppu_sprite_bg port( -- background sprite
 		-- inputs
-		CLK : in std_logic; -- pipeline clock
+		CLK : in std_logic; -- system clock
 		RESET : in std_logic; -- reset clock counter
-		PL_RESET : in std_logic; -- reset pipeline clock counters
+		PL_STAGE : in ppu_sprite_bg_pl_state; -- pipeline stage
 		OE : in std_logic; -- output enable (of CIDX)
 		X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 		Y : in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
@@ -106,8 +106,7 @@ architecture Behavioral of ppu is
 			-- inputs
 			CLK : in std_logic; -- system clock
 			RESET : in std_logic; -- reset internal memory and clock counters
-			PL_CLK : in std_logic; -- pipeline clock
-			PL_RESET : in std_logic; -- reset pipeline clock counters
+			PL_STAGE : in ppu_sprite_fg_pl_state; -- pipeline stage
 			OE : in std_logic; -- output enable (of CIDX)
 			X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 			Y : in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
@@ -128,9 +127,10 @@ architecture Behavioral of ppu is
 			HIT : out std_logic); -- current pixel is not transparent
 	end component;
 	component ppu_comp port( -- compositor
-		FG_HIT : in std_logic_vector(PPU_FG_SPRITE_COUNT-1 downto 0);
-		BG_EN : out std_logic;
-		FG_EN : out std_logic_vector(PPU_FG_SPRITE_COUNT-1 downto 0));
+		OE : in std_logic; -- global output enable (screen active)
+		FG_HIT : in std_logic_vector(PPU_FG_SPRITE_COUNT-1 downto 0); -- foreground hit array
+		BG_EN : out std_logic; -- background enable output
+		FG_EN : out std_logic_vector(PPU_FG_SPRITE_COUNT-1 downto 0)); -- foreground enable output
 	end component;
 	component ppu_plut port( -- palette lookup table
 		CLK : in std_logic; -- system clock
@@ -155,12 +155,15 @@ architecture Behavioral of ppu is
 
 		RO,GO,BO : out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- VGA color out
 		NVSYNC, NHSYNC : out std_logic; -- VGA sync out
-		THBLANK, TVBLANK : out std_logic); -- tiny sync signals
+		THBLANK, TVBLANK : out std_logic; -- tiny sync signals
+		ACTIVE : out std_logic); -- screen currently active (currently same for tiny/native, TODO: offset tiny for first scanline)
 	end component;
 
 	-- signals
 	signal SYSCLK, SYSRST : std_logic; -- system clock and reset
-	signal PL_SPRITE_FG, PL_SPRITE_BG, PL_DONE, PL_READY : std_logic; -- pipeline stages
+	signal PL_DONE, PL_READY : std_logic; -- pipeline stages
+	signal PL_SPRITE_BG : ppu_sprite_bg_pl_state;
+	signal PL_SPRITE_FG : ppu_sprite_fg_pl_state;
 	signal TMM_WEN, BAM_WEN, FAM_WEN, PAL_WEN, AUX_WEN : std_logic;
 	signal TMM_W_ADDR, TMM_R_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0); -- read/write TMM addr (dual port)
 	signal BAM_W_ADDR, BAM_R_ADDR : std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0); -- read/write BAM addr (dual port)
@@ -179,6 +182,7 @@ architecture Behavioral of ppu is
 	signal BG_SHIFT_Y : std_logic_vector(PPU_POS_V_WIDTH-1 downto 0);
 	signal FG_FETCH : std_logic;
 	signal NVSYNC, NHSYNC, THBLANK, TVBLANK : std_logic;
+	signal ACTIVE : std_logic;
 	signal PCEG_RESET : std_logic;
 begin
 	SYSCLK <= CLK100;
@@ -187,12 +191,12 @@ begin
 	VSYNC <= NVSYNC;
 	HSYNC <= NHSYNC;
 
-	PCEG_RESET <= SYSRST or THBLANK;
+	PCEG_RESET <= SYSRST or (not ACTIVE);
 	VBLANK <= TVBLANK;
 
 	pipeline_clock_edge_generator : component ppu_pceg port map(
 		CLK => SYSCLK,
-		RESET => SYSRST,
+		RESET => PCEG_RESET,
 		SPRITE_FG => PL_SPRITE_FG,
 		SPRITE_BG => PL_SPRITE_BG,
 		DONE => PL_DONE,
@@ -246,9 +250,9 @@ begin
 		FG_FETCH => FG_FETCH);
 
 	background_sprite : component ppu_sprite_bg port map(
-		CLK => PL_SPRITE_BG,
+		CLK => SYSCLK,
 		RESET => SYSRST,
-		PL_RESET => PL_READY,
+		PL_STAGE => PL_SPRITE_BG,
 		OE => BG_EN,
 		X => X,
 		Y => Y,
@@ -266,8 +270,7 @@ begin
 			port map(
 				CLK => SYSCLK,
 				RESET => SYSRST,
-				PL_CLK => PL_SPRITE_FG,
-				PL_RESET => PL_READY,
+				PL_STAGE => PL_SPRITE_FG,
 				OE => FG_EN(FG_IDX),
 				X => X,
 				Y => Y,
@@ -283,6 +286,7 @@ begin
 	end generate;
 
 	compositor : component ppu_comp port map( -- compositor
+		OE => ACTIVE,
 		FG_HIT => FG_HIT,
 		BG_EN => BG_EN,
 		FG_EN => FG_EN);
@@ -313,5 +317,6 @@ begin
 		NVSYNC => NVSYNC,
 		NHSYNC => NHSYNC,
 		TVBLANK => TVBLANK,
-		THBLANK => THBLANK);
+		THBLANK => THBLANK,
+		ACTIVE => ACTIVE);
 end Behavioral;
