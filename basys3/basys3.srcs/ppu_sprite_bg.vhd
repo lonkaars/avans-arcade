@@ -62,13 +62,14 @@ architecture Behavioral of ppu_sprite_bg is
 	signal PIXEL_BIT_OFFSET : integer := 0; -- pixel index within word of TMM
 	signal TMM_DATA_PAL_IDX : std_logic_vector(PPU_PALETTE_COLOR_WIDTH-1 downto 0); -- color of palette
 	signal T_CIDX : std_logic_vector(PPU_PALETTE_CIDX_WIDTH-1 downto 0) := (others => '0'); -- output color buffer/register
+	signal BAM_ADDR_EN, TMM_ADDR_EN : boolean := false;
 begin
 	-- output drivers
 	CIDX <= T_CIDX when OE = '1' else (others => 'Z');
-	BAM_ADDR <= R_BAM_ADDR when PL_STAGE = PL_BG_BAM_ADDR else (others => 'Z');
-	TMM_ADDR <= R_TMM_ADDR when PL_STAGE = PL_BG_TMM_ADDR else (others => 'Z');
 	T_BAM_DATA <= BAM_DATA;
 	T_TMM_DATA <= TMM_DATA;
+	BAM_ADDR <= R_BAM_ADDR when BAM_ADDR_EN else (others => 'Z');
+	TMM_ADDR <= R_TMM_ADDR when TMM_ADDR_EN else (others => 'Z');
 	-- CIDX combination
 	T_CIDX <= BAM_DATA_COL_IDX & TMM_DATA_PAL_IDX;
 
@@ -115,6 +116,12 @@ begin
 			R_TMM_ADDR <= (others => '0');
 			R_TMM_DATA <= (others => '0');
 		elsif rising_edge(CLK) then
+			BAM_ADDR_EN <= true when PL_STAGE = PL_BG_BAM_ADDR else false;
+			TMM_ADDR_EN <= true when PL_STAGE = PL_BG_TMM_ADDR else false;
+			-- R_BAM_ADDR <= T_BAM_ADDR;
+			-- R_BAM_DATA <= T_BAM_DATA;
+			-- R_TMM_ADDR <= T_TMM_ADDR;
+			-- R_TMM_DATA <= T_TMM_DATA;
 			case PL_STAGE is
 				when PL_BG_BAM_ADDR =>
 					R_BAM_ADDR <= T_BAM_ADDR;

@@ -13,18 +13,19 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="924.298300 us"></ZoomStartTime>
-      <ZoomEndTime time="943.298301 us"></ZoomEndTime>
-      <Cursor1Time time="932.318300 us"></Cursor1Time>
+      <ZoomStartTime time="925.165500 us"></ZoomStartTime>
+      <ZoomEndTime time="937.055501 us"></ZoomEndTime>
+      <Cursor1Time time="930.945500 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="167"></NameColumnWidth>
-      <ValueColumnWidth column_width="149"></ValueColumnWidth>
+      <NameColumnWidth column_width="243"></NameColumnWidth>
+      <ValueColumnWidth column_width="145"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="6" />
    <wvobject type="group" fp_name="group136">
       <obj_property name="label">clks</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="logic" fp_name="/ppu_tb/uut/CLK100">
          <obj_property name="ElementShortName">CLK100</obj_property>
          <obj_property name="ObjectShortName">CLK100</obj_property>
@@ -34,8 +35,10 @@
          <obj_property name="ObjectShortName">NPIXCLK</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/TPIXCLK">
+         <obj_property name="DisplayName">label</obj_property>
          <obj_property name="ElementShortName">TPIXCLK</obj_property>
          <obj_property name="ObjectShortName">TPIXCLK</obj_property>
+         <obj_property name="label">TPIXCLK</obj_property>
       </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group150">
@@ -281,10 +284,7 @@
       <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TMM_DATA">
          <obj_property name="ElementShortName">TMM_DATA[14:0]</obj_property>
          <obj_property name="ObjectShortName">TMM_DATA[14:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/CIDX">
-         <obj_property name="ElementShortName">CIDX[5:0]</obj_property>
-         <obj_property name="ObjectShortName">CIDX[5:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/T_BAM_ADDR">
          <obj_property name="ElementShortName">T_BAM_ADDR[10:0]</obj_property>
@@ -366,10 +366,14 @@
          <obj_property name="ElementShortName">TMM_DATA_PAL_IDX[2:0]</obj_property>
          <obj_property name="ObjectShortName">TMM_DATA_PAL_IDX[2:0]</obj_property>
       </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/CIDX">
+         <obj_property name="ElementShortName">CIDX[5:0]</obj_property>
+         <obj_property name="ObjectShortName">CIDX[5:0]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+      </wvobject>
       <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/T_CIDX">
          <obj_property name="ElementShortName">T_CIDX[5:0]</obj_property>
          <obj_property name="ObjectShortName">T_CIDX[5:0]</obj_property>
-         <obj_property name="isExpanded"></obj_property>
       </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group142">
@@ -403,6 +407,7 @@
       <wvobject type="group" fp_name="group276">
          <obj_property name="label">active</obj_property>
          <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
          <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/NACTIVE">
             <obj_property name="ElementShortName">NACTIVE</obj_property>
             <obj_property name="ObjectShortName">NACTIVE</obj_property>
@@ -460,6 +465,10 @@
       <wvobject type="logic" fp_name="/ppu_tb/uut/pipeline_clock_edge_generator/READY">
          <obj_property name="ElementShortName">READY</obj_property>
          <obj_property name="ObjectShortName">READY</obj_property>
+      </wvobject>
+      <wvobject type="other" fp_name="/ppu_tb/uut/pipeline_clock_edge_generator/CLK_IDX_T">
+         <obj_property name="ElementShortName">CLK_IDX_T</obj_property>
+         <obj_property name="ObjectShortName">CLK_IDX_T</obj_property>
       </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group126">

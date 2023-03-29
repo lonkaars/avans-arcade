@@ -27,7 +27,9 @@ LFLAGS += -lm
 CFLAGS += $(if $(STM), -DHH_TARGET_STM32, )
 CFLAGS += $(if $(DESKTOP), -DHH_TARGET_DESKTOP, )
 
-LOCAL_SRCS += main.c
+LOCAL_SRCS += ppu/internals.c \
+							ppu/ppu.c \
+							main.c
 
 CFLAGS += $(SHARED_FLAGS)
 LFLAGS += $(SHARED_FLAGS)

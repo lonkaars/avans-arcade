@@ -57,28 +57,6 @@ begin
 	ADDR_I <= std_logic_vector(resize(T_POS_X, ADDR_I'length)) when T_POS_Y(0) = '0' else std_logic_vector(resize(T_POS_X, ADDR_I'length) + PPU_SCREEN_WIDTH);
 
 	T_POS_Y <= U_POS_Y;
-	-- tiny VCOUNT and HCOUNT
-	process(TPIXCLK, RESET)
-		variable TMP_T_POS_X : unsigned(PPU_SCREEN_T_POS_X_WIDTH-1 downto 0) := (others => '0');
-		variable TMP_THBLANK, TMP_TVBLANK : std_logic := '0';
-	begin
-		if RESET = '1' then
-			TMP_THBLANK := '0'; -- TODO
-			TMP_TVBLANK := '0'; -- TODO
-		elsif rising_edge(TPIXCLK) then
-			T_POS_X <= TMP_T_POS_X;
-
-			THBLANK <= TMP_THBLANK;
-			TVBLANK <= TMP_TVBLANK;
-
-			if NACTIVE = '1' then
-				TMP_T_POS_X := TMP_T_POS_X + 1;
-				if TMP_T_POS_X >= PPU_SCREEN_WIDTH then
-					TMP_T_POS_X := (others => '0');
-				end if;
-			end if;
-		end if;
-	end process;
 
 	X <= std_logic_vector(T_POS_X) when NACTIVE = '1' else (others => '0');
 	Y <= std_logic_vector(T_POS_Y) when NACTIVE = '1' else (others => '0');
@@ -92,26 +70,33 @@ begin
 	GO <= DATA_O(7 downto 4) when NACTIVE = '1' else (others => '0');
 	BO <= DATA_O(3 downto 0) when NACTIVE = '1' else (others => '0');
 
-	-- native (+upscaled) VCOUNT and HCOUNT
-	process(NPIXCLK, RESET)
+	-- tiny VCOUNT and HCOUNT
+	process(TPIXCLK, NPIXCLK, RESET)
+		variable TMP_T_POS_X : unsigned(PPU_SCREEN_T_POS_X_WIDTH-1 downto 0) := (others => '0');
+		variable TMP_THBLANK, TMP_TVBLANK : std_logic := '0';
 		variable TMP_NHCOUNT, TMP_NVCOUNT : unsigned(PPU_VGA_SIGNAL_PIXEL_WIDTH-1 downto 0) := (others => '0');
 		variable TMP_NHACTIVE, TMP_NVACTIVE : std_logic := '0';
 		variable TMP_NHSYNC, TMP_NVSYNC : std_logic := '0';
+		variable TMP_NACTIVE : std_logic := '0';
 	begin
 		if RESET = '1' then
 			TMP_NHCOUNT := (others => '0');
 			TMP_NVCOUNT := (others => '0');
 			TMP_NHACTIVE := '0';
 			TMP_NVACTIVE := '0';
+			TMP_THBLANK := '0'; -- TODO
+			TMP_TVBLANK := '0'; -- TODO
 			TMP_NVSYNC := '0';
 			TMP_NHSYNC := '0';
-		elsif rising_edge(NPIXCLK) then
+		end if;
+		-- native (+upscaled) VCOUNT and HCOUNT
+		if rising_edge(NPIXCLK) then
 			-- sync write (needs to be here to happen on rising edge)
 			NVCOUNT <= TMP_NVCOUNT;
 			NHCOUNT <= TMP_NHCOUNT;
 			NHACTIVE <= TMP_NHACTIVE;
 			NVACTIVE <= TMP_NVACTIVE;
-			NACTIVE <= TMP_NHACTIVE and TMP_NVACTIVE;
+			NACTIVE <= TMP_NACTIVE;
 			NVSYNC <= TMP_NVSYNC;
 			NHSYNC <= TMP_NHSYNC;
 			N_POS_X <= resize(TMP_NHCOUNT - PPU_VGA_H_PORCH_BACK, N_POS_X'length) when TMP_NHACTIVE = '1' else (others => '0');
@@ -140,10 +125,25 @@ begin
 			-- horizontal display area (active)
 			if TMP_NHCOUNT = PPU_VGA_H_PORCH_BACK then TMP_NHACTIVE := '1'; end if;
 			if TMP_NHCOUNT = PPU_VGA_H_PORCH_BACK + PPU_VGA_H_ACTIVE then TMP_NHACTIVE := '0'; end if;
+			TMP_NACTIVE := TMP_NHACTIVE and TMP_NVACTIVE;
 
 			-- horizontal sync period
 			if TMP_NHCOUNT = PPU_VGA_H_PORCH_BACK + PPU_VGA_H_ACTIVE then TMP_NHSYNC := '1'; end if;
 			if TMP_NHCOUNT = PPU_VGA_H_PORCH_BACK + PPU_VGA_H_ACTIVE + PPU_VGA_H_SYNC then TMP_NHSYNC := '0'; end if;
+		end if;
+
+		if falling_edge(TPIXCLK) then -- NOTE: falling edge used because of clock offset of 90 (should be 270)
+			T_POS_X <= TMP_T_POS_X;
+
+			THBLANK <= TMP_THBLANK;
+			TVBLANK <= TMP_TVBLANK;
+
+			if TMP_NACTIVE = '1' then
+				TMP_T_POS_X := TMP_T_POS_X + 1;
+				if TMP_T_POS_X >= PPU_SCREEN_WIDTH then
+					TMP_T_POS_X := (others => '0');
+				end if;
+			end if;
 		end if;
 	end process;
 	ACTIVE <= NACTIVE;
