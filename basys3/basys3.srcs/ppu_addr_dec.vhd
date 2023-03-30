@@ -20,7 +20,7 @@ entity ppu_addr_dec is port( -- address decoder
 end ppu_addr_dec;
 
 architecture Behavioral of ppu_addr_dec is
-	signal TMM_RANGE, BAM_RANGE, FAM_RANGE, PAL_RANGE, AUX_RANGE : std_logic := '0'; -- ADDR in range of memory area
+	signal NUL_RANGE, TMM_RANGE, BAM_RANGE, FAM_RANGE, PAL_RANGE, AUX_RANGE : std_logic := '0'; -- ADDR in range of memory area
 begin
 	-- address MUX
 	TMM_ADDR <= ADDR(PPU_TMM_ADDR_WIDTH-1 downto 0);
@@ -29,12 +29,13 @@ begin
 	PAL_ADDR <= ADDR(PPU_PAL_ADDR_WIDTH-1 downto 0);
 	AUX_ADDR <= ADDR(PPU_AUX_ADDR_WIDTH-1 downto 0);
 
+	NUL_RANGE <= '1' when (and ADDR) else '0'; -- address is 0xffff
 	-- WEN MUX
-	TMM_WEN <= TMM_RANGE and WEN;
-	BAM_WEN <= BAM_RANGE and WEN;
-	FAM_WEN <= FAM_RANGE and WEN;
-	PAL_WEN <= PAL_RANGE and WEN;
-	AUX_WEN <= AUX_RANGE and WEN;
+	TMM_WEN <= TMM_RANGE and WEN and (not NUL_RANGE);
+	BAM_WEN <= BAM_RANGE and WEN and (not NUL_RANGE);
+	FAM_WEN <= FAM_RANGE and WEN and (not NUL_RANGE);
+	PAL_WEN <= PAL_RANGE and WEN and (not NUL_RANGE);
+	AUX_WEN <= AUX_RANGE and WEN and (not NUL_RANGE);
 
 	-- address ranges
 	TMM_RANGE <= '1' when not ((ADDR(15) and ADDR(14) and ADDR(13)) or (ADDR(15) and ADDR(14) and ADDR(12))) else '0';

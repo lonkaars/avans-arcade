@@ -41,10 +41,10 @@ set_property PACKAGE_PIN L18 [get_ports {B[1]}]
 set_property PACKAGE_PIN N18 [get_ports {B[0]}]
 
 set_property IOSTANDARD LVCMOS33 [get_ports VBLANK]
-set_property IOSTANDARD LVCMOS33 [get_ports WEN]
+set_property IOSTANDARD LVCMOS33 [get_ports SPI_RESET]
 
 set_property PACKAGE_PIN C16 [get_ports VBLANK]
-set_property PACKAGE_PIN J1 [get_ports WEN]
+set_property PACKAGE_PIN J1 [get_ports SPI_RESET]
 
 
 

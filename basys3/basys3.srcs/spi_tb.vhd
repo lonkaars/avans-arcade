@@ -12,18 +12,18 @@ end spi_tb;
 architecture behavioral of spi_tb is
 	signal SYSCLK : std_logic := '0';
 	signal SPI_CLK : std_logic := '0';
-	signal SPI_MOSI : std_logic := '0';
+	signal SPI_DATA : std_logic := '0';
 	signal RESET : std_logic := '0';
-	signal DATA : std_logic_vector(PPU_RAM_BUS_ADDR_WIDTH+PPU_RAM_BUS_DATA_WIDTH-1 downto 0) := (others => '0');
 begin
 	uut : entity work.spi port map(
 		SYSCLK => SYSCLK,
 		RESET => RESET,
-		DATA => DATA,
-		SPI_CLK => SPI_CLK,
-		SPI_MOSI => SPI_MOSI);
+		DO => open,
+		DI => SPI_DATA,
+		DCK => SPI_CLK,
+		WEN => open);
 
-	sysclkgen: process
+	process
 	begin
 		for i in 0 to 10000 loop
 			wait for 5 ns;
@@ -34,197 +34,197 @@ begin
 		wait; -- stop for simulator
 	end process;
 
-	spi_data: process
+	process
 	begin
 		for i in 0 to 2 loop
 			-- data = 0b01010110010100001001110011111111 (0x56509cff)
-			SPI_MOSI <= '0';
+			SPI_DATA <= '0';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '0';
+			SPI_DATA <= '0';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '0';
+			SPI_DATA <= '0';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '0';
+			SPI_DATA <= '0';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '0';
+			SPI_DATA <= '0';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '0';
+			SPI_DATA <= '0';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '0';
+			SPI_DATA <= '0';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '0';
+			SPI_DATA <= '0';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '0';
+			SPI_DATA <= '0';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '0';
+			SPI_DATA <= '0';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '0';
+			SPI_DATA <= '0';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '0';
+			SPI_DATA <= '0';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '0';
+			SPI_DATA <= '0';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '0';
+			SPI_DATA <= '0';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '0';
 
-			SPI_MOSI <= '1';
+			SPI_DATA <= '1';
 			wait for 50 ns;
 			SPI_CLK <= '1';
 			wait for 50 ns;

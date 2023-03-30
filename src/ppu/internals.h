@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stdlib.h>
 
 #include "ppu/types.h"
 
@@ -18,10 +19,15 @@ typedef struct {
 
 /** @brief check if `addr` is a valid PPU address */
 bool hh_ppu_vram_valid_address(hh_ppu_addr_t addr);
-/** @brief direct write vram word (platform-specific implementation) */
-void hh_ppu_vram_dwrite(hh_ppu_addr_t addr, hh_ppu_data_t data);
 /** @brief write data block into vram */
 void hh_ppu_vram_write(hh_s_ppu_vram_data data);
+
+/** @brief add raw SPI data to ppu command buffer */
+void hh_ppu_vram_buffer(uint8_t data[4]);
+/** @brief propagate command buffer (also handles SPI reset) */
+void hh_ppu_vram_flush();
+/** @brief write raw spi bytes in ppu format */
+void hh_ppu_vram_dwrite(uint8_t* data, size_t size);
 
 /** @brief convert local background attribute memory entry to PPU format */
 hh_s_ppu_vram_data hh_ppu_2nat_bam(hh_s_ppu_loc_bam_entry);

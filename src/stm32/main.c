@@ -6,6 +6,8 @@
 void hh_ppu_load_tilemap() {}
 
 void hh_loop() {
-	HAL_Delay(1e3);
-	hh_ppu_vblank_interrupt();
+	while (1) {
+		hh_ppu_vblank_interrupt();
+		HAL_Delay(1e3);
+	}
 }

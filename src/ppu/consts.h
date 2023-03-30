@@ -23,6 +23,12 @@
 /** @brief amount of vertical background tiles on background canvas */
 #define HH_PPU_BG_CANVAS_TILES_V 30
 
+/** @brief amount of bytes in command (16 + 16 bits) */
+#define HH_PPU_COMMAND_BYTES 4
+/** @brief command buffer size (large enough to update entire screen + all fg sprites + aux + all palettes) */
+#define HH_PPU_COMMAND_BUFFER_SIZE (HH_PPU_COMMAND_BYTES * \
+		(HH_PPU_VRAM_FAM_SIZE + HH_PPU_VRAM_BAM_SIZE + HH_PPU_VRAM_AUX_SIZE + HH_PPU_VRAM_PAL_SIZE))
+
 #include "ppu/types.h"
 
 /** @brief tilemap memory address offset */
