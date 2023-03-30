@@ -133,7 +133,6 @@ void hh_io_gpio_setup() {
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
 	HAL_GPIO_Init(GPIOA, &(GPIO_InitTypeDef) {
 		.Pin = GPIO_PIN_9,
 		.Mode = GPIO_MODE_OUTPUT_PP,
@@ -165,6 +164,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi) {
   if(hspi->Instance != SPI1) return;
 
 	__HAL_RCC_SPI1_CLK_DISABLE();
+	__HAL_RCC_GPIOA_CLK_DISABLE();
 
 	HAL_GPIO_DeInit(HH_IO_SPI_PORT, HH_IO_SPI_PINS);
 }

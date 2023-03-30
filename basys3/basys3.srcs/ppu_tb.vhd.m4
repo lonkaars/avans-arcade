@@ -1,3 +1,4 @@
+-- vim: ft=vhdl
 library ieee;
 library unisim;
 use ieee.std_logic_1164.all;
@@ -48,7 +49,7 @@ begin
 	
 	process
 	begin
-		-- undivert(`test-image.tb.vhd') -- m4 macro expansion (see makefile)
+		-- undivert(`test-image-ppu.tb.vhd') -- m4 macro expansion (see makefile)
 		wait; -- stop after one loop (process loops in simulator)
 	end process;
 end Behavioral;
