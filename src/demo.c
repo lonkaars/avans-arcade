@@ -11,19 +11,14 @@
 #include "engine/draw_screen.h"
 #include "engine/player_controller.h"
 #include "engine/sprite_controller.h"
+#include "engine/level_const.h"
+
 #include "GameLoop/startingScreen.h"
+#include "GameLoop/gameplay.h"
+#include "GameLoop/shop.h"
 
 
-typedef enum {
-	hh_e_STATE_startingScreen,
-	hh_e_STATE_Shop,
-	hh_e_STATE_Gameplay,
-	hh_e_STATE_GameOver,
-	hh_e_STATE_HighScore
-} hh_e_GameState;
-hh_e_GameState hh_gameStates;
-
-
+hh_g_all_levels hh_game;
 
 uint16_t g_hh_pos_x = 1000; // 0b0000 0001 0011 0110
 uint16_t g_hh_pos_y;
@@ -43,13 +38,13 @@ typedef struct {
 }hh_s_tiles;
 
 
+hh_e_GameState hh_gameStates;
 hh_entity hh_g_player, hh_g_player_new;
 void hh_demo_setup() {
 
 	hh_setup_palettes();
 	// hh_setup_screen();
-
-
+	hh_game = hh_init_game_levels();
 }
 
 void hh_demo_loop(unsigned long frame) {
@@ -64,22 +59,10 @@ void hh_demo_loop(unsigned long frame) {
 		}	
 		break;
 	case hh_e_STATE_Shop:
-		// TODO:
-		//  if(hh_show_Shop()){
-			hh_clear_screen();
-			hh_clear_sprite();
-			hh_setup_screen();
-			hh_clear_sprite();
-			hh_gameStates = hh_e_STATE_Gameplay;
-		// }
-		// function: new level is chosen goto level
+		hh_Shop(&hh_gameStates);
 		break;
 	case hh_e_STATE_Gameplay:
-		hh_player_actions();
-
-		// TODO:
-		// function: if level complete goto shop
-		// function: if player is dead goto game over
+		hh_gameplay(hh_game, &hh_gameStates);
 		break;
 	case hh_e_STATE_GameOver:
 		// TODO:
