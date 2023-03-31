@@ -28,25 +28,26 @@ architecture Behavioral of top is
 		VBLANK : out std_logic); -- vblank for synchronization
 	end component;
 	component spi port (
-		SYSCLK : in std_logic; -- clock basys3 100MHz
+		SYSCLK : in std_logic; -- system clock (100MHz)
 		RESET : in std_logic; -- async reset
 		DCK : in std_logic; -- data clock (spi format)
 		DI : in std_logic; -- data in (spi format)
-		DO : out std_logic_vector(PPU_RAM_BUS_ADDR_WIDTH+PPU_RAM_BUS_DATA_WIDTH-1 downto 0) := (others => '0'); --	data out (parallel)
-		WEN : out std_logic); -- write enable (triggers during each word to propagate previous word)
+		SR : in std_logic; -- sync reset (spi reset)
+		DO : out std_logic_vector(PPU_RAM_BUS_ADDR_WIDTH+PPU_RAM_BUS_DATA_WIDTH-1 downto 0) := (others => '1'); --data out (parallel)
+		WEN : out std_logic := '0'); -- write enable (triggers during each word to propagate previous word)
 	end component;
 
-	signal SPI_RST, PPU_WEN : std_logic;
+	signal PPU_WEN : std_logic;
 	signal SPI_DATA : std_logic_vector(PPU_RAM_BUS_ADDR_WIDTH+PPU_RAM_BUS_DATA_WIDTH-1 downto 0);
 	alias SPI_DATA_ADDR is SPI_DATA(31 downto 16);
 	alias SPI_DATA_DATA is SPI_DATA(15 downto 0);
 begin
-	SPI_RST <= RESET or SPI_RESET;
 	serial_peripheral_interface: component spi port map(
 		SYSCLK => SYSCLK,
-		RESET => SPI_RST,
+		RESET => RESET,
 		DCK => SPI_CLK,
 		DI => SPI_MOSI,
+		SR => SPI_RESET,
 		DO => SPI_DATA,
 		WEN => PPU_WEN);
 

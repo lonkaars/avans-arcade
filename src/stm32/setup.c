@@ -137,13 +137,14 @@ void hh_io_gpio_setup() {
 		.Pin = GPIO_PIN_9,
 		.Mode = GPIO_MODE_OUTPUT_PP,
 		.Pull = GPIO_NOPULL,
-		.Speed = GPIO_SPEED_FREQ_LOW,
+		.Speed = GPIO_SPEED_FREQ_HIGH,
 	});
 	HAL_GPIO_Init(GPIOA, &(GPIO_InitTypeDef) {
 		.Pin = GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_8,
 		.Mode = GPIO_MODE_INPUT,
 		.Pull = GPIO_PULLDOWN,
 	});
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
 }
 
 void HAL_MspInit() {

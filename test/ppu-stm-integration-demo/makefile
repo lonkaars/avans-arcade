@@ -1,16 +1,19 @@
 .PHONY: all clean
 
-TARGETS := test-background-color.h test-image.h test-image-spi.tb.vhd test-image-ppu.tb.vhd test-background-color-spi.tb.vhd
+SRCS := $(wildcard *.txt)
+TARGETS += $(patsubst %.txt,%.h, $(SRCS))
+TARGETS += $(patsubst %.txt,%-ppu.tb.vhd, $(SRCS))
+TARGETS += $(patsubst %.txt,%-spi.tb.vhd, $(SRCS))
 
 all: $(TARGETS)
 
 %.h: %.txt ./data2test.awk
 	tr -d ':' < $< | ./data2test.awk > $@
 
-test-%-ppu.tb.vhd: test-%.txt ./data2pputb.awk
+%-ppu.tb.vhd: %.txt ./data2pputb.awk
 	tr -d ':' < $< | ./data2pputb.awk > $@
 
-test-%-spi.tb.vhd: test-%.txt ./data2spitb.awk
+%-spi.tb.vhd: %.txt ./data2spitb.awk
 	(tr -d ':' < $<; echo "ffff ffff") | ./data2spitb.awk > $@
 
 clean:
