@@ -2,7 +2,7 @@
 #include "engine/draw_screen.h"
 #include "engine/player_controller.h"
 #include "engine/sprite_controller.h"
-#include "GameLoop/startingScreen.h"
+#include "game_loop/starting_screen.h"
 #include "engine/level_const.h"
 
 typedef enum {
@@ -13,5 +13,5 @@ typedef enum {
 }hh_e_gameplay;
 
 void hh_reset_levels();
-void hh_gameplay(hh_g_all_levels, hh_e_GameState*);
+void hh_gameplay(hh_g_all_levels, hh_e_game_state*);
 

@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include "engine/camera.h"
 
-#define hh_max_x_size 40
+#define hh_max_x_size 40 
 #define hh_max_y_size 30
 
 /** @brief return a single tile from world binary */

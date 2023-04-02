@@ -3,25 +3,25 @@
 
 
 // TODO: use hh_entity as bullet struct
-void shootBullet(vec2 playerPos, vec_cor cam_pos, hh_entity* bullet){
+void hh_shoot_bullet(vec2 player, vec_cor cam_pos, hh_entity* bullet){
 	vec2 temp;
 	if(g_hh_controller_p1.button_secondary){
 		if(bullet->is_grounded){
 			bullet->is_grounded=false;
-			bullet->pos = playerPos;
+			bullet->pos = player;
 		}
 	}
 	else{
 		if(!bullet->is_grounded){
-			updateBullet(bullet , cam_pos, temp);
-			drawBullet(*bullet);
+			hh_update_bullet(bullet , cam_pos);
+			hh_draw_bullet(*bullet);
 		}
 	}
 	
 
 }
-void collision
-void updateBullet(hh_entity* bullet, vec_cor cam_pos, vec2 start){
+
+void hh_update_bullet(hh_entity* bullet, vec_cor cam_pos){
 	bullet->pos.x += 1;
 
 	// update bullet sprite on ppu
@@ -29,7 +29,7 @@ void updateBullet(hh_entity* bullet, vec_cor cam_pos, vec2 start){
 	bullet->render.fam.position_y = (bullet->pos.y-cam_pos.y);
 
 }
-void drawBullet(hh_entity bullet){
+void hh_draw_bullet(hh_entity bullet){
 	hh_s_ppu_loc_fam_entry temp = bullet.render.fam;
 	hh_ppu_update_foreground(10,temp);
 }

@@ -9,10 +9,10 @@
 #include <stdbool.h>
 
 typedef enum {
-	hh_e_shop_SHOW,
-	hh_e_shop_Input,
-	hh_e_shop_END,
-} hh_e_ShopStates;
+	hh_e_game_over_show,
+	hh_e_game_over_input,
+	hh_e_game_over_end,
+} hh_e_game_over;
 
 
-void hh_Shop(hh_e_GameState*);
+void hh_game_over(hh_e_game_state*);

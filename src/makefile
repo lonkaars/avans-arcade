@@ -41,10 +41,10 @@ LOCAL_SRCS += main.c \
 							engine/bullet.c \
 							engine/title_screen.c \
 							engine/level_const.c \
-							GameLoop/shop.c \
-							GameLoop/gameplay.c \
-							GameLoop/game_over.c \
-							GameLoop/startingScreen.c
+							game_loop/shop.c \
+							game_loop/gameplay.c \
+							game_loop/game_over.c \
+							game_loop/starting_screen.c
 
 CFLAGS += $(SHARED_FLAGS)
 LFLAGS += $(SHARED_FLAGS)

@@ -1,72 +1,101 @@
 #include "engine/draw_screen.h"
-//#include "engine/sprite_controller.h"
 
 hh_level_entity level;
-uint64_t offset=0;
+uint64_t offsetY=0;
+uint64_t offsetX=0;
 uint8_t hh_world_to_tile(vec2 pos){
 	
-	int index = (((pos.y/16)*hh_max_x_size) + (pos.x/16));//TODO: remove magic number(s)
+	int index = (((pos.y/HH_PPU_SPRITE_HEIGHT)*level.size.x) + (pos.x/HH_PPU_SPRITE_WIDTH));//TODO: remove magic number(s)
 	int tile= level.place[index];
 	return tile;
 }
 
 void hh_update_screen(vec2 view, vec2 player){
-	int currentTileY = view.y / 16;
-	int offset_px = view.y-(offset / 40 * 16);
+	int current_tile_y = view.y / HH_PPU_SPRITE_HEIGHT;
+	int current_tile_x = view.x / HH_PPU_SPRITE_WIDTH;
+	int offset_py = view.y - (offsetY / 40 * HH_PPU_SPRITE_HEIGHT);
+	int offset_px = view.x - offsetX * HH_PPU_SPRITE_WIDTH;
+	static int prev_ofsset = 0;
 
-
-	// || (offset_px == 0 && lastUpdated != 0 && player.y/16 == currentTileY-5)
-	if( (offset_px > 230) ){
-		int size = (hh_max_x_size) * hh_max_y_size;
-		offset = currentTileY * level.x;
+	int size = MIN(HH_PPU_BG_CANVAS_TILES_H,level.size.x) * MIN(HH_PPU_BG_CANVAS_TILES_V,level.size.y);
+	if( (offset_py == 0 || offset_py > 230) && level.size.y > level.size.x && prev_ofsset != offset_py){
+		if(offset_py==0){
+			offsetY = (current_tile_y-14) * level.size.x;
+		}
+		else{
+			offsetY = current_tile_y * level.size.x;
+		}
 
 		// Update the background screen
 		for (int BAM_index = 0; BAM_index < size; BAM_index++) {
 			hh_ppu_update_background(BAM_index, (hh_s_ppu_loc_bam_entry){
 				.horizontal_flip = false,
 				.vertical_flip = false,
-				.palette_index = hh_get_palette(level.place[offset+BAM_index]),
-				.tilemap_index = level.place[offset+BAM_index],
+				.palette_index = hh_get_palette(level.place[offsetY + BAM_index]),
+				.tilemap_index = level.place[offsetY + BAM_index],
+			});
+		}
+		prev_ofsset = offset_py;
+	}
+	else if ((offset_px == 0 || offset_px > 310) && level.size.x > level.size.y && prev_ofsset != offset_px)
+	{
+		if(offset_px==0){
+			offsetX = current_tile_x - 14;
+		}
+		else{
+			offsetX = current_tile_x;
+		}
+		// Update the background screen
+		for (int BAM_index = 0; BAM_index < size; BAM_index++) {
+			int var = (BAM_index / HH_PPU_BG_CANVAS_TILES_H) * level.size.x + MIN((BAM_index % HH_PPU_BG_CANVAS_TILES_H + offsetX),level.size.x);
+			hh_ppu_update_background(BAM_index, (hh_s_ppu_loc_bam_entry){
+				.horizontal_flip = false,
+				.vertical_flip = false,
+				.palette_index = hh_get_palette(level.place[var]),
+				.tilemap_index = level.place[var],
 			});
 		}
 	}
+
+	prev_ofsset = offset_px;
+	
 }
 void hh_setup_screen(hh_level_entity currentlevel){
 	hh_clear_screen();
 	hh_clear_sprite();
 	level = currentlevel;
-	int size = hh_max_x_size* hh_max_y_size;
-	printf("hier\n");
-	for(int BAM_index = 0; BAM_index < size; BAM_index++){
+	offsetY=0;
+	offsetX=0;
+	int size = MIN(HH_PPU_BG_CANVAS_TILES_H, level.size.x) * MIN(HH_PPU_BG_CANVAS_TILES_V, level.size.y);
+	for (int BAM_index = 0; BAM_index < size; BAM_index++) {
+		int var = (BAM_index / HH_PPU_BG_CANVAS_TILES_H) * level.size.x + BAM_index % HH_PPU_BG_CANVAS_TILES_H;
 		hh_ppu_update_background(BAM_index, (hh_s_ppu_loc_bam_entry){
 			.horizontal_flip = false,
 			.vertical_flip   = false,
-			.palette_index   = hh_get_palette(currentlevel.place[BAM_index]),
-			.tilemap_index   = currentlevel.place[BAM_index],
+			.palette_index   = hh_get_palette(currentlevel.place[var]),
+			.tilemap_index   = currentlevel.place[var],
 		});
 	}
 }
 vec_cor hh_draw_screen(vec2 player) {
    static vec_cor previousViewport = {0, 0};
-	int offset_px = offset/40*16;
-	//printf("%d\n",offset_px%2);
-	vec_cor viewport = hh_update_camera(player,(vec2){.x=0,.y=offset_px},(vec2){.x=20*16,.y=30*16+offset_px/4});//TODO: remove magic number(s)
-
-	hh_update_screen((vec2){.y=viewport.y,.x=0},player);
+	int offset_py = offsetY / 40 * HH_PPU_SPRITE_HEIGHT;
+	
+	int offset_px = (offsetX * HH_PPU_SPRITE_WIDTH) ;
+	vec_cor viewport = hh_update_camera(player,(vec2){.x = offset_px, .y = offset_py},(vec2){.x = HH_PPU_SCREEN_WIDTH + offset_px, .y = 480 + offset_py});//TODO: remove magic number(s)
+	viewport.x = CLAMP(viewport.x, 0, level.size.x * HH_PPU_SPRITE_WIDTH - HH_PPU_SCREEN_WIDTH);
+	viewport.y = CLAMP(viewport.y, 0, level.size.y * HH_PPU_SPRITE_HEIGHT - HH_PPU_SCREEN_HEIGHT);
+	
+	hh_update_screen((vec2){.y=viewport.y,.x=viewport.x},player);
    if (viewport.x == previousViewport.x && viewport.y == previousViewport.y){}
 	else{
-		// update previous viewport values
-
-		//printf("viewport y %d\n",viewport.y-(offset/40*16));
-		//printf("offset %d\n",offset);
 		hh_ppu_update_aux((hh_s_ppu_loc_aux){
-			.bg_shift_x = viewport.x - 0,
-			.bg_shift_y = viewport.y-(offset/40*16),
+			.bg_shift_x = viewport.x - offset_px,
+			.bg_shift_y = viewport.y - offset_py,
 			.fg_fetch	= 0,
 			.sysreset	= 0,
 		});
 		previousViewport = viewport;
-
 	}
 
 	return viewport;
@@ -93,8 +122,8 @@ void hh_clear_screen(){
 void hh_clear_sprite(){
 	for (int i = 0; i < HH_PPU_FG_SPRITE_COUNT; i++) {
 		hh_ppu_update_foreground(i,(hh_s_ppu_loc_fam_entry){
-			.position_x = -16,
-			.position_y = -16,
+			.position_x = -HH_PPU_SPRITE_WIDTH,
+			.position_y = -HH_PPU_SPRITE_HEIGHT,
 		});
 	}
 }

@@ -4,8 +4,8 @@
 #include "input.h"
 
 
-void shootBullet(vec2 playerPos, vec_cor cam_pos, hh_entity*);
+void hh_shoot_bullet(vec2 playerPos, vec_cor cam_pos, hh_entity*);
 
-void updateBullet(hh_entity* , vec_cor, vec2 );
+void hh_update_bullet(hh_entity* , vec_cor );
 
-void drawBullet(hh_entity);
+void hh_draw_bullet(hh_entity);
