@@ -32,6 +32,7 @@ void hh_gameplay(hh_g_all_levels game, hh_e_game_state* hh_game_state){
 		.is_grounded = false, 
 		.is_hit = false,
 		.radius = 8,
+		.ai_type = 1,
 		.pos = (vec2){128,48},
 		.vel = (vec2){0,0},
 		// .vec = (vec2){0,0},
@@ -60,8 +61,10 @@ void hh_gameplay(hh_g_all_levels game, hh_e_game_state* hh_game_state){
 		hh_player_actions(&player1,cam_pos);
 
 		// enemy's
-
-
+		int num = 32;
+		enemy_ai( enemy,  player1, 128,  200, 48);
+		hh_update_sprite(num, &enemy,cam_pos );
+		//hh_draw_screan(enemy.pos);
 
 		if(game.level[game.current_level].hh_level_completed){
 			gameplay = hh_e_level_complete;

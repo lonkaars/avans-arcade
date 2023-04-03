@@ -34,6 +34,7 @@ typedef struct {
 	uint8_t radius;
 	int8_t hp;
 	int8_t speed;
+	int8_t ai_type;
 	hh_s_rendering render;
 
 }hh_entity;
