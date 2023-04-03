@@ -15,12 +15,14 @@ typedef enum {
 } hh_e_shop_states;
 
 /** @brief amount of upgrade types */
-#define HH_SHOP_UPG_COUNT 2
+#define HH_SHOP_UPG_COUNT 5
 /** @brief count of visible upgrades in shop */
-#define HH_SHOP_UPG_DISPLAY 4
+#define HH_SHOP_UPG_DISPLAY 5
 /** @brief all possible upgrades */
 typedef enum {
 	hh_e_upg_jump,
+	hh_e_upg_speed,
+	hh_e_upg_damage,
 	hh_e_upg_heal,
 	hh_e_upg_max_health,
 } hh_e_upgrades;
