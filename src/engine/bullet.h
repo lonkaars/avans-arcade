@@ -1,16 +1,11 @@
 #pragma once
 #include "player_controller.h"
-
-typedef struct {
-    int x;
-    int y;
-    int velocity;
-    int isActive;
-    int hit;
-} Bullet;
+#include "engine/sprite_controller.h"
+#include "input.h"
 
 
-//Bullet* createBullet(float x, float y, float velocity, float direction);
-void shootBullet(vec2 playerPos, Bullet* bullet);
-void updateBullet(Bullet* bullet, int deltaTime);
-void drawBullet(Bullet* bullet);
+void hh_shoot_bullet(vec2 playerPos, vec_cor cam_pos, hh_entity*);
+
+void hh_update_bullet(hh_entity* , vec_cor );
+
+void hh_draw_bullet(hh_entity);
