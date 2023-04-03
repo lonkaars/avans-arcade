@@ -13,7 +13,7 @@ void hh_player_actions() {
 		.speed = 6,
 		.is_grounded = false,
 		.is_hit = false,
-		.radius = 8,
+		.radius = 16,
 		.pos = (vec2){128+16,32},
 		.vel = (vec2){0,0},
 		.size = (vec2){32,32},
@@ -165,8 +165,9 @@ void hh_player_actions() {
 	cam_pos = hh_draw_screen(player.pos);
 	hh_shoot_bullet(player.pos, cam_pos ,&bullet);
 	uint16_t idx = 16;
-	idx = hh_update_sprite(idx, &player, cam_pos);
-	idx = hh_update_sprite(idx, &enemy, cam_pos);
+	// hh_clear_sprite();
+	hh_update_sprite(&idx, &enemy, cam_pos);
+	hh_update_sprite(&idx, &player, cam_pos);
 
 	idx =16;
 
