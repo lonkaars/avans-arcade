@@ -1,16 +1,32 @@
 set_property IOSTANDARD LVCMOS33 [get_ports SPI_MOSI]
-set_property IOSTANDARD LVCMOS33 [get_ports SPI_CLK]
-
-set_property PACKAGE_PIN J2 [get_ports SPI_CLK]
 set_property PACKAGE_PIN L2 [get_ports SPI_MOSI]
 
+set_property PACKAGE_PIN J2 [get_ports SPI_CLK]
+set_property IOSTANDARD LVCMOS33 [get_ports SPI_CLK]
+
+set_property IOSTANDARD LVCMOS33 [get_ports SPI_SR]
+set_property PACKAGE_PIN H1 [get_ports SPI_SR]
+set_property PULLDOWN true [get_ports SPI_SR]
+
+
+
+set_property IOSTANDARD LVCMOS33 [get_ports HBLANK]
+set_property PACKAGE_PIN K2 [get_ports HBLANK]
+
+set_property IOSTANDARD LVCMOS33 [get_ports VBLANK]
+set_property PACKAGE_PIN J1 [get_ports VBLANK]
+
+
+
 set_property IOSTANDARD LVCMOS33 [get_ports SYSCLK]
+set_property PACKAGE_PIN W5 [get_ports SYSCLK]
+
 set_property IOSTANDARD LVCMOS33 [get_ports RESET]
+set_property PACKAGE_PIN T18 [get_ports RESET]
+
 set_property IOSTANDARD LVCMOS33 [get_ports HSYNC]
 set_property IOSTANDARD LVCMOS33 [get_ports VSYNC]
 
-set_property PACKAGE_PIN W5 [get_ports SYSCLK]
-set_property PACKAGE_PIN T18 [get_ports RESET]
 set_property PACKAGE_PIN P19 [get_ports HSYNC]
 set_property PACKAGE_PIN R19 [get_ports VSYNC]
 
@@ -39,14 +55,6 @@ set_property PACKAGE_PIN J18 [get_ports {B[3]}]
 set_property PACKAGE_PIN K18 [get_ports {B[2]}]
 set_property PACKAGE_PIN L18 [get_ports {B[1]}]
 set_property PACKAGE_PIN N18 [get_ports {B[0]}]
-
-set_property IOSTANDARD LVCMOS33 [get_ports VBLANK]
-set_property IOSTANDARD LVCMOS33 [get_ports SPI_RESET]
-
-set_property PACKAGE_PIN C16 [get_ports VBLANK]
-set_property PACKAGE_PIN J1 [get_ports SPI_RESET]
-
-
 
 set_property IOSTANDARD LVCMOS33 [get_ports DBG_DISP_ADDR]
 set_property PACKAGE_PIN R2 [get_ports DBG_DISP_ADDR]
@@ -83,4 +91,3 @@ set_property PACKAGE_PIN U19 [get_ports {DBG_LEDS_OUT[2]}]
 set_property PACKAGE_PIN E19 [get_ports {DBG_LEDS_OUT[1]}]
 set_property PACKAGE_PIN U16 [get_ports {DBG_LEDS_OUT[0]}]
 
-set_property PULLDOWN true [get_ports SPI_RESET]

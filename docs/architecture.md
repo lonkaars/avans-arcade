@@ -350,7 +350,8 @@ Format:
 
 |Range (VHDL)|Description|
 |-|-|
-|`31 downto 18`|(unused)|
+|`31 downto 19`|(unused)|
+|`18`|System reset|
 |`17`|Fetch foreground sprites flag|
 |`16 downto 8`|Horizontal background scroll (offset from left edge)|
 |`7 downto 0`|Vertical background scroll (offset from top edge)|

@@ -13,7 +13,8 @@ entity ppu is port(
 	DATA : in std_logic_vector(PPU_RAM_BUS_DATA_WIDTH-1 downto 0);
 	R,G,B : out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0);
 	VSYNC, HSYNC : out std_logic; -- VGA sync out
-	VBLANK : out std_logic); -- vblank for synchronization
+	VBLANK, HBLANK : out std_logic; -- vblank and hblank for synchronization
+	RESOUT : out std_logic); -- reset out
 end ppu;
 
 architecture Behavioral of ppu is
@@ -75,7 +76,8 @@ architecture Behavioral of ppu is
 		-- aux outputs
 		BG_SHIFT_X : out std_logic_vector(PPU_POS_H_WIDTH-1 downto 0);
 		BG_SHIFT_Y : out std_logic_vector(PPU_POS_V_WIDTH-1 downto 0);
-		FG_FETCH : out std_logic);
+		FG_FETCH : out std_logic;
+		RESOUT : out std_logic);
 	end component;
 	component ppu_sprite_bg port( -- background sprite
 		-- inputs
@@ -180,10 +182,10 @@ architecture Behavioral of ppu is
 	signal UR,UG,UB : std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- palette lookup output RGB
 	signal BG_SHIFT_X : std_logic_vector(PPU_POS_H_WIDTH-1 downto 0);
 	signal BG_SHIFT_Y : std_logic_vector(PPU_POS_V_WIDTH-1 downto 0);
-	signal FG_FETCH : std_logic;
 	signal NVSYNC, NHSYNC, THBLANK, TVBLANK : std_logic;
 	signal ACTIVE : std_logic;
 	signal PCEG_RESET : std_logic;
+	signal FG_FETCH, FG_FETCH_S, FG_FETCH_R : std_logic := '0';
 begin
 	SYSCLK <= CLK100;
 	SYSRST <= RESET;
@@ -193,6 +195,7 @@ begin
 
 	PCEG_RESET <= SYSRST or (not ACTIVE);
 	VBLANK <= TVBLANK;
+	HBLANK <= THBLANK;
 
 	pipeline_clock_edge_generator : component ppu_pceg port map(
 		CLK => SYSCLK,
@@ -247,7 +250,22 @@ begin
 		AUX_DATA => DATA(PPU_AUX_DATA_WIDTH-1 downto 0),
 		BG_SHIFT_X => BG_SHIFT_X,
 		BG_SHIFT_Y => BG_SHIFT_Y,
-		FG_FETCH => FG_FETCH);
+		FG_FETCH => FG_FETCH_S,
+		RESOUT => RESOUT);
+
+	-- set/reset TODO: reset on scanline 1 (buffer VBLANK to check edge)
+	process(SYSCLK)
+	begin
+		if SYSRST = '1' then
+			FG_FETCH <= '0';
+		elsif rising_edge(SYSCLK) then
+			if FG_FETCH_S = '1' then
+				FG_FETCH <= '1';
+			elsif FG_FETCH_R = '1' then
+				FG_FETCH <= '0';
+			end if;
+		end if;
+	end process;
 
 	background_sprite : component ppu_sprite_bg port map(
 		CLK => SYSCLK,

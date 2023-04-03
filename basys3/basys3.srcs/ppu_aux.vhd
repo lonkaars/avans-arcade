@@ -16,7 +16,8 @@ entity ppu_aux is port(
 	-- aux outputs
 	BG_SHIFT_X : out std_logic_vector(PPU_POS_H_WIDTH-1 downto 0);
 	BG_SHIFT_Y : out std_logic_vector(PPU_POS_V_WIDTH-1 downto 0);
-	FG_FETCH : out std_logic);
+	FG_FETCH : out std_logic;
+	RESOUT : out std_logic);
 end ppu_aux;
 
 architecture Behavioral of ppu_aux is
@@ -38,6 +39,7 @@ architecture Behavioral of ppu_aux is
 	signal INT_REG : std_logic_vector(2 * PPU_AUX_DATA_WIDTH - 1 downto 0);
 begin
 	-- docs/architecture.md#auxiliary-memory
+	RESOUT <= INT_REG(18);
 	FG_FETCH <= INT_REG(17);
 	BG_SHIFT_X <= INT_REG(16 downto 8);
 	BG_SHIFT_Y <= INT_REG(7 downto 0);
