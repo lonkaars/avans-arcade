@@ -17,11 +17,13 @@ void hh_player_actions() {
 		.is_grounded = false,
 		.is_hit = false,
 		.radius = 8,
-		.pos = (vec2){32,32},
+		.pos = (vec2){128+16,32},
 		.vel = (vec2){0,0},
+		.size = (vec2){32,32},
 		.render = {
 			.frame0 = 80,
 			.palette = 3,
+			.ppu_foreground_index = 0,
 			.fam = (hh_s_ppu_loc_fam_entry){
 				.horizontal_flip = false,
 				.vertical_flip = false,
@@ -40,9 +42,11 @@ void hh_player_actions() {
 		.radius = 8,
 		.pos = (vec2){128,48},
 		.vel = (vec2){0,0},
+		.size = (vec2){16,16},
 		.render = {
 			.frame0 = 20,
 			.palette = 7,
+			.ppu_foreground_index = 16,
 			.fam = (hh_s_ppu_loc_fam_entry){
 				.horizontal_flip = false,
 				.vertical_flip = false,
@@ -155,28 +159,37 @@ void hh_player_actions() {
 	
 	vec_cor cam_pos;//value in tiles
 	cam_pos = hh_update_camera(player.pos,(vec2){0,0},(vec2){.x=20*16,.y=30*16});//TODO: remove magic number(s)
-	hh_update_sprite(&player);
+	uint16_t idx = 16;
+	idx = hh_update_sprite(idx, &player, cam_pos);
+	idx = hh_update_sprite(idx, &enemy, cam_pos);
 	hh_draw_screen(cam_pos);
+
+	idx =16;
 
 	// TODO: make this a function call
 	// update player sprite on ppu
-	player.render.fam.position_x = (player.pos.x-cam_pos.x);
-	player.render.fam.position_y = (player.pos.y-cam_pos.y);
+	// player.render.fam.position_x = (player.pos.x-cam_pos.x);
+	// player.render.fam.position_y = (player.pos.y-cam_pos.y);
 
-	enemy.render.fam.position_x = (enemy.pos.x-cam_pos.x);
-	enemy.render.fam.position_y = (enemy.pos.y-cam_pos.y);
+	// enemy.render.fam.position_x = (enemy.pos.x-cam_pos.x);
+	// enemy.render.fam.position_y = (enemy.pos.y-cam_pos.y);
+
 
 	// TODO: make this loop a function call
-	for (int i = 0; i < 4; i++)
-	{
-		hh_s_ppu_loc_fam_entry temp = player.render.fam;
-		temp.position_x = player.render.fam.position_x+(!(player.vel.x>0)?-1:1)*(i%2?8:-8);
-		temp.position_y = player.render.fam.position_y+(i>1?0:-16);
-		temp.tilemap_index = player.render.fam.tilemap_index + i;
-		temp.palette_index = player.render.fam.palette_index;
-		temp.horizontal_flip = !(player.vel.x>0);
-		hh_ppu_update_foreground(i,temp);
-	}
+	// for (int i = 0; i < 4; i++)
+	// {
+	// 	hh_s_ppu_loc_fam_entry temp = player.render.fam;
+	// 	temp.position_x = player.render.fam.position_x+(!(player.vel.x>0)?-1:1)*(i%2?8:-8);
+	// 	temp.position_y = player.render.fam.position_y+(i>1?0:-16);
+	// 	temp.tilemap_index = player.render.fam.tilemap_index + i;
+	// 	temp.horizontal_flip = !(player.vel.x>0);
+	// 	hh_ppu_update_foreground(i,temp);
+
+	// 	// hh_s_ppu_loc_fam_entry temp = {
+	// 	// 	.position_x = player.render.fam.position_x+(!(player.vel.x>0)?-1:1)*(i%2?8:-8)
+	// 	// };
+
+	// }
 
 	hh_ppu_update_foreground(4, enemy.render.fam);
 
