@@ -5,6 +5,7 @@
 
 void hh_gameplay(hh_g_all_levels game, hh_e_game_state* hh_game_state){
 	static hh_e_gameplay gameplay = hh_e_setup_screen;
+	static hh_entity* bullets;
 	static hh_entity player1={
 		.hp = 4,
 		.speed = 6,
@@ -50,6 +51,7 @@ void hh_gameplay(hh_g_all_levels game, hh_e_game_state* hh_game_state){
 	switch (gameplay)
 	{
 	case hh_e_setup_screen:
+		bullets = hh_init_bullets(10);
 		hh_setup_screen(game.level[game.current_level]);
 		gameplay = hh_e_play_level;
 		break;
@@ -57,8 +59,8 @@ void hh_gameplay(hh_g_all_levels game, hh_e_game_state* hh_game_state){
 		// TODO: here come all the different functions for the gameplay
 		vec_cor cam_pos;//value in tiles
 		cam_pos = hh_draw_screen(player1.pos);
-		hh_player_actions(&player1,cam_pos);
-
+		hh_player_actions(&player1 ,cam_pos);
+		hh_multiple_bullets(player1.pos, cam_pos,bullets);
 		// enemy's
 
 

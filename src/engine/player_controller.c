@@ -8,25 +8,7 @@
 #include "engine/animator.h"
 #include "engine/bullet.h"
 void hh_player_actions(hh_entity* player, vec_cor cam_pos){
-   static hh_entity bullet={
-//        .hp = 4,
-        .speed = 6,
-        .is_grounded = true,
-        .is_hit = false,
-        .radius = 8,
-        .pos = (vec2){-16,-16},
-        .vel = (vec2){0,0},
-        .render = {
-            .frame0 = 84,
-            .palette = 3,
-            .fam = (hh_s_ppu_loc_fam_entry){
-                .horizontal_flip = false,
-                .vertical_flip = false,
-                .palette_index = 7,
-                .tilemap_index = 84,
-            }
-        }
-    };
+
 	static hh_entity player_new = {0};
 	player_new = *player;
 
@@ -54,7 +36,6 @@ void hh_player_actions(hh_entity* player, vec_cor cam_pos){
 
 	*player =  hh_background_collision ( *player, player_new);
 	
-	hh_shoot_bullet(player->pos, cam_pos ,&bullet);
 	uint16_t idx = 16;
 	idx = hh_update_sprite(idx, player, cam_pos);
 	// idx = hh_update_sprite(idx, &enemy, cam_pos);

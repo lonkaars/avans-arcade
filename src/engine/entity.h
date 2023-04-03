@@ -46,5 +46,8 @@ bool hh_distance_circles(vec2 object_1, vec2 object_2, int radius_1, int radius_
 // TODO: comments on functions below
 void hh_jump_entity(hh_entity* );
 void hh_gravity_entity(hh_entity* );
+
 void hh_hit_entity(hh_entity* object_1, int8_t* hit_timer, int8_t* direction);
 
+
+bool hh_background_collision_bulllet (hh_entity temp_old_entity);

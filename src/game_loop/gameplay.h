@@ -1,5 +1,6 @@
 #pragma once
 #include "engine/draw_screen.h"
+#include "engine/bullet.h"
 #include "engine/player_controller.h"
 #include "engine/sprite_controller.h"
 #include "game_loop/starting_screen.h"
