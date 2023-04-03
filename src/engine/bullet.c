@@ -22,7 +22,7 @@ void updateBullet(Bullet* bullet, int deltaTime){
         if (bullet->x - latestLocationBullet > 32) {
             // Set bullet's status to inactive
             bullet->isActive = false;
-            drawBullet(&(Bullet){.x = -16,.y = -16.    });
+            drawBullet(&(Bullet){.x = -16,.y = -16});
         }
     }
 	 else{

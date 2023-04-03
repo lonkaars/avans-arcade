@@ -1,6 +1,12 @@
 #include "engine/draw_screen.h"
 #include "engine/sprite_controller.h"
 
+static struct draw_screen
+{
+	void* levels[12]
+};
+
+
 uint8_t hh_world_to_tile(vec2 pos){
 	//TODO: remove magic file name here
     FILE* level = fopen("static/level1_test.bin", "rb"); /* open binary file */

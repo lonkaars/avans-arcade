@@ -2,7 +2,8 @@
 
 #include "engine/maths.h"
 
-typedef uint8_t hh_idx_t;
+typedef uint8_t hh_ppu_fg_idx;
+// typedef uint16_t hh_bg_idx;
 
 typedef enum {
 	fire, ice, poison
@@ -20,8 +21,9 @@ typedef struct {
 
 typedef struct {
 	hh_s_ppu_loc_fam_entry fam; //screen
-	hh_idx_t frame0;
-	hh_idx_t palette;
+	uint16_t frame0;
+	uint16_t palette;
+	uint16_t ppu_foreground_index;
 	
 }hh_s_rendering;
 
