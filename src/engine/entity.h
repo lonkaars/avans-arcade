@@ -43,4 +43,8 @@ hh_entity hh_enemy_collision(hh_entity temp_player, hh_entity temp_enemy);
 /// @return true if objects collids
 bool hh_distance_circles(vec2 object_1, vec2 object_2, int radius_1, int radius_2);
 
+// TODO: comments on functions below
+void hh_jump_entity(hh_entity* );
+void hh_gravity_entity(hh_entity* );
+void hh_hit_entity(hh_entity* object_1, int8_t* hit_timer, int8_t* direction);
 

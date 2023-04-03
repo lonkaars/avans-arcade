@@ -127,3 +127,53 @@ bool hh_distance_circles (vec2 object_1, vec2 object_2, int radius_1, int radius
 			return false;
 		}
 }
+
+void hh_jump_entity(hh_entity* object_1){
+	if (object_1->is_grounded == true) {//JUMP
+	 	object_1->vel.y = -10;
+		object_1->is_grounded = false;
+	}
+}
+void hh_gravity_entity(hh_entity* object_1){
+	if (object_1->is_grounded == false && object_1->vel.y < 6) {
+		object_1->vel.y += 1; //gravity
+	}
+}
+void hh_hit_entity(hh_entity* object_1, int8_t* hit_timer, int8_t* direction){
+	if(object_1->is_hit == true){
+		hit_timer = 9;
+		object_1->is_hit = false;	
+	} 
+	if(hit_timer > -10){
+			hit_timer--;
+	}
+	
+	if(hit_timer <= 0){
+		if(direction != 0){
+			if(object_1->vel.x > -1 * object_1->speed && object_1->vel.x < object_1->speed) {
+				object_1->vel.x = object_1->vel.x + direction;
+			} else {
+				if (object_1->vel.x > 0) {
+					object_1->vel.x--;
+				} else if(object_1->vel.x < 0) {
+					object_1->vel.x++; 
+				}
+			}
+		} else {
+			if (object_1->vel.x > 0) {
+				object_1->vel.x--;
+			} else if(object_1->vel.x < 0) {
+			object_1->vel.x++; 
+			}
+		}
+		
+	} else {
+		if (object_1->vel.x > 0) {
+			object_1->vel.x--;
+		} else if(object_1->vel.x < 0) {
+			object_1->vel.x++; 
+		}
+			object_1->vel.y++;
+	}
+	
+}
