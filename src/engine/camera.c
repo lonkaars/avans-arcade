@@ -4,12 +4,13 @@
 
 
 vec_cor hh_update_camera(vec_cen new, vec2 min, vec2 max){
-
 	//TODO: change floating point math to fix point math
 	//TODO: remove magic number at y camera offset
 
 	// new = vec_cen2cor(new,(vec2){.x=max.x/2,.y=max.y/2});
-	new = vec_cen2cor((vec2){.x=new.x+(HH_PPU_SPRITE_WIDTH),.y=new.y+(HH_PPU_SPRITE_HEIGHT*8)},(vec2){.x=max.x/2,.y=max.y/2});
+	new = vec_cen2cor((vec2){.x=new.x+(HH_PPU_SPRITE_WIDTH),.y=new.y+(HH_PPU_SPRITE_HEIGHT*8)},(vec2){.x=(max.x	- min.x)/2,.y=(max.y	- min.y)/2});
+	// new = vec_cen2cor((vec2){.x=new.x+(HH_PPU_SPRITE_WIDTH),.y=new.y+(HH_PPU_SPRITE_HEIGHT*8)},(vec2){.x=max.x/2,.y=max.y/2});
+
 	// new.x = new.x << HH_MATH_FIXED_POINT;
 	// new.y = new.y << HH_MATH_FIXED_POINT;
 	static vec_cor old;
@@ -30,6 +31,8 @@ vec_cor hh_update_camera(vec_cen new, vec2 min, vec2 max){
 	old.x = CLAMP(new.x,min.x,max.x);
 	old.y = CLAMP(new.y,min.y,max.y);
 
+	//printf("camera new %d min %d max %d\n",new.y,min.y,max.y);
 	return old;
 }
+
 

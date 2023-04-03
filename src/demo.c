@@ -11,19 +11,14 @@
 #include "engine/draw_screen.h"
 #include "engine/player_controller.h"
 #include "engine/sprite_controller.h"
-#include "GameLoop/startingScreen.h"
+#include "engine/level_const.h"
+
+#include "game_loop/starting_screen.h"
+#include "game_loop/gameplay.h"
+#include "game_loop/shop.h"
 
 
-typedef enum {
-	hh_e_STATE_startingScreen,
-	hh_e_STATE_Shop,
-	hh_e_STATE_Gameplay,
-	hh_e_STATE_GameOver,
-	hh_e_STATE_HighScore
-} hh_e_GameState;
-hh_e_GameState hh_gameStates;
-
-
+hh_g_all_levels hh_game;
 
 uint16_t g_hh_pos_x = 1000; // 0b0000 0001 0011 0110
 uint16_t g_hh_pos_y;
@@ -43,69 +38,56 @@ typedef struct {
 }hh_s_tiles;
 
 
-hh_entity hh_g_player, hh_g_player_new;
+hh_e_game_state hh_game_states;
+ hh_entity hh_g_player, hh_g_player_new;
 void hh_demo_setup() {
 
 	hh_setup_palettes();
-	// hh_setup_screen();
-
-
+	hh_game = hh_init_game_levels();
 }
 
 void hh_demo_loop(unsigned long frame) {
 
 	
-	switch (hh_gameStates)
+	switch (hh_game_states)
 	{
-	case hh_e_STATE_startingScreen:
-		bool ret = hh_show_startingScreen();
+	case hh_e_state_starting_screen:
+		bool ret = hh_show_starting_screen();
 		if(ret){
-			hh_gameStates = hh_e_STATE_Shop;
+			hh_game_states = hh_e_state_shop;
 		}	
 		break;
-	case hh_e_STATE_Shop:
-		// TODO:
-		//  if(hh_show_Shop()){
-			hh_clear_screen();
-			hh_clear_sprite();
-			hh_setup_screen();
-			hh_clear_sprite();
-			hh_gameStates = hh_e_STATE_Gameplay;
-		// }
-		// function: new level is chosen goto level
+	case hh_e_state_shop:
+		hh_shop(&hh_game_states);
 		break;
-	case hh_e_STATE_Gameplay:
-		hh_player_actions();
-
-		// TODO:
-		// function: if level complete goto shop
-		// function: if player is dead goto game over
+	case hh_e_state_gameplay:
+		hh_gameplay(hh_game, &hh_game_states);
 		break;
-	case hh_e_STATE_GameOver:
-		// TODO:
+	case hh_e_state_game_over:
+		// todo:
 		// function: show game over screen
 		// function: after time goto high score
 		break;
-	case hh_e_STATE_HighScore:
-		// TODO:
+	case hh_e_state_high_score:
+		// todo:
 		// fucntion: show all previously scored points
 		// function: button pressed goto starting screen
 		break;
 	default:
-			hh_gameStates = hh_e_STATE_startingScreen;
+			hh_game_states = hh_e_state_starting_screen;
 		break;
 	}
 }
 
-// void sendData(uint8_t address, uint16_t data) {
-// 	uint8_t bitData[3];
-// 	bitData[2] = data & 0xff;
-// 	bitData[1] = (data >> 8);
-// 	bitData[0] = address; // first byte is address
+// void send_data(uint8_t address, uint16_t data) {
+// 	uint8_t bit_data[3];
+// 	bit_data[2] = data & 0xff;
+// 	bit_data[1] = (data >> 8);
+// 	bit_data[0] = address; // first byte is address
 //
-// 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
-// 	HAL_SPI_Transmit(&hspi1, bitData, 3, 100); //2*8 bit data
-// 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+// 	hal_gpio_write_pin(gpioa, gpio_pin_9, gpio_pin_reset);
+// 	hal_spi_transmit(&hspi1, bit_data, 3, 100); //2*8 bit data
+// 	hal_gpio_write_pin(gpioa, gpio_pin_9, gpio_pin_set);
 // }
 
 

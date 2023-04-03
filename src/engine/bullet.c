@@ -1,44 +1,35 @@
 #include "bullet.h"
-#include "engine/sprite_controller.h"
 
 
-void shootBullet(vec2 playerPos, Bullet* bullet){
-	// Set bullet's x and y coordinates to player's coordinates
-    bullet->x = playerPos.x;
-    bullet->y = playerPos.y;
-    // Set bullet's velocity to a fixed value
-    bullet->velocity = 1;
-    // Set bullet's status to active
-    bullet->isActive = true;
+
+// TODO: use hh_entity as bullet struct
+void hh_shoot_bullet(vec2 player, vec_cor cam_pos, hh_entity* bullet){
+	vec2 temp;
+	if(g_hh_controller_p1.button_secondary){
+		if(bullet->is_grounded){
+			bullet->is_grounded=false;
+			bullet->pos = player;
+		}
+	}
+	else{
+		if(!bullet->is_grounded){
+			hh_update_bullet(bullet , cam_pos);
+			hh_draw_bullet(*bullet);
+		}
+	}
+	
+
 }
-void updateBullet(Bullet* bullet, int deltaTime){
-    // Only update bullet if it is active   
-	 static int latestLocationBullet = 0;
-    if (bullet->isActive) {
-        // Move bullet based on velocity and deltaTime
-        bullet->x += bullet->velocity * deltaTime;
-		drawBullet(bullet);
-        // Check if bullet has moved 16 pixels
-        if (bullet->x - latestLocationBullet > 32) {
-            // Set bullet's status to inactive
-            bullet->isActive = false;
-            drawBullet(&(Bullet){.x = -16,.y = -16.    });
-        }
-    }
-	 else{
-		latestLocationBullet = bullet->x;
-	 }
+
+void hh_update_bullet(hh_entity* bullet, vec_cor cam_pos){
+	bullet->pos.x += 1;
+
+	// update bullet sprite on ppu
+	bullet->render.fam.position_x = (bullet->pos.x-cam_pos.x);
+	bullet->render.fam.position_y = (bullet->pos.y-cam_pos.y);
+
 }
-void drawBullet(Bullet* bullet){
-
-
-	hh_ppu_update_foreground(10, (hh_s_ppu_loc_fam_entry)
-			{
-                .position_x = bullet->x,
-                .position_y = bullet->y,
-				.horizontal_flip = false,
-				.vertical_flip = false,
-				.palette_index = 7,
-				.tilemap_index = 84, // change tilemap to the correct foreground index;
-			});
+void hh_draw_bullet(hh_entity bullet){
+	hh_s_ppu_loc_fam_entry temp = bullet.render.fam;
+	hh_ppu_update_foreground(10,temp);
 }
