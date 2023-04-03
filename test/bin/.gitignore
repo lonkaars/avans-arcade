@@ -1,1 +1,4 @@
 *.bin
+*.pip
+*.src
+*.hex

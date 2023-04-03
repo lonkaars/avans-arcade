@@ -15,12 +15,12 @@ void hh_update_screen(vec2 view, vec2 player){
 	int current_tile_x = view.x / HH_PPU_SPRITE_WIDTH;
 	int offset_py = view.y - (offsetY / 40 * HH_PPU_SPRITE_HEIGHT);
 	int offset_px = view.x - offsetX * HH_PPU_SPRITE_WIDTH;
-	static int prev_ofsset = 0;
+	static int prev_offset = 0;
 
 	int size = MIN(HH_PPU_BG_CANVAS_TILES_H,level.size.x) * MIN(HH_PPU_BG_CANVAS_TILES_V,level.size.y);
-	if( (offset_py == 0 || offset_py > 230) && level.size.y > level.size.x && prev_ofsset != offset_py){
+	if( (offset_py == 0 || offset_py > 230) && level.size.y > level.size.x && prev_offset != offset_py){
 		if(offset_py==0){
-			offsetY = (current_tile_y-14) * level.size.x;
+			offsetY = MAX(current_tile_y-14,0) * level.size.x;
 		}
 		else{
 			offsetY = current_tile_y * level.size.x;
@@ -35,12 +35,12 @@ void hh_update_screen(vec2 view, vec2 player){
 				.tilemap_index = level.place[offsetY + BAM_index],
 			});
 		}
-		prev_ofsset = offset_py;
+		prev_offset = offset_py;
 	}
-	else if ((offset_px == 0 || offset_px > 310) && level.size.x > level.size.y && prev_ofsset != offset_px)
+	else if ((offset_px == 0 || offset_px > 310) && level.size.x > level.size.y && prev_offset != offset_px)
 	{
 		if(offset_px==0){
-			offsetX = current_tile_x - 14;
+			offsetX = MAX((current_tile_x - 14),0);
 		}
 		else{
 			offsetX = current_tile_x;
@@ -57,7 +57,7 @@ void hh_update_screen(vec2 view, vec2 player){
 		}
 	}
 
-	prev_ofsset = offset_px;
+	prev_offset = offset_px;
 	
 }
 void hh_setup_screen(hh_level_entity currentlevel){
