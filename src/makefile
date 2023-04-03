@@ -29,7 +29,8 @@ CFLAGS += $(if $(DESKTOP), -DHH_TARGET_DESKTOP, )
 
 LOCAL_SRCS += ppu/internals.c \
 							ppu/ppu.c \
-							main.c
+							main.c \
+							demo.c
 
 CFLAGS += $(SHARED_FLAGS)
 LFLAGS += $(SHARED_FLAGS)

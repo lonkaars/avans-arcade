@@ -21,6 +21,7 @@ begin
 		RESET => RESET,
 		DO => open,
 		DI => SPI_DATA,
+		SR => '0',
 		DCK => SPI_CLK,
 		WEN => open);
 

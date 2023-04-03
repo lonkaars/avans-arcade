@@ -25,9 +25,9 @@
 
 /** @brief amount of bytes in command (16 + 16 bits) */
 #define HH_PPU_COMMAND_BYTES 4
-/** @brief command buffer size (large enough to update entire screen + all fg sprites + aux + all palettes) */
+/** @brief command buffer size (large enough to update entire screen + all fg sprites + aux + all palettes + 16 for safety) */
 #define HH_PPU_COMMAND_BUFFER_SIZE (HH_PPU_COMMAND_BYTES * \
-		(HH_PPU_VRAM_FAM_SIZE + HH_PPU_VRAM_BAM_SIZE + HH_PPU_VRAM_AUX_SIZE + HH_PPU_VRAM_PAL_SIZE))
+		(HH_PPU_VRAM_FAM_SIZE + HH_PPU_VRAM_BAM_SIZE + HH_PPU_VRAM_AUX_SIZE + HH_PPU_VRAM_PAL_SIZE + 16))
 
 #include "ppu/types.h"
 

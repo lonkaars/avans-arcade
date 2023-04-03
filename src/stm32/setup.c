@@ -7,6 +7,7 @@
 
 #include "main.h"
 #include "setup.h"
+#include "demo.h"
 #include "ppu/ppu.h"
 
 UART_HandleTypeDef huart2 = {
@@ -73,6 +74,7 @@ void hh_setup() {
 	hh_io_tim_setup();
 
 	hh_ppu_init();
+	hh_demo_setup();
 }
 
 void hh_exit() {
@@ -150,6 +152,7 @@ void hh_io_gpio_setup() {
 void HAL_MspInit() {
   __HAL_RCC_SYSCFG_CLK_ENABLE();
   __HAL_RCC_PWR_CLK_ENABLE();
+	HAL_NVIC_SetPriority(PendSV_IRQn, 3, 0);
 }
 
 void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi) {
