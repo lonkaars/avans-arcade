@@ -17,6 +17,7 @@
 #include "game_loop/gameplay.h"
 #include "game_loop/shop.h"
 
+#include <stdbool.h>
 
 hh_g_all_levels hh_game;
 

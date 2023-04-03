@@ -1,8 +1,8 @@
-#include "starting_screen.h""
+#include "starting_screen.h"
 #include "input.h"
 #include "engine/title_screen.h"
 #include "engine/draw_screen.h"
-// #include "engine/player_controller.h"
+#include "engine/player_controller.h"
 
 bool hh_show_starting_screen(){
 	static hh_e_screen_states hh_e_starting_screen = hh_e_state_show;
