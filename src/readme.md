@@ -21,3 +21,12 @@
 |ppu|PPU interface functions|
 |static|static game assets (binary files)|
 |stm32|STM32 specific setup (HAL, FreeRTOS)|
+
+## others
+
+### debugging command
+
+```bash
+st-util & arm-none-eabi-gdb ./main.elf -ex 'target remote localhost:4242' -ex 'continue'
+```
+

@@ -29,6 +29,9 @@ void hh_ppu_vram_flush();
 /** @brief write raw spi bytes in ppu format */
 void hh_ppu_vram_dwrite(uint8_t* data, size_t size);
 
+/** @brief update aux register */
+void hh_ppu_update_aux(hh_s_ppu_loc_aux aux);
+
 /** @brief convert local background attribute memory entry to PPU format */
 hh_s_ppu_vram_data hh_ppu_2nat_bam(hh_s_ppu_loc_bam_entry);
 /** @brief convert local foreground attribute memory entry to PPU format */

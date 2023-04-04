@@ -4,6 +4,8 @@
 #include "ppu/internals.h"
 #include "ppu/ppu.h"
 
+hh_s_ppu_loc_aux g_hh_aux = { 0 };
+
 void hh_ppu_update_foreground(unsigned index, hh_s_ppu_loc_fam_entry e) {
 	hh_s_ppu_vram_data s = hh_ppu_2nat_fam(e);
 	s.offset			 = HH_PPU_VRAM_FAM_OFFSET + HH_PPU_VRAM_FAM_ENTRY_SIZE * index;
@@ -19,17 +21,16 @@ void hh_ppu_update_background(unsigned index, hh_s_ppu_loc_bam_entry e) {
 }
 
 void hh_ppu_update_sprite(unsigned tilemap_index, const hh_s_ppu_loc_sprite sprite) {
+	if (tilemap_index < 16) g_hh_aux.fg_fetch = true;
 	hh_s_ppu_vram_data s = hh_ppu_2nat_sprite(sprite);
 	s.offset			 = HH_PPU_VRAM_TMM_OFFSET + HH_PPU_VRAM_TMM_SPRITE_SIZE * tilemap_index;
 	hh_ppu_vram_write(s);
 	free(s.data);
 }
 
-void hh_ppu_update_aux(hh_s_ppu_loc_aux aux) {
-	hh_s_ppu_vram_data a = hh_ppu_2nat_aux(aux);
-	a.offset			 = HH_PPU_VRAM_AUX_OFFSET;
-	hh_ppu_vram_write(a);
-	free(a.data);
+void hh_ppu_update_background_pos(uint16_t shift_x, uint16_t shift_y) {
+	g_hh_aux.bg_shift_x = shift_x;
+	g_hh_aux.bg_shift_y = shift_y;
 }
 
 void hh_ppu_update_palette_table(hh_ppu_loc_palette_table_t table) {
@@ -46,3 +47,13 @@ void hh_ppu_update_color(unsigned palette_index, unsigned color_index, hh_ppu_rg
 	hh_ppu_vram_write(c);
 	free(c.data);
 }
+
+void hh_ppu_flush() {
+	hh_ppu_update_aux(g_hh_aux);
+	if (g_hh_aux.fg_fetch) {
+		g_hh_aux.fg_fetch = false;
+		hh_ppu_update_aux(g_hh_aux);
+	}
+	hh_ppu_vram_flush();
+}
+
