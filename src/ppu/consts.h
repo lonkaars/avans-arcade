@@ -55,3 +55,9 @@
 #define HH_PPU_VRAM_AUX_OFFSET ((hh_ppu_addr_t) 0xde00)
 /** @brief auxiliary memory size in words */
 #define HH_PPU_VRAM_AUX_SIZE ((hh_ppu_addr_t) 0x0002)
+
+/** @brief sprite size in bytes */
+#define HH_PPU_BYTE_SPRITE_SIZE (HH_PPU_VRAM_TMM_SPRITE_SIZE * sizeof(hh_ppu_data_t))
+/** @brief sprite size in 32-bit words (for stm) */
+#define HH_PPU_NATIVE_SPRITE_SIZE (HH_PPU_BYTE_SPRITE_SIZE / sizeof(uint32_t))
+

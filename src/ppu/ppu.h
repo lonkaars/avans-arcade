@@ -23,3 +23,6 @@ void hh_ppu_update_palette_table(hh_ppu_loc_palette_table_t table);
 void hh_ppu_update_palette(unsigned palette_index, hh_ppu_loc_palette_data_t palette);
 /** @brief update single color in palette */
 void hh_ppu_update_color(unsigned palette_index, unsigned color_index, hh_ppu_rgb_color_t color);
+
+/** @brief copy g_hh_tilemap_rom into PPU vram */
+void hh_ppu_load_tilemap();
