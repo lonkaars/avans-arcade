@@ -2,10 +2,13 @@
 int bullets_size=0;
 static int current_bullet=0;
 
-
+hh_entity* all_bullets=NULL;
 hh_entity* hh_init_bullets(int size) {
+    if (all_bullets != NULL) {
+        free(all_bullets);
+    }
     bullets_size = size;
-    hh_entity* all_bullets = malloc(size * sizeof(hh_entity));
+    all_bullets = malloc(size * sizeof(hh_entity));
     hh_entity bullet = {
         .speed = 1,
         .is_grounded = true,
@@ -13,7 +16,7 @@ hh_entity* hh_init_bullets(int size) {
         .radius = 4,
         .pos = (vec2){-16,-16},
         .vel = (vec2){0,0},
-		  .size = (vec2) { 13,16},
+        .size = (vec2) { 13,16},
         .render = {
             .frame0 = 84,
             .palette = 3,
@@ -39,7 +42,7 @@ bool rising_edge(bool signal, bool* prev) {
     return edge;
 }
 bool prev_signal = false;
-void hh_shoot_bullet(vec2 player, vec_cor cam_pos, hh_entity* bullet){
+void hh_shoot_bullet(vec2 player, hh_entity* bullet){
 	vec2 temp;
 	if(rising_edge(g_hh_controller_p1.button_secondary,&prev_signal) && bullet->is_grounded){
 			bullet->is_grounded=false;
@@ -49,36 +52,30 @@ void hh_shoot_bullet(vec2 player, vec_cor cam_pos, hh_entity* bullet){
 
 }
 
-void hh_update_bullet(hh_entity* bullet, vec_cor cam_pos){
+void hh_update_bullet(hh_entity* bullet){
 	if(hh_background_collision_bulllet(*bullet)){
-		bullet->is_grounded=true;
-		bullet->pos.x=-16;
-		bullet->pos.y=-16;
+		hh_bullet_death(bullet);
+
 		// printf("x %d y %d\n",(bullet->pos.x-cam_pos.x),(bullet->pos.y-cam_pos.y));
 	}
 	else{
 		bullet->pos.x += bullet->speed;	
 	}
-	
-
-	// update bullet sprite on ppu
-	bullet->render.fam.position_x = (bullet->pos.x - cam_pos.x);
-	bullet->render.fam.position_y = (bullet->pos.y - cam_pos.y);
 
 }
-void hh_draw_bullet(hh_entity bullet,int number){
-	// hh_s_ppu_loc_fam_entry temp = bullet.render.fam;
-	// hh_ppu_update_foreground(hh_ppu_bullet_fg_offset_idx + number,temp);
-	
-}
-void hh_multiple_bullets(vec2 player, vec_cor cam_pos, hh_entity* bullets){
 
-	hh_shoot_bullet(player,cam_pos, &bullets[current_bullet]);
+void hh_multiple_bullets(vec2 player, hh_entity* bullets){
+
+	hh_shoot_bullet(player, &bullets[current_bullet]);
 	for(int i=0; i < bullets_size;i++){
 		if(!bullets[i].is_grounded){
-			hh_update_bullet(&bullets[i] , cam_pos);
-			hh_update_sprite(hh_ppu_bullet_fg_offset_idx + i, bullets[i], cam_pos);
+			hh_update_bullet(&bullets[i]);
 		}
-
 	}
+}
+
+void hh_bullet_death(hh_entity* bullet){
+	bullet->is_grounded=true;
+	bullet->pos.x= -16;
+	bullet->pos.y= -16;
 }

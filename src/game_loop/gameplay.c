@@ -1,9 +1,9 @@
 #include "gameplay.h"
-
+#include "engine/entity.h"
 // player struct
 
 
-void hh_gameplay(hh_g_all_levels game, hh_e_game_state* hh_game_state){
+void hh_gameplay(hh_g_all_levels* game, hh_e_game_state* hh_game_state){
 	static hh_e_gameplay gameplay = hh_e_setup_screen;
 	static hh_entity* bullets;
 	static hh_entity player1={
@@ -16,7 +16,7 @@ void hh_gameplay(hh_g_all_levels game, hh_e_game_state* hh_game_state){
 		.size = (vec2){32,32},
 		.vel = (vec2){0,0},
 		.render = {
-			.frame0 = 80,
+			.frame0 = 3,
 			.palette = 3,
 			.fam = (hh_s_ppu_loc_fam_entry){
 				.horizontal_flip = false,
@@ -33,11 +33,12 @@ void hh_gameplay(hh_g_all_levels game, hh_e_game_state* hh_game_state){
 		.is_grounded = false, 
 		.is_hit = false,
 		.radius = 8,
-		.pos = (vec2){128,48},
+		.pos = (vec2){128,24},
+		.size = (vec2){16,16},
 		.vel = (vec2){0,0},
 		// .vec = (vec2){0,0},
 		.render = {
-			.frame0 = 20,
+			.frame0 = 1,
 			.palette = 7,
 			.fam = (hh_s_ppu_loc_fam_entry){
 				.horizontal_flip = false,
@@ -47,31 +48,36 @@ void hh_gameplay(hh_g_all_levels game, hh_e_game_state* hh_game_state){
 			}
 		}
 	};
-
+	static int total_bullets = 5;
 	switch (gameplay)
 	{
 	case hh_e_setup_screen:
-		bullets = hh_init_bullets(10);
-		hh_setup_screen(game.level[game.current_level]);
+		printf("%d\n",game->current_level);
+		bullets = hh_init_bullets(total_bullets);
+		hh_setup_screen(game->level[game->current_level]);
 		gameplay = hh_e_play_level;
+		enemy.hp=4;
 		break;
 	case hh_e_play_level:
 		// TODO: here come all the different functions for the gameplay
 		vec_cor cam_pos;//value in tiles
 		cam_pos = hh_draw_screen(player1.pos);
-		hh_player_actions(&player1 ,cam_pos);
-		hh_multiple_bullets(player1.pos, cam_pos,bullets);
-		// enemy's
+		hh_player_actions(&player1);
+		hh_multiple_bullets(player1.pos,bullets);
+		hh_multiple_enemies(cam_pos, &enemy,1);
+		hh_check_all_collisions(&player1,&enemy,1,bullets,total_bullets,cam_pos);
+		hh_solve_hitted_enemies(&enemy,1);
+	  	hh_render_all_entities(&player1,bullets,&enemy,total_bullets,1, cam_pos);
 
 
-
-		if(game.level[game.current_level].hh_level_completed){
+		
+		if(game->level[game->current_level].hh_level_completed){ 
 			gameplay = hh_e_level_complete;
 		}
 		break;
 	case hh_e_level_complete:
-		if(game.current_level < 3){
-			game.current_level++;
+		if(game->current_level < 3){
+			game->current_level+=1;
 			gameplay = hh_e_setup_screen;
 		}
 		else {
@@ -90,3 +96,17 @@ void hh_gameplay(hh_g_all_levels game, hh_e_game_state* hh_game_state){
 	
 }
 void hh_reset_levels(){}
+
+
+void hh_render_all_entities(hh_entity* player, hh_entity* bullets, hh_entity* enemies, int bullet_size, int enemy_size, vec_cor cam_pos){
+
+	int index = 0;
+	hh_update_sprite(0 , player, cam_pos);
+	
+	for (int i = 0; i < bullet_size; i++) {
+		hh_update_sprite(i+5,&bullets[i],cam_pos);
+ 	}
+	for (int i = 0; i < enemy_size; i++) {
+		hh_update_sprite(i+5+bullet_size,&enemies[i],cam_pos);
+	}
+}

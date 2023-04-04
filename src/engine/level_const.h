@@ -28,4 +28,5 @@ typedef struct  {
 
 }hh_g_all_levels;
 
+/** @brief init all the levels*/
 hh_g_all_levels hh_init_game_levels();

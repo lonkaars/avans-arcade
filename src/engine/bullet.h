@@ -4,13 +4,15 @@
 #include "types.h"
 #include "input.h"
 
-#define hh_ppu_bullet_fg_offset_idx 10
 hh_entity* hh_init_bullets(int size);
 
-static void hh_shoot_bullet(vec2 playerPos, vec_cor cam_pos, hh_entity*);
+/** @brief checks if player hit button and sets the activate bullet*/
+void hh_shoot_bullet(vec2 playerPos, hh_entity*);
 
-static void hh_update_bullet(hh_entity* , vec_cor );
+/** @brief updates single bullet position*/
+void hh_update_bullet(hh_entity* );
 
-static void hh_draw_bullet(hh_entity, int);
+/** @brief calculates all the bullets positions and which to shoot */
+void hh_multiple_bullets(vec2 player, hh_entity* bullets);
 
-void hh_multiple_bullets(vec2 player, vec_cor cam_pos, hh_entity* bullets);
+void hh_bullet_death(hh_entity* bullet);

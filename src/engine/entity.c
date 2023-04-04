@@ -212,3 +212,25 @@ void hh_hit_entity(hh_entity* object_1, int8_t* hit_timer, int8_t* direction){
 	}
 	
 }
+
+void hh_check_all_collisions(hh_entity* player, hh_entity* enemies, int total_enemies, hh_entity* bullets, int total_bullets, vec_cor cam_pos){
+	for(int enemy = 0; enemy < total_enemies; enemy++){
+		*player = hh_enemy_collision(*player, enemies[enemy]);
+		enemies[enemy].is_hit=false;
+	}
+
+	for(int i = 0; i < total_bullets; i++){
+		if(!bullets[i].is_grounded){ 
+			for (int enemy = 0; enemy < total_enemies; enemy++){
+				
+				if(hh_distance_circles(bullets[i].pos,enemies[enemy].pos,bullets[i].radius,enemies[enemy].radius)){
+					enemies[enemy].is_hit=true;
+					hh_bullet_death(&bullets[i]);
+				}
+			}	
+		}
+	}
+	
+}
+
+
