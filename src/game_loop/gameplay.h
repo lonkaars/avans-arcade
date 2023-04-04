@@ -4,6 +4,7 @@
 #include "engine/sprite_controller.h"
 #include "game_loop/starting_screen.h"
 #include "engine/level_const.h"
+#include "engine/animator.h"
 
 typedef enum {
 	hh_e_setup_screen,
