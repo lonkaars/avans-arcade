@@ -4,3 +4,6 @@ manifest.txt
 tilemap.h
 tiled/*
 tiled.mk
+*.tsx
+*.csv
+*.out

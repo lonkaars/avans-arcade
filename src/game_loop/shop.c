@@ -14,6 +14,7 @@ void hh_shop(hh_e_game_state* hh_game_state){
 		hh_clear_screen();
 		hh_clear_sprite();
 		// TODO: make function to show shop
+		// hh_setup_screen();
 		//hh_setup_shop();
 		hh_shop_init(&upgrades);
 		selected = HH_SHOP_UPG_DISPLAY/2;

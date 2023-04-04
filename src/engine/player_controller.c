@@ -5,6 +5,8 @@
 #include "engine/player_controller.h"
 #include "input.h"
 
+#include "static/tilemap.h"
+
 #include "engine/animator.h"
 #include "engine/bullet.h"
 void hh_player_actions() {
@@ -18,14 +20,14 @@ void hh_player_actions() {
 		.vel = (vec2){0,0},
 		.size = (vec2){32,32},
 		.render = {
-			.frame0 = 80,
+			.frame0 = HH_TM_SLIME_OFFSET,
 			.palette = 3,
 			.ppu_foreground_index = 0,
 			.fam = (hh_s_ppu_loc_fam_entry){
 				.horizontal_flip = false,
 				.vertical_flip = false,
 				.palette_index = 3,
-				.tilemap_index = 80,
+				.tilemap_index = HH_TM_SLIME_OFFSET,
 			}
 		}
 	}, player_new = {0};

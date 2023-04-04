@@ -5,8 +5,14 @@ TILEDMK := ../../scripts/tiled.mk.awk
 TILEMAP2TILED := ../../scripts/tilemap2tiled
 
 INPUT += air.hex \
-			shop.hex \
-			slime.hex \
+			background/bricks.hex \
+			background/crates.hex \
+			background/shop_stall.hex \
+			background/shop.hex \
+			background/title_screen_icon.hex \
+			foreground/title_screen_letteres_large.hex\
+			foreground/slime.hex \
+			foreground/font.hex \
 			world.hex
 USER_META += world.h
 
