@@ -7,6 +7,9 @@
 #include "ppu/types.h"
 #include "engine/maths.h"
 #include "engine/types.h"
+#include "engine/animator.h"
+#include "engine/sprite_controller.h"
+
 // #include "engine/animator.h"
 
 // TODO: make a sprite update function (and required data structs?)
@@ -43,8 +46,14 @@ hh_entity hh_enemy_collision(hh_entity temp_player, hh_entity temp_enemy);
 /// @return true if objects collids
 bool hh_distance_circles(vec2 object_1, vec2 object_2, int radius_1, int radius_2);
 
-// TODO: comments on functions below
+/** @brief jumps a entity. TODO: input jumping how high and no magic number*/  
 void hh_jump_entity(hh_entity* );
+/** @brief looks if the player is grounded and if not it sets the position down */
 void hh_gravity_entity(hh_entity* );
+/** @brief if object is hit bounches in specific direction and moves the object */
 void hh_hit_entity(hh_entity* object_1, int8_t* hit_timer, int8_t* direction);
 
+/** @brief specific bullet background collisions detection */
+bool hh_background_collision_bulllet (hh_entity temp_old_entity);
+/** @brief checks any entity has a hit on each othe*/
+void hh_check_all_collisions(hh_entity* player, hh_entity* enemies, int total_enemies, hh_entity* bullets, int total_bullets, vec_cor cam_pos);

@@ -10,7 +10,7 @@ uint8_t hh_world_to_tile(vec2 pos){
 	return tile;
 }
 
-void hh_update_screen(vec2 view, vec2 player){
+void hh_update_screen(vec2 view){
 	int current_tile_y = view.y / HH_PPU_SPRITE_HEIGHT;
 	int current_tile_x = view.x / HH_PPU_SPRITE_WIDTH;
 	int offset_py = view.y - (offsetY / 40 * HH_PPU_SPRITE_HEIGHT);
@@ -86,7 +86,7 @@ vec_cor hh_draw_screen(vec2 player) {
 	viewport.x = CLAMP(viewport.x, 0, level.size.x * HH_PPU_SPRITE_WIDTH - HH_PPU_SCREEN_WIDTH);
 	viewport.y = CLAMP(viewport.y, 0, level.size.y * HH_PPU_SPRITE_HEIGHT - HH_PPU_SCREEN_HEIGHT);
 	
-	hh_update_screen((vec2){.y=viewport.y,.x=viewport.x},player);
+	hh_update_screen((vec2){.y=viewport.y,.x=viewport.x});
    if (viewport.x == previousViewport.x && viewport.y == previousViewport.y){}
 	else{
 		hh_ppu_update_aux((hh_s_ppu_loc_aux){
