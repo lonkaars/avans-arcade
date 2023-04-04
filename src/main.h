@@ -2,6 +2,9 @@
 
 #include <stdbool.h>
 
+extern volatile unsigned long g_hh_vcount;
+extern volatile unsigned short g_hh_hcount;
+
 extern bool g_hh_run;
 
 /** @brief exec entrypoint */

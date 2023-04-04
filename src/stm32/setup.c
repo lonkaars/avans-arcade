@@ -9,6 +9,7 @@
 #include "setup.h"
 #include "demo.h"
 #include "ppu/ppu.h"
+#include "stm32/consts.h"
 
 UART_HandleTypeDef huart2 = {
 	.Instance = USART2,
@@ -131,22 +132,44 @@ void hh_io_tim_setup() {
 	}) != HAL_OK) return hh_io_setup_error_handler();
 }
 
+static void gpio_init(GPIO_TypeDef* port, uint16_t pin, uint32_t mode, uint32_t pull) {
+	HAL_GPIO_Init(port, &(GPIO_InitTypeDef) {
+		.Pin = pin,
+		.Mode = mode,
+		.Pull = pull,
+		.Speed = GPIO_SPEED_FREQ_HIGH,
+	});
+}
+
 void hh_io_gpio_setup() {
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
 
-	HAL_GPIO_Init(GPIOA, &(GPIO_InitTypeDef) {
-		.Pin = GPIO_PIN_9,
-		.Mode = GPIO_MODE_OUTPUT_PP,
-		.Pull = GPIO_NOPULL,
-		.Speed = GPIO_SPEED_FREQ_HIGH,
-	});
-	HAL_GPIO_Init(GPIOA, &(GPIO_InitTypeDef) {
-		.Pin = GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_8,
-		.Mode = GPIO_MODE_INPUT,
-		.Pull = GPIO_PULLDOWN,
-	});
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+	// SPI reset line
+	gpio_init(HH_IO_SPI_SR_PORT, HH_IO_SPI_SR_PIN, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
+
+	// PPU HBLANK/VBLANK
+	gpio_init(HH_IO_PPU_HBLANK_PORT, HH_IO_PPU_HBLANK_PIN, GPIO_MODE_IT_RISING, GPIO_NOPULL);
+	gpio_init(HH_IO_PPU_VBLANK_PORT, HH_IO_PPU_VBLANK_PIN, GPIO_MODE_IT_RISING, GPIO_NOPULL);
+	HAL_NVIC_SetPriority(EXTI4_15_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
+
+	// gamepad 1
+	gpio_init(HH_IO_GP1_UP_PORT, HH_IO_GP1_UP_PIN, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+	gpio_init(HH_IO_GP1_DOWN_PORT, HH_IO_GP1_DOWN_PIN, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+	gpio_init(HH_IO_GP1_LEFT_PORT, HH_IO_GP1_LEFT_PIN, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+	gpio_init(HH_IO_GP1_RIGHT_PORT, HH_IO_GP1_RIGHT_PIN, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+	gpio_init(HH_IO_GP1_PRIMARY_PORT, HH_IO_GP1_PRIMARY_PIN, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+	gpio_init(HH_IO_GP1_SECONDARY_PORT, HH_IO_GP1_SECONDARY_PIN, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+
+	// gamepad 2
+	gpio_init(HH_IO_GP2_UP_PORT, HH_IO_GP2_UP_PIN, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+	gpio_init(HH_IO_GP2_DOWN_PORT, HH_IO_GP2_DOWN_PIN, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+	gpio_init(HH_IO_GP2_LEFT_PORT, HH_IO_GP2_LEFT_PIN, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+	gpio_init(HH_IO_GP2_RIGHT_PORT, HH_IO_GP2_RIGHT_PIN, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+	gpio_init(HH_IO_GP2_PRIMARY_PORT, HH_IO_GP2_PRIMARY_PIN, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+	gpio_init(HH_IO_GP2_SECONDARY_PORT, HH_IO_GP2_SECONDARY_PIN, GPIO_MODE_INPUT, GPIO_PULLDOWN);
 }
 
 void HAL_MspInit() {
@@ -198,4 +221,20 @@ void HardFault_Handler() {
 void hh_io_setup_error_handler() {
 	__disable_irq();
 	while (1);
+}
+
+void EXTI4_15_IRQHandler() {
+	HAL_GPIO_EXTI_IRQHandler(HH_IO_PPU_HBLANK_PIN);
+	HAL_GPIO_EXTI_IRQHandler(HH_IO_PPU_VBLANK_PIN);
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+	if (GPIO_Pin == HH_IO_PPU_HBLANK_PIN) {
+		g_hh_hcount++;
+	}
+	if (GPIO_Pin == HH_IO_PPU_VBLANK_PIN) {
+		g_hh_hcount = 0;
+		g_hh_vcount++;
+		hh_ppu_vblank_interrupt();
+	}
 }

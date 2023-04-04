@@ -5,9 +5,6 @@
 #include <stm32f0xx_hal_tim.h>
 #include <stm32f0xx_hal_gpio.h>
 
-#define HH_IO_SPI_PINS (GPIO_PIN_5 | GPIO_PIN_7)
-#define HH_IO_SPI_PORT GPIOA
-
 extern UART_HandleTypeDef huart2; // NOLINT
 extern GPIO_InitTypeDef spi_gpio; // NOLINT
 extern SPI_HandleTypeDef hspi1; // NOLINT
@@ -22,3 +19,5 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base); // NOLINT
 void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base); // NOLINT
 void HardFault_Handler(); // NOLINT
 void SysTick_Handler(); // NOLINT
+void EXTI4_15_IRQHandler(); // NOLINT
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin); // NOLINT

@@ -6,6 +6,8 @@
 #include "ppu/internals.h"
 
 bool g_hh_run = true;
+volatile unsigned long g_hh_vcount;
+volatile unsigned short g_hh_hcount;
 
 void hh_ppu_vblank_interrupt() {
 	static unsigned long frame = 0;

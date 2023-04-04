@@ -18,6 +18,8 @@ void hh_ppu_vram_dwrite(uint8_t* data, size_t size) {
 	HAL_SPI_Transmit(&hspi1, (uint8_t[4]){ 0xff }, 4, HAL_MAX_DELAY);
 	// reset SPI
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+	// HAL_Delay(100); // TODO: remove
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+	// HAL_Delay(100); // TODO: remove
 }
 
