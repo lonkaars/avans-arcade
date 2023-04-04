@@ -15,7 +15,7 @@ entity ppu_dispctl is port(
 
 	RO,GO,BO : out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- VGA color out
 	NVSYNC, NHSYNC : out std_logic; -- VGA sync out
-	THBLANK, TVBLANK : out std_logic; -- tiny sync signals
+	THBLANK, TVBLANK : out std_logic := '0'; -- tiny sync signals
 	ACTIVE : out std_logic); -- screen currently active (currently same for tiny/native, TODO: offset tiny for first scanline)
 end ppu_dispctl;
 
@@ -73,7 +73,6 @@ begin
 	-- tiny VCOUNT and HCOUNT
 	process(TPIXCLK, NPIXCLK, RESET)
 		variable TMP_T_POS_X : unsigned(PPU_SCREEN_T_POS_X_WIDTH-1 downto 0) := (others => '0');
-		variable TMP_THBLANK, TMP_TVBLANK : std_logic := '0';
 		variable TMP_NHCOUNT, TMP_NVCOUNT : unsigned(PPU_VGA_SIGNAL_PIXEL_WIDTH-1 downto 0) := (others => '0');
 		variable TMP_NHACTIVE, TMP_NVACTIVE : std_logic := '0';
 		variable TMP_NHSYNC, TMP_NVSYNC : std_logic := '0';
@@ -84,8 +83,6 @@ begin
 			TMP_NVCOUNT := (others => '0');
 			TMP_NHACTIVE := '0';
 			TMP_NVACTIVE := '0';
-			TMP_THBLANK := '0'; -- TODO
-			TMP_TVBLANK := '0'; -- TODO
 			TMP_NVSYNC := '0';
 			TMP_NHSYNC := '0';
 		end if;
@@ -135,9 +132,6 @@ begin
 		if falling_edge(TPIXCLK) then -- NOTE: falling edge used because of clock offset of 90 (should be 270)
 			T_POS_X <= TMP_T_POS_X;
 
-			THBLANK <= TMP_THBLANK;
-			TVBLANK <= TMP_TVBLANK;
-
 			if TMP_NACTIVE = '1' then
 				TMP_T_POS_X := TMP_T_POS_X + 1;
 				if TMP_T_POS_X >= PPU_SCREEN_WIDTH then
@@ -165,4 +159,9 @@ begin
     reset => RESET,
     npxclk => NPIXCLK,
     tpxclk => TPIXCLK);
+
+	THBLANK <= (not NHACTIVE) and NVACTIVE and nor(T_POS_X);
+	TVBLANK <= not NVACTIVE;
+	--THBLANK <= '0';
+	--TVBLANK <= '0';
 end Behavioral;

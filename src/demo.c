@@ -3,14 +3,12 @@
 #include "demo.h"
 #include "ppu/ppu.h"
 
-#include "ppu/internals.h"
-
-#include "../test/ppu-stm-integration-demo/test-image-sprites.h"
-
 #define HH_DEMO_BALL_COUNT 5
 hh_s_ppu_loc_fam_entry g_hh_demo_balls[HH_DEMO_BALL_COUNT];
 
 void hh_demo_setup() {
+	hh_ppu_update_aux((hh_s_ppu_loc_aux) { .sysreset = 1 });
+
 	// load sprites
 	hh_ppu_update_sprite(0, HH_DBG_SPRITE_BALL);
 	hh_ppu_update_sprite(1, HH_DBG_SPRITE_CHECKERBOARD);

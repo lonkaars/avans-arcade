@@ -13,13 +13,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="925.165500 us"></ZoomStartTime>
-      <ZoomEndTime time="937.055501 us"></ZoomEndTime>
-      <Cursor1Time time="930.945500 us"></Cursor1Time>
+      <ZoomStartTime time="136.205000 us"></ZoomStartTime>
+      <ZoomEndTime time="1,382.205001 us"></ZoomEndTime>
+      <Cursor1Time time="1,058.205000 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="243"></NameColumnWidth>
-      <ValueColumnWidth column_width="145"></ValueColumnWidth>
+      <ValueColumnWidth column_width="141"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="6" />
    <wvobject type="group" fp_name="group136">
@@ -435,6 +435,14 @@
          <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/ACTIVE">
             <obj_property name="ElementShortName">ACTIVE</obj_property>
             <obj_property name="ObjectShortName">ACTIVE</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/THBLANK">
+            <obj_property name="ElementShortName">THBLANK</obj_property>
+            <obj_property name="ObjectShortName">THBLANK</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/TVBLANK">
+            <obj_property name="ElementShortName">TVBLANK</obj_property>
+            <obj_property name="ObjectShortName">TVBLANK</obj_property>
          </wvobject>
       </wvobject>
    </wvobject>
