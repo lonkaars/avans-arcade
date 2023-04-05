@@ -42,6 +42,7 @@ LOCAL_SRCS += main.c \
 							engine/title_screen.c \
 							engine/level_const.c \
 							engine/enemy.c \
+							engine/enemy_ai.c \
 							engine/animator.c \
 							game_loop/shop.c \
 							game_loop/gameplay.c \

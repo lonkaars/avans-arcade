@@ -42,12 +42,47 @@ bool rising_edge(bool signal, bool* prev) {
     return edge;
 }
 bool prev_signal = false;
+void hh_handle_bullet_direction(hh_entity* bullet){
+	bullet->vel = (vec2){0,0};
+	if (g_hh_controller_p1.dpad_left) {
+		if (g_hh_controller_p1.dpad_up) {
+			bullet->vel.x = -1;
+			bullet->vel.y = -1;
+		} else if (g_hh_controller_p1.dpad_down) {
+			bullet->vel.x = -1;
+			bullet->vel.y = 1;
+		} else {
+			bullet->vel.x = -1;
+		}
+	}else if (g_hh_controller_p1.dpad_right) {
+		if (g_hh_controller_p1.dpad_up) {
+			bullet->vel.x = 1;
+			bullet->vel.y = -1;
+		} else if (g_hh_controller_p1.dpad_down) {
+			bullet->vel.x = 1;
+			bullet->vel.y = 1;
+		} else {
+			bullet->vel.x = 1;
+		}
+	} else if (g_hh_controller_p1.dpad_up){
+		bullet->vel.y = -1;
+	} else if (g_hh_controller_p1.dpad_down){
+		bullet->vel.y = 1;
+	}
+	else{
+		bullet->vel.x = 1;
+	}
+	bullet->render.fam.horizontal_flip = (bullet->vel.x < 0);
+	bullet->render.fam.vertical_flip = (bullet->vel.y != 0);
+	
+}
 void hh_shoot_bullet(vec2 player, hh_entity* bullet){
 	vec2 temp;
 	if(rising_edge(g_hh_controller_p1.button_secondary,&prev_signal) && bullet->is_grounded){
 			bullet->is_grounded=false;
 			bullet->pos = player;
 			current_bullet = (current_bullet + 1) % bullets_size;
+			hh_handle_bullet_direction(bullet);
 	}
 
 }
@@ -55,11 +90,10 @@ void hh_shoot_bullet(vec2 player, hh_entity* bullet){
 void hh_update_bullet(hh_entity* bullet){
 	if(hh_background_collision_bulllet(*bullet)){
 		hh_bullet_death(bullet);
-
-		// printf("x %d y %d\n",(bullet->pos.x-cam_pos.x),(bullet->pos.y-cam_pos.y));
 	}
 	else{
-		bullet->pos.x += bullet->speed;	
+		bullet->pos.x = bullet->pos.x + bullet->vel.x * bullet->speed;	
+		bullet->pos.y = bullet->pos.y  + bullet->vel.y * bullet->speed;	
 	}
 
 }

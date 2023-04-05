@@ -4,7 +4,7 @@
 
 hh_g_all_levels hh_init_game_levels(){
 	hh_g_all_levels levels;
-	levels.current_level=0;
+	levels.current_level=1;
 	
 	levels.level[0].size.x=40;
 	levels.level[0].size.y=15;

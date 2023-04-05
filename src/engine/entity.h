@@ -51,9 +51,12 @@ void hh_jump_entity(hh_entity* );
 /** @brief looks if the player is grounded and if not it sets the position down */
 void hh_gravity_entity(hh_entity* );
 /** @brief if object is hit bounches in specific direction and moves the object */
-void hh_hit_entity(hh_entity* object_1, int8_t* hit_timer, int8_t* direction);
+void hh_player_move_hit(hh_entity* object_1, int8_t* hit_timer, int8_t* direction);
+
+void hh_movement_entity(hh_entity* object_1, int8_t* direction);
 
 /** @brief specific bullet background collisions detection */
 bool hh_background_collision_bulllet (hh_entity temp_old_entity);
 /** @brief checks any entity has a hit on each othe*/
 void hh_check_all_collisions(hh_entity* player, hh_entity* enemies, int total_enemies, hh_entity* bullets, int total_bullets, vec_cor cam_pos);
+
