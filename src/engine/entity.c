@@ -84,6 +84,41 @@ hh_entity hh_background_collision (hh_entity temp_old_entity,hh_entity temp_new_
 	return temp_old_entity;
 }
 
+bool hh_background_collision_bulllet (hh_entity temp_old_entity){
+
+	//	temp_new_entity.is_grounded = false;
+ 
+// solves x collision
+	if (temp_old_entity.vel.x <= 0) {
+		if (hh_colidable(hh_world_to_tile((vec2){.x=temp_old_entity.pos.x + 0, .y=temp_old_entity.pos.y + 0})) || 
+			hh_colidable(hh_world_to_tile((vec2){.x=temp_old_entity.pos.x + 0, .y=temp_old_entity.pos.y + (temp_old_entity.size.y-1)}))) {
+				return true;
+		}
+	} else {
+		if (hh_colidable(hh_world_to_tile((vec2){.x=temp_old_entity.pos.x + temp_old_entity.size.x, .y=temp_old_entity.pos.y + 0})) || 
+			hh_colidable(hh_world_to_tile((vec2){.x=temp_old_entity.pos.x + temp_old_entity.size.x, .y=temp_old_entity.pos.y + (temp_old_entity.size.y-1)}))) {
+				return true;
+		}
+	}
+
+	//solves y collision
+	if (temp_old_entity.vel.y <= 0) {
+		if (hh_colidable(hh_world_to_tile((vec2){.x=temp_old_entity.pos.x + 0, .y=temp_old_entity.pos.y + 0})) || 
+			hh_colidable(hh_world_to_tile((vec2){.x=temp_old_entity.pos.x + (temp_old_entity.size.x-1), .y=temp_old_entity.pos.y + 0}))) {
+			return true;
+		}
+	} else {
+		if (hh_colidable(hh_world_to_tile((vec2){.x=temp_old_entity.pos.x + 0, .y=temp_old_entity.pos.y + (temp_old_entity.size.y-1)})) || 
+			hh_colidable(hh_world_to_tile((vec2){.x=temp_old_entity.pos.x + (temp_old_entity.size.x-1), .y=temp_old_entity.pos.y + (temp_old_entity.size.y-1)}))) {
+				return true;
+		}
+	}
+	// temp_old_entity = temp_new_entity;
+	// temp_old_entity.is_grounded = temp_new_entity.is_grounded;
+	// temp_old_entity.pos = temp_new_entity.pos; 
+	// temp_old_entity.vel = temp_new_entity.vel;
+	return false;
+}
 hh_entity hh_enemy_collision(hh_entity temp_player, hh_entity temp_enemy){
 	
 	bool collide = hh_distance_circles( temp_player.pos,  temp_enemy.pos, temp_player.radius, temp_enemy.radius);
@@ -127,3 +162,75 @@ bool hh_distance_circles (vec2 object_1, vec2 object_2, int radius_1, int radius
 			return false;
 		}
 }
+
+void hh_jump_entity(hh_entity* object_1){
+	if (object_1->is_grounded == true) {//JUMP
+	 	object_1->vel.y = -10;
+		object_1->is_grounded = false;
+	}
+}
+void hh_gravity_entity(hh_entity* object_1){
+	if (object_1->is_grounded == false && object_1->vel.y < 6) {
+		object_1->vel.y += 1; //gravity
+	}
+}
+void hh_hit_entity(hh_entity* object_1, int8_t* hit_timer, int8_t* direction){
+	if(object_1->is_hit == true){
+		hit_timer = 9;
+		object_1->is_hit = false;	
+	} 
+	if(hit_timer > -10){
+			hit_timer--;
+	}
+	
+	if(hit_timer <= 0){
+		if(direction != 0){
+			if(object_1->vel.x > -1 * object_1->speed && object_1->vel.x < object_1->speed) {
+				object_1->vel.x = object_1->vel.x + direction;
+			} else {
+				if (object_1->vel.x > 0) {
+					object_1->vel.x--;
+				} else if(object_1->vel.x < 0) {
+					object_1->vel.x++; 
+				}
+			}
+		} else {
+			if (object_1->vel.x > 0) {
+				object_1->vel.x--;
+			} else if(object_1->vel.x < 0) {
+			object_1->vel.x++; 
+			}
+		}
+		
+	} else {
+		if (object_1->vel.x > 0) {
+			object_1->vel.x--;
+		} else if(object_1->vel.x < 0) {
+			object_1->vel.x++; 
+		}
+			object_1->vel.y++;
+	}
+	
+}
+
+void hh_check_all_collisions(hh_entity* player, hh_entity* enemies, int total_enemies, hh_entity* bullets, int total_bullets, vec_cor cam_pos){
+	for(int enemy = 0; enemy < total_enemies; enemy++){
+		*player = hh_enemy_collision(*player, enemies[enemy]);
+		enemies[enemy].is_hit=false;
+	}
+
+	for(int i = 0; i < total_bullets; i++){
+		if(!bullets[i].is_grounded){ 
+			for (int enemy = 0; enemy < total_enemies; enemy++){
+				
+				if(hh_distance_circles(bullets[i].pos,enemies[enemy].pos,bullets[i].radius,enemies[enemy].radius)){
+					enemies[enemy].is_hit=true;
+					hh_bullet_death(&bullets[i]);
+				}
+			}	
+		}
+	}
+	
+}
+
+

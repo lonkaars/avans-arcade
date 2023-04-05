@@ -17,6 +17,7 @@
 #include "game_loop/gameplay.h"
 #include "game_loop/shop.h"
 
+#include <stdbool.h>
 
 hh_g_all_levels hh_game;
 
@@ -61,7 +62,7 @@ void hh_demo_loop(unsigned long frame) {
 		hh_shop(&hh_game_states);
 		break;
 	case hh_e_state_gameplay:
-		hh_gameplay(hh_game, &hh_game_states);
+		hh_gameplay(&hh_game, &hh_game_states);
 		break;
 	case hh_e_state_game_over:
 		// todo:

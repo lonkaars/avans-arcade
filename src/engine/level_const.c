@@ -41,6 +41,8 @@ hh_g_all_levels hh_init_game_levels(){
 	levels.level[0].place = hh_game_level1;
 	levels.level[1].place = hh_game_level2;
 
+	// free(hh_game_level1);
+	// free(hh_game_level2);
 	return levels;
 }
 
