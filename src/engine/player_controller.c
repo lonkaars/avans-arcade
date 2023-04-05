@@ -16,7 +16,7 @@ void hh_player_actions(hh_entity* player){
 	int8_t direction_x = (-1 * g_hh_controller_p1.dpad_left) + (1 * g_hh_controller_p1.dpad_right);
 	int8_t direction_y = (-1 * g_hh_controller_p1.dpad_up) + (1 * g_hh_controller_p1.dpad_down);
 
-	hh_hit_entity(player,hit_timer,direction_x);
+	hh_player_move_hit(player,hit_timer,direction_x);
 	hh_gravity_entity(player);
 	if(g_hh_controller_p1.button_primary){
 		hh_jump_entity(player);

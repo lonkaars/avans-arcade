@@ -11,6 +11,7 @@ bool hh_show_starting_screen(){
 	{
 	case hh_e_state_show:
 		hh_clear_screen();
+		hh_clear_sprite();
 		hh_init_title_screen();
 		hh_e_starting_screen = hh_e_state_input;
 		return false;

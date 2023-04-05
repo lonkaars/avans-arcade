@@ -65,14 +65,16 @@ void hh_demo_loop(unsigned long frame) {
 		hh_gameplay(&hh_game, &hh_game_states);
 		break;
 	case hh_e_state_game_over:
-		// todo:
+		// TODO:
 		// function: show game over screen
 		// function: after time goto high score
+			hh_game_states = hh_e_state_high_score;
 		break;
 	case hh_e_state_high_score:
 		// todo:
 		// fucntion: show all previously scored points
 		// function: button pressed goto starting screen
+		hh_game_states = hh_e_state_starting_screen;
 		break;
 	default:
 			hh_game_states = hh_e_state_starting_screen;

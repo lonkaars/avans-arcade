@@ -43,6 +43,7 @@ void hh_solve_collision(vec2 pos_environment, hh_entity* entity){
 	// 	entity->vel.x = 0;
 	// } 
 }
+
 hh_entity hh_background_collision (hh_entity temp_old_entity,hh_entity temp_new_entity){
 
 		temp_new_entity.is_grounded = false;
@@ -119,6 +120,7 @@ bool hh_background_collision_bulllet (hh_entity temp_old_entity){
 	// temp_old_entity.vel = temp_new_entity.vel;
 	return false;
 }
+
 hh_entity hh_enemy_collision(hh_entity temp_player, hh_entity temp_enemy){
 	
 	bool collide = hh_distance_circles( temp_player.pos,  temp_enemy.pos, temp_player.radius, temp_enemy.radius);
@@ -138,7 +140,7 @@ hh_entity hh_enemy_collision(hh_entity temp_player, hh_entity temp_enemy){
 			temp_player.vel.x = 8;
 		}
 		// ghost mode / invulnerable or other things on hit
-		//	temp_player.hp--;
+		temp_player.hp--;
 			
 	} else {
 		temp_player.is_hit = false;
@@ -170,14 +172,35 @@ void hh_jump_entity(hh_entity* object_1){
 	}
 }
 void hh_gravity_entity(hh_entity* object_1){
-	if (object_1->is_grounded == false && object_1->vel.y < 6) {
+	if (object_1->is_grounded == false) {
 		object_1->vel.y += 1; //gravity
 	}
 }
-void hh_hit_entity(hh_entity* object_1, int8_t* hit_timer, int8_t* direction){
+
+void hh_movement_entity(hh_entity* object_1, int8_t* direction){
+	if(direction != 0){
+		if(object_1->vel.x > -1 * object_1->speed && object_1->vel.x < object_1->speed) {
+			object_1->vel.x = object_1->vel.x + direction;
+		} else {
+			if (object_1->vel.x > 0) {
+				object_1->vel.x--;
+			} else if(object_1->vel.x < 0) {
+				object_1->vel.x++; 
+			}
+		}
+	} else {
+		if (object_1->vel.x > 0) {
+			object_1->vel.x--;
+		} else if(object_1->vel.x < 0) {
+		object_1->vel.x++; 
+		}
+	}
+	
+}
+void hh_player_move_hit(hh_entity* object_1, int8_t* hit_timer, int8_t* direction){
 	if(object_1->is_hit == true){
 		hit_timer = 9;
-		object_1->is_hit = false;	
+		//object_1->is_hit = false;
 	} 
 	if(hit_timer > -10){
 			hit_timer--;
