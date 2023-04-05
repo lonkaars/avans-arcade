@@ -11,9 +11,11 @@ INPUT += air.hex \
 			background/shop.hex \
 			background/title_screen_icon.hex \
 			foreground/title_screen_letteres_large.hex\
+			foreground/bullet.hex \
+			foreground/gozer.hex \
 			foreground/slime.hex \
-			foreground/font.hex \
-			world.hex
+			foreground/font.hex 
+			# world.hex
 USER_META += world.h
 
 OUT_BIN := $(patsubst %.hex,%.bin, $(INPUT))

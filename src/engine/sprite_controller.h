@@ -12,7 +12,7 @@
 //TODO: pack data inside of sprite_palette LUT
 //HH_PPU_PALETTE_COUNT
 #define HH_SPRITE_COUNT 80
-#define HH_PAL_IDX_SKY 512
+#define HH_PAL_IDX_SKY 0
 #define HH_PAL_IDX_BRICK 1
 const static uint8_t hh_g_sprite_palette[HH_SPRITE_COUNT] = {
 	//TODO: FIGURE OUT HOW TO DEAL WITH DYNAMIC PALLETS
@@ -70,9 +70,9 @@ const static hh_ppu_loc_palette_table_t hh_g_palette = {
 		{0x4,0x2,0x5},
 		{0x7,0x3,0x7},
 		{0xe,0xe,0xe}, 
-		{0xe,0xe,0xe}, //elemental
-		{0x0,0x0,0x0},
-		{0x0,0x0,0x0}},
+		{0x7,0x2,0x3}, //elemental
+		{0xc,0x5,0x3},
+		{0xe,0xc,0x7}},
 	{//crates
 		{0x5,0x7,0x7},
 		{0x3,0x1,0x2},
@@ -113,7 +113,9 @@ const static hh_ppu_loc_palette_table_t hh_g_palette = {
 
 void hh_setup_palettes();
 
+//TODO: UPDATE THIS FUNCTION
 /** @brief return palette index that belongs to tilemap index */
 uint8_t hh_get_palette(uint8_t tile_idx);
 
+//TODO: UPDATE THIS FUNCTION
 bool hh_colidable(uint8_t tile_idx);

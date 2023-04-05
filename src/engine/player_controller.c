@@ -18,16 +18,15 @@ void hh_player_actions() {
 		.radius = 16,
 		.pos = (vec2){128+16,32},
 		.vel = (vec2){0,0},
-		.size = (vec2){32,32},
+		.size = (vec2){16,32},
 		.render = {
-			.frame0 = HH_TM_SLIME_OFFSET,
+			.frame0 = HH_TM_GOZER_OFFSET,
 			.palette = 3,
-			.ppu_foreground_index = 0,
 			.fam = (hh_s_ppu_loc_fam_entry){
 				.horizontal_flip = false,
 				.vertical_flip = false,
 				.palette_index = 3,
-				.tilemap_index = HH_TM_SLIME_OFFSET,
+				.tilemap_index = HH_TM_GOZER_OFFSET,
 			}
 		}
 	}, player_new = {0};
@@ -41,13 +40,13 @@ void hh_player_actions() {
         .pos = (vec2){-16,-16},
         .vel = (vec2){0,0},
         .render = {
-            .frame0 = 84,
+            .frame0 = HH_TM_BULLET_OFFSET,
             .palette = 3,
             .fam = (hh_s_ppu_loc_fam_entry){
                 .horizontal_flip = false,
                 .vertical_flip = false,
-                .palette_index = 7,
-                .tilemap_index = 84,
+                .palette_index = 3,
+                .tilemap_index = HH_TM_BULLET_OFFSET,
             }
         }
     };
