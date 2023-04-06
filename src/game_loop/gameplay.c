@@ -1,5 +1,6 @@
 #include "gameplay.h"
 #include "engine/entity.h"
+#include "static/tilemap.h"
 // player struct
 
 
@@ -12,59 +13,58 @@ void hh_gameplay(hh_g_all_levels* game, hh_e_game_state* hh_game_state){
 		.is_grounded = false,
 		.is_hit = false,
 		.radius = 8,
-		.pos = (vec2){32,32},
-		.size = (vec2){32,32},
+		.pos = (vec2){32,200},
+		.size = (vec2){16,32},
 		.vel = (vec2){0,0},
 		.render = {
-			.frame0 = 3,
+			.frame0 = HH_TM_GOZER_OFFSET,
 			.palette = 3,
 			.fam = (hh_s_ppu_loc_fam_entry){
 				.horizontal_flip = false,
 				.vertical_flip = false,
 				.palette_index = 3,
-				.tilemap_index = 80,
+				.tilemap_index = HH_TM_GOZER_OFFSET,
 			}
 		}
 	};
 	// enemy gets replaced here is just for reference
 	static hh_entity enemy={
+		.object_type = jumping_slime,
 		.hp = 4,
-		.speed = 6,
+		.speed = 2,
 		.is_grounded = false, 
 		.is_hit = false,
 		.radius = 8,
-		.pos = (vec2){128,24},
+		.pos = (vec2){200,200},
 		.size = (vec2){16,16},
 		.vel = (vec2){0,0},
 		// .vec = (vec2){0,0},
 		.render = {
-			.frame0 = 1,
-			.palette = 7,
+			.frame0 = HH_TM_SLIME_OFFSET,
+			.palette = 2,
 			.fam = (hh_s_ppu_loc_fam_entry){
 				.horizontal_flip = false,
 				.vertical_flip = false,
-				.palette_index = 7,
-				.tilemap_index = 1,
+				.palette_index = 2,
+				.tilemap_index = HH_TM_SLIME_OFFSET,
 			}
 		}
 	};
-	static int total_bullets = 5;
+	static int total_bullets = 15;
 	switch (gameplay)
 	{
 	case hh_e_setup_screen:
-		printf("%d\n",game->current_level);
 		bullets = hh_init_bullets(total_bullets);
 		hh_setup_screen(game->level[game->current_level]);
 		gameplay = hh_e_play_level;
-		enemy.hp=4;
 		break;
 	case hh_e_play_level:
-		// TODO: here come all the different functions for the gameplay
-		vec_cor cam_pos;//value in tiles
+
+		vec_cor cam_pos;
 		cam_pos = hh_draw_screen(player1.pos);
 		hh_player_actions(&player1);
 		hh_multiple_bullets(player1.pos,bullets);
-		hh_multiple_enemies(cam_pos, &enemy,1);
+		hh_multiple_enemies(&enemy, player1, cam_pos, 1);
 		hh_check_all_collisions(&player1,&enemy,1,bullets,total_bullets,cam_pos);
 		hh_solve_hitted_enemies(&enemy,1);
 	  	hh_render_all_entities(&player1,bullets,&enemy,total_bullets,1, cam_pos);
@@ -74,19 +74,24 @@ void hh_gameplay(hh_g_all_levels* game, hh_e_game_state* hh_game_state){
 		if(game->level[game->current_level].hh_level_completed){ 
 			gameplay = hh_e_level_complete;
 		}
+		else if(player1.hp == 0){
+			gameplay = hh_e_game_over;
+		}
 		break;
 	case hh_e_level_complete:
-		if(game->current_level < 3){
-			game->current_level+=1;
-			gameplay = hh_e_setup_screen;
-		}
-		else {
-         gameplay = hh_e_game_over;
-      }
+		// // TODO: from complete to shop or game_over
+		// if(game->current_level < 3){
+		// 	game->current_level+=1;
+		// 	gameplay = hh_e_setup_screen;
+		// }
+		// else {
+			
+      //    gameplay = hh_e_game_over;
+      // }
 		break;
 	case hh_e_game_over:
 		// todo make reset levels
-		hh_reset_levels();
+		hh_reset_levels(&player1);
 		gameplay = hh_e_setup_screen;
 		*hh_game_state = 	hh_e_state_game_over;
 		break;
@@ -95,18 +100,39 @@ void hh_gameplay(hh_g_all_levels* game, hh_e_game_state* hh_game_state){
 	}
 	
 }
-void hh_reset_levels(){}
+void hh_reset_levels(hh_entity* player){
+	*player = (hh_entity){
+		.hp = 4,
+		.speed = 6,
+		.is_grounded = false,
+		.is_hit = false,
+		.radius = 16,
+		.pos = (vec2){32,32},
+		.size = (vec2){16,32},
+		.vel = (vec2){0,0},
+		.render = {
+			.frame0 = HH_TM_GOZER_OFFSET,
+			.palette = 3,
+			.fam = (hh_s_ppu_loc_fam_entry){
+				.horizontal_flip = false,
+				.vertical_flip = false,
+				.palette_index = 3,
+				.tilemap_index = HH_TM_GOZER_OFFSET,
+			}
+		}
+	};
+}
 
 
 void hh_render_all_entities(hh_entity* player, hh_entity* bullets, hh_entity* enemies, int bullet_size, int enemy_size, vec_cor cam_pos){
 
 	int index = 0;
-	hh_update_sprite(0 , player, cam_pos);
+	hh_update_sprite(&index , player, cam_pos);
 	
 	for (int i = 0; i < bullet_size; i++) {
-		hh_update_sprite(i+5,&bullets[i],cam_pos);
+		hh_update_sprite(&index,&bullets[i],cam_pos);
  	}
 	for (int i = 0; i < enemy_size; i++) {
-		hh_update_sprite(i+5+bullet_size,&enemies[i],cam_pos);
+		hh_update_sprite(&index,&enemies[i],cam_pos);
 	}
 }

@@ -8,6 +8,10 @@
 #include "main.h"
 #include "setup.h"
 #include "ppu/ppu.h"
+#include "tilemap.h"
+
+// hex(0x0803_ffff - 0xd000 + 1) (stm32f091rc rm0091 table 5, flash memory organization)
+uint32_t* g_hh_tilemap_rom = 0x08033000;
 
 UART_HandleTypeDef huart2 = {
 	.Instance = USART2,

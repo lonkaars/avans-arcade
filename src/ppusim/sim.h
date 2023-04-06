@@ -5,5 +5,5 @@
 /** @brief max framerate for PPUSIM */
 #define HH_PPUSIM_FRAMERATE 60
 
-/** @brief pump tilemap from rom to ppu ram */
-void hh_ppu_load_tilemap(); //ppu sim?
+/** @brief load static/tilemap.bin into memory */
+void hh_ppusim_load_tilemap();

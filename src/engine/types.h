@@ -4,6 +4,9 @@
 
 typedef uint8_t hh_ppu_fg_idx;
 // typedef uint16_t hh_bg_idx;
+typedef enum {
+	slime, jumping_slime, terror_owl,
+}hh_e_all_objects_game_type;
 
 typedef enum {
 	fire, ice, poison
@@ -31,6 +34,7 @@ typedef struct {
 	vec2 pos, vel, size;
 	bool is_grounded;
 	bool is_hit;
+	hh_e_all_objects_game_type object_type;
 	uint8_t radius;
 	int8_t hp;
 	int8_t speed;

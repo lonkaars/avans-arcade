@@ -2,6 +2,8 @@
 #include "ppu/types.h"
 #include "ppu/consts.h"
 
+#include "static/tilemap.h"
+
 
 #include "engine/draw_screen.h"
 #include "engine/entity.h"
@@ -12,7 +14,7 @@ void hh_init_title_screen(){
 
 	//send data
 	uint8_t idx = 0;
-	const uint8_t tilemap_offset = 59;
+	const uint8_t tilemap_offset = HH_TM_TITLE_SCREEN_ICON_OFFSET;
 	int tiles_h = HH_PPU_BG_CANVAS_TILES_H;
 	int vp_h = HH_PPU_SCREEN_WIDTH/HH_PPU_SPRITE_WIDTH; //screen_h in tiles
 	int vert_offset = tiles_h*3;
@@ -45,7 +47,7 @@ void hh_init_title_screen(){
 	}
 	
 
-	const uint8_t letters_offset = 66;
+	const uint8_t letters_offset = HH_TM_TITLE_SCREEN_LETTERES_LARGE_OFFSET;
 	const int _size_hooded = 7, _size_v = 2;
 
 	// char* hh = "hooded";
