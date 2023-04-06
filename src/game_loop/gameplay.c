@@ -12,9 +12,9 @@ void hh_gameplay(hh_g_all_levels* game, hh_e_game_state* hh_game_state){
 		.speed = 6,
 		.is_grounded = false,
 		.is_hit = false,
-		.radius = 16,
-		.pos = (vec2){32,32},
-		.size = (vec2){32,32},
+		.radius = 8,
+		.pos = (vec2){32,200},
+		.size = (vec2){16,32},
 		.vel = (vec2){0,0},
 		.render = {
 			.frame0 = HH_TM_GOZER_OFFSET,
@@ -41,16 +41,16 @@ void hh_gameplay(hh_g_all_levels* game, hh_e_game_state* hh_game_state){
 		// .vec = (vec2){0,0},
 		.render = {
 			.frame0 = HH_TM_SLIME_OFFSET,
-			.palette = 7,
+			.palette = 2,
 			.fam = (hh_s_ppu_loc_fam_entry){
 				.horizontal_flip = false,
 				.vertical_flip = false,
-				.palette_index = 7,
+				.palette_index = 2,
 				.tilemap_index = HH_TM_SLIME_OFFSET,
 			}
 		}
 	};
-	static int total_bullets = 5;
+	static int total_bullets = 15;
 	switch (gameplay)
 	{
 	case hh_e_setup_screen:
@@ -79,15 +79,15 @@ void hh_gameplay(hh_g_all_levels* game, hh_e_game_state* hh_game_state){
 		}
 		break;
 	case hh_e_level_complete:
-		// TODO: from complete to shop or game_over
-		if(game->current_level < 3){
-			game->current_level+=1;
-			gameplay = hh_e_setup_screen;
-		}
-		else {
+		// // TODO: from complete to shop or game_over
+		// if(game->current_level < 3){
+		// 	game->current_level+=1;
+		// 	gameplay = hh_e_setup_screen;
+		// }
+		// else {
 			
-         gameplay = hh_e_game_over;
-      }
+      //    gameplay = hh_e_game_over;
+      // }
 		break;
 	case hh_e_game_over:
 		// todo make reset levels
@@ -108,16 +108,16 @@ void hh_reset_levels(hh_entity* player){
 		.is_hit = false,
 		.radius = 16,
 		.pos = (vec2){32,32},
-		.size = (vec2){32,32},
+		.size = (vec2){16,32},
 		.vel = (vec2){0,0},
 		.render = {
-			.frame0 = 3,
+			.frame0 = HH_TM_GOZER_OFFSET,
 			.palette = 3,
 			.fam = (hh_s_ppu_loc_fam_entry){
 				.horizontal_flip = false,
 				.vertical_flip = false,
 				.palette_index = 3,
-				.tilemap_index = 80,
+				.tilemap_index = HH_TM_GOZER_OFFSET,
 			}
 		}
 	};
@@ -127,12 +127,12 @@ void hh_reset_levels(hh_entity* player){
 void hh_render_all_entities(hh_entity* player, hh_entity* bullets, hh_entity* enemies, int bullet_size, int enemy_size, vec_cor cam_pos){
 
 	int index = 0;
-	hh_update_sprite(0 , player, cam_pos);
+	hh_update_sprite(&index , player, cam_pos);
 	
 	for (int i = 0; i < bullet_size; i++) {
-		hh_update_sprite(i+5,&bullets[i],cam_pos);
+		hh_update_sprite(&index,&bullets[i],cam_pos);
  	}
 	for (int i = 0; i < enemy_size; i++) {
-		hh_update_sprite(i+5+bullet_size,&enemies[i],cam_pos);
+		hh_update_sprite(&index,&enemies[i],cam_pos);
 	}
 }

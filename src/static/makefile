@@ -4,11 +4,10 @@ MANIFEST2HEADER := ../../scripts/manifest2header.awk
 TILEDMK := ../../scripts/tiled.mk.awk
 TILEMAP2TILED := ../../scripts/tilemap2tiled
 
-INPUT += air.hex \
+INPUT += background/air.hex \
 			background/bricks.hex \
 			background/crates.hex \
 			background/shop_stall.hex \
-			background/shop.hex \
 			background/title_screen_icon.hex \
 			foreground/title_screen_letteres_large.hex\
 			foreground/bullet.hex \

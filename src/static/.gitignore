@@ -7,3 +7,4 @@ tiled.mk
 *.tsx
 *.csv
 *.out
+*.tiled-session

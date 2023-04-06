@@ -3,6 +3,8 @@
 
 #include "ppu/types.h"
 
+#include "static/tilemap.h"
+
 // handles sprites
 
 // Bg sprites
@@ -11,28 +13,29 @@
 
 //TODO: pack data inside of sprite_palette LUT
 //HH_PPU_PALETTE_COUNT
-#define HH_SPRITE_COUNT 80
+
 #define HH_PAL_IDX_SKY 0
 #define HH_PAL_IDX_BRICK 1
-const static uint8_t hh_g_sprite_palette[HH_SPRITE_COUNT] = {
-	//TODO: FIGURE OUT HOW TO DEAL WITH DYNAMIC PALLETS
-	//TODO: make a buffer of 16 no-collider sprites (instead of the current 1)
-	0,1,1,1,1,1,1,1,1,1, //1+9
-	1,1,1,1,1,1,1,1,1,1, //6+4
-	1,1,1,1,1,1,1,1,1,	//9
-	7,7,7,2,7,7,1,2,7,
-	7,7,7,7, //?? 
+#define HH_PAL_IDX_SLIME 2
+#define HH_PAL_IDX_CRATE 4
+#define HH_PAL_IDX_SHOP 5
+#define HH_PAL_IDX_TITLE_SCREEN_ICON 3
+#define HH_PAL_IDX_FONT 6
+#define HH_PAL_IDX_DEV 7
+const static uint8_t hh_g_sprite_palette[HH_TM_GROUPS] = {
+	HH_PAL_IDX_SKY,
+	HH_PAL_IDX_BRICK,
+	HH_PAL_IDX_CRATE,
+	HH_PAL_IDX_SHOP,
+	// HH_PAL_IDX_SHOP,
+	HH_PAL_IDX_TITLE_SCREEN_ICON,
+	HH_PAL_IDX_FONT,
+	HH_PAL_IDX_SKY,
+	HH_PAL_IDX_DEV,
+	HH_PAL_IDX_SLIME,
+	HH_PAL_IDX_DEV
+	// HH_PAL_IDX_FONT
 
-	7,6,6,6,6,6,6,6, //baskets
-	7,7,7,7,7,7,7,7,7,7, //shop
-	7,7,7,7,7, //shop
-	6,6,6,6,6, //(hi-)score
-	
-	3,3,3,3,3,3, //title_screen icon
-	6,6,6,6,/*6,6,6,6,6,6, //title_screen large letters
-	6,6,6,6,*/
-	//other palettes here:
-	// [HH_PAL_IDX_SKY] = 0,
 };
 
 
@@ -82,15 +85,23 @@ const static hh_ppu_loc_palette_table_t hh_g_palette = {
 		{0x0,0x0,0x0},
 		{0x0,0x0,0x0},
 		{0x0,0x0,0x0}},
-	{
-		{0x0,0x0,0x0},
-		{0x0,0x0,0x0},
-		{0x0,0x0,0x0},
-		{0x0,0x0,0x0},
-		{0x0,0x0,0x0},
-		{0x0,0x0,0x0},
-		{0x0,0x0,0x0},
-		{0x0,0x0,0x0}},
+	{//shop
+		// {0x1,0x2,0x3},
+		// {0x0,0x0,0x1},
+		// {0x0,0x0,0x0},
+		// {0x0,0x0,0x0},
+		// {0x0,0x0,0x0},
+		// {0x0,0x0,0x0},
+		// {0x0,0x0,0x0},
+		// {0x0,0x0,0x0}},
+		{0x1, 0x2, 0x3},//0
+		{0x0, 0x0, 0x1},//1
+		{0x6, 0x2, 0x2},//2
+		{0x7, 0x4, 0x4},//3
+		{0xc, 0x9, 0x7},//4
+		{0xd, 0xb, 0x9},//5
+		{0x3, 0x4, 0x5},//6
+		{0x8, 0x9, 0x9}},
 	{//white
 		{0x1,0x2,0x3},
 		{0xf,0xf,0xf},

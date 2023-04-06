@@ -3,7 +3,7 @@ import re
 
 # Read in the first file and extract the id and image filename for each tile
 tile_info = {}
-with open('stuff1.tsx', 'r') as f:
+with open('dynamic.tsx', 'r') as f:
     for line in f:
         id_match = re.match(r'<tile id="(\d+)">', line.strip())
         if id_match:

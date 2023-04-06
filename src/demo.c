@@ -59,7 +59,7 @@ void hh_demo_loop(unsigned long frame) {
 		}	
 		break;
 	case hh_e_state_shop:
-		hh_shop(&hh_game_states);
+		hh_shop(&hh_game_states, &hh_game.shop);
 		break;
 	case hh_e_state_gameplay:
 		hh_gameplay(&hh_game, &hh_game_states);

@@ -16,10 +16,10 @@ void hh_animate_hit(hh_s_rendering* in, bool hit) {
 }
 
 void hh_animate(hh_s_rendering* in, uint16_t start, uint16_t end, uint8_t step) {
-	if (in->fam.palette_index >= start && in->fam.palette_index < end) {
-		in->fam.palette_index += step;
+	if (in->fam.tilemap_index >= start && in->fam.tilemap_index < end) {
+		in->fam.tilemap_index += step;
 	} else {// rollover
-		in->fam.palette_index = start;
+		in->fam.tilemap_index = start;
 	}
 }
 

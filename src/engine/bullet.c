@@ -18,13 +18,13 @@ hh_entity* hh_init_bullets(int size) {
         .vel = (vec2){0,0},
         .size = (vec2) { 13,16},
         .render = {
-            .frame0 = 84,
+            .frame0 = HH_TM_BULLET_OFFSET,
             .palette = 3,
             .fam = (hh_s_ppu_loc_fam_entry){
                 .horizontal_flip = false,
                 .vertical_flip = false,
                 .palette_index = 7,
-                .tilemap_index = 84,
+                .tilemap_index = HH_TM_BULLET_OFFSET,
             }
         }
     };

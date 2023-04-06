@@ -23,6 +23,7 @@ typedef struct  {
 
 typedef struct  {
 	hh_level_entity level[2];
+	hh_level_entity shop;
 	int current_level;
 
 

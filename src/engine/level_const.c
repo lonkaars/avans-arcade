@@ -5,9 +5,13 @@
 hh_g_all_levels hh_init_game_levels(){
 	hh_g_all_levels levels;
 	levels.current_level=1;
+
+	levels.shop.size.x=40;
+	levels.shop.size.y=15;
+	levels.shop.hh_level_completed=false;
 	
 	levels.level[0].size.x=40;
-	levels.level[0].size.y=15;
+	levels.level[0].size.y=100;
 	levels.level[0].hh_level_completed=false;
 
 	levels.level[1].size.x=100;
@@ -38,6 +42,19 @@ hh_g_all_levels hh_init_game_levels(){
 	fread(hh_game_level2, sizeof(int), size, lvl2);
 	fclose(lvl2);
 
+	FILE *shop = fopen("static/shop_new.bin", "rb");
+	if (shop == NULL) {
+		printf("shop.bin not found!\n");
+		return levels;
+	}
+	fseek(shop, 0, SEEK_END);
+	size = ftell(shop) / sizeof(int);
+	fseek(shop, (0 * sizeof(int)) + sizeof(int), SEEK_SET);
+	int* hh_game_shop = malloc(size * sizeof(int));
+	fread(hh_game_shop, sizeof(int), size, shop);
+	fclose(shop);
+
+	levels.shop.place = hh_game_shop;
 	levels.level[0].place = hh_game_level1;
 	levels.level[1].place = hh_game_level2;
 

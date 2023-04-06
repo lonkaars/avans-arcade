@@ -17,7 +17,7 @@ typedef enum {
 /** @brief amount of upgrade types */
 #define HH_SHOP_UPG_COUNT 5
 /** @brief count of visible upgrades in shop */
-#define HH_SHOP_UPG_DISPLAY 5
+#define HH_SHOP_UPG_DISPLAY 4
 /** @brief all possible upgrades */
 typedef enum {
 	hh_e_upg_jump,
@@ -34,4 +34,4 @@ void hh_shop_display(uint8_t selected, hh_e_upgrades* upgrades);
 /** @brief moves 'cursor' through selection field */
 void hh_shift_selected(uint8_t* pos, bool dir, uint8_t min, uint8_t max);
 
-void hh_shop(hh_e_game_state*);
+void hh_shop(hh_e_game_state* ,hh_level_entity* );
