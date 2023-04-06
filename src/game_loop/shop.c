@@ -4,7 +4,7 @@
 
 #include "game_loop/ui.h"
 
-void hh_shop(hh_e_game_state* hh_game_state, hh_level_entity* level_shop){
+void hh_shop(hh_e_game_state* hh_game_state, hh_level_entity* level_shop, int current_level){
 	static hh_e_shop_states hh_e_shop = hh_e_shop_show;
 	static hh_e_upgrades upgrades[HH_SHOP_UPG_DISPLAY] = {0};
 	static uint8_t selected = 0;
@@ -22,7 +22,10 @@ void hh_shop(hh_e_game_state* hh_game_state, hh_level_entity* level_shop){
 		selected = HH_SHOP_UPG_DISPLAY/2;
 		hh_shop_display(selected, &upgrades);
 		int idx = 16;
-		hh_ui_show_char(&idx,"aBYz09",(vec2){32,32});
+		// hh_ui_show_char(&idx,"abyz09",(vec2){32,32});
+		char* c[3];
+		itoa(c,current_level);
+		hh_ui_show_char(&idx,c,(vec2){304-16-8,0});
 
 		hh_e_shop = hh_e_shop_main;
 		break;

@@ -17,3 +17,5 @@ void hh_ui_show_hp(int* idx, hh_entity* player, uint8_t max_hp, vec_cor cam_pos)
 
 void hh_ui_show_char(int* idx, char* str, vec2 pos);
 
+/** @brief converts char* [0] to i and [1]='\0' */
+void itoa(char *c, int i);

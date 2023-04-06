@@ -16,7 +16,6 @@ void hh_ui_show_hp(int* idx, hh_entity* player, uint8_t max_hp, vec_cor cam_pos)
 		});
 	}
 }
-
 void hh_ui_show_char(int* idx, char* str, vec2 pos) {
 	int i = 0;
 	int tilemap_idx,
@@ -38,10 +37,16 @@ void hh_ui_show_char(int* idx, char* str, vec2 pos) {
 				.horizontal_flip = false, .vertical_flip = false,
 				.palette_index = palette_idx,
 				.tilemap_index = tilemap_idx,
-				.position_x = 8 + i*15, .position_y = 8
+				.position_x = pos.x + i*15, .position_y = pos.y
 			}
 		});
 		i++;
 	}
 		
 }
+
+void itoa(char *c, int i) {
+	c[0] = i + '0';
+	c[1] = '\0';
+}
+

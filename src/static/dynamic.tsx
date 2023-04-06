@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.10.1" name="dynamic" tilewidth="16" tileheight="16" tilecount="108" columns="0">
+<tileset version="1.10" tiledversion="1.10.1" name="dynamic" tilewidth="16" tileheight="16" tilecount="129" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
+ <tile id="107">
+  <image width="16" height="16" source="tiled/font_35.png"/>
+ </tile>
  <tile id="0">
   <image width="16" height="16" source="tiled/font_34.png"/>
  </tile>
@@ -103,8 +106,50 @@
  <tile id="33">
   <image width="16" height="16" source="tiled/font_01.png"/>
  </tile>
+ <tile id="108">
+  <image width="16" height="16" source="tiled/boss1_05.png"/>
+ </tile>
+ <tile id="109">
+  <image width="16" height="16" source="tiled/boss1_04.png"/>
+ </tile>
+ <tile id="110">
+  <image width="16" height="16" source="tiled/boss1_03.png"/>
+ </tile>
+ <tile id="111">
+  <image width="16" height="16" source="tiled/boss1_02.png"/>
+ </tile>
+ <tile id="112">
+  <image width="16" height="16" source="tiled/boss1_01.png"/>
+ </tile>
+ <tile id="113">
+  <image width="16" height="16" source="tiled/boss1_00.png"/>
+ </tile>
  <tile id="34">
   <image width="16" height="16" source="tiled/font_00.png"/>
+ </tile>
+ <tile id="114">
+  <image width="16" height="16" source="tiled/slime_jumpable_07.png"/>
+ </tile>
+ <tile id="115">
+  <image width="16" height="16" source="tiled/slime_jumpable_06.png"/>
+ </tile>
+ <tile id="116">
+  <image width="16" height="16" source="tiled/slime_jumpable_05.png"/>
+ </tile>
+ <tile id="117">
+  <image width="16" height="16" source="tiled/slime_jumpable_04.png"/>
+ </tile>
+ <tile id="118">
+  <image width="16" height="16" source="tiled/slime_jumpable_03.png"/>
+ </tile>
+ <tile id="119">
+  <image width="16" height="16" source="tiled/slime_jumpable_02.png"/>
+ </tile>
+ <tile id="120">
+  <image width="16" height="16" source="tiled/slime_jumpable_01.png"/>
+ </tile>
+ <tile id="121">
+  <image width="16" height="16" source="tiled/slime_jumpable_00.png"/>
  </tile>
  <tile id="35">
   <image width="16" height="16" source="tiled/slime_03.png"/>
@@ -129,6 +174,27 @@
  </tile>
  <tile id="42">
   <image width="16" height="16" source="tiled/bullet_01.png"/>
+ </tile>
+ <tile id="122">
+  <image width="16" height="16" source="tiled/upgrades_04.png"/>
+ </tile>
+ <tile id="123">
+  <image width="16" height="16" source="tiled/upgrades_03.png"/>
+ </tile>
+ <tile id="124">
+  <image width="16" height="16" source="tiled/upgrades_02.png"/>
+ </tile>
+ <tile id="125">
+  <image width="16" height="16" source="tiled/upgrades_01.png"/>
+ </tile>
+ <tile id="126">
+  <image width="16" height="16" source="tiled/upgrades_00.png"/>
+ </tile>
+ <tile id="127">
+  <image width="16" height="16" source="tiled/hud_heart_01.png"/>
+ </tile>
+ <tile id="128">
+  <image width="16" height="16" source="tiled/hud_heart_00.png"/>
  </tile>
  <tile id="43">
   <image width="16" height="16" source="tiled/bullet_00.png"/>
@@ -321,8 +387,5 @@
  </tile>
  <tile id="106">
   <image width="16" height="16" source="tiled/air_00.png"/>
- </tile>
- <tile id="107">
-  <image width="16" height="16" source="tiled/font_35.png"/>
  </tile>
 </tileset>

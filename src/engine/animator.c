@@ -45,5 +45,4 @@ void hh_show_quad(uint16_t *idx, hh_s_rendering* in) {
 	temp.position_y = CLAMP(in->fam.position_y, -16, HH_PPU_SCREEN_HEIGHT);
 	temp.position_x = CLAMP(in->fam.position_x, -16, HH_PPU_SCREEN_WIDTH);
 	hh_ppu_update_foreground(++*idx, temp);
-	temp.tilemap_index++;
 }
