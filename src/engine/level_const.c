@@ -4,7 +4,7 @@
 
 hh_g_all_levels hh_init_game_levels(){
 	hh_g_all_levels levels;
-	levels.current_level=1;
+	levels.current_level=0;
 
 	levels.shop.size.x=40;
 	levels.shop.size.y=15;
@@ -18,9 +18,9 @@ hh_g_all_levels hh_init_game_levels(){
 	levels.level[1].size.y=28;
 	levels.level[1].hh_level_completed=false;
 
-	FILE *fp = fopen("static/shop_new.bin", "rb");
+	FILE *fp = fopen("../test/bin/level1_test.bin", "rb");
 	if (fp == NULL) {
-		printf("shop_new.bin not found!\n");
+		printf("level1_test.bin not found!\n");
 		return levels;
 	} 
 	fseek(fp, 0, SEEK_END);

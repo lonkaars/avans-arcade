@@ -10,9 +10,13 @@ INPUT += background/air.hex \
 			background/shop_stall.hex \
 			background/title_screen_icon.hex \
 			foreground/title_screen_letteres_large.hex\
+			foreground/hud_heart.hex \
+			foreground/upgrades.hex \
 			foreground/bullet.hex \
 			foreground/gozer.hex \
 			foreground/slime.hex \
+			foreground/slime_jumpable.hex \
+			foreground/boss1.hex \
 			foreground/font.hex 
 			# world.hex
 USER_META += world.h

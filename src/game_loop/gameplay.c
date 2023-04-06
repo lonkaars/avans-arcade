@@ -1,6 +1,7 @@
 #include "gameplay.h"
 #include "engine/entity.h"
 #include "static/tilemap.h"
+#include "game_loop/ui.h"
 // player struct
 
 
@@ -135,4 +136,6 @@ void hh_render_all_entities(hh_entity* player, hh_entity* bullets, hh_entity* en
 	for (int i = 0; i < enemy_size; i++) {
 		hh_update_sprite(&index,&enemies[i],cam_pos);
 	}
+
+	hh_ui_show_hp(&index, player, 7, cam_pos);
 }

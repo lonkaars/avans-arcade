@@ -17,11 +17,15 @@
 #define HH_PAL_IDX_SKY 0
 #define HH_PAL_IDX_BRICK 1
 #define HH_PAL_IDX_SLIME 2
+#define HH_PAL_IDX_HUD 2
+#define HH_PAL_IDX_BULLET 3
+#define HH_PAL_IDX_GOZER 3
+#define HH_PAL_IDX_TITLE_SCREEN_ICON 3
 #define HH_PAL_IDX_CRATE 4
 #define HH_PAL_IDX_SHOP 5
-#define HH_PAL_IDX_TITLE_SCREEN_ICON 3
 #define HH_PAL_IDX_FONT 6
 #define HH_PAL_IDX_DEV 7
+
 const static uint8_t hh_g_sprite_palette[HH_TM_GROUPS] = {
 	HH_PAL_IDX_SKY,
 	HH_PAL_IDX_BRICK,
@@ -29,12 +33,15 @@ const static uint8_t hh_g_sprite_palette[HH_TM_GROUPS] = {
 	HH_PAL_IDX_SHOP,
 	// HH_PAL_IDX_SHOP,
 	HH_PAL_IDX_TITLE_SCREEN_ICON,
-	HH_PAL_IDX_FONT,
-	HH_PAL_IDX_SKY,
-	HH_PAL_IDX_DEV,
+	HH_PAL_IDX_TITLE_SCREEN_ICON,
+	HH_PAL_IDX_HUD,
+	HH_PAL_IDX_HUD,
+	HH_PAL_IDX_BULLET,
+	HH_PAL_IDX_GOZER,
 	HH_PAL_IDX_SLIME,
-	HH_PAL_IDX_DEV
-	// HH_PAL_IDX_FONT
+	HH_PAL_IDX_SLIME,
+	HH_PAL_IDX_DEV,
+	HH_PAL_IDX_FONT
 
 };
 
@@ -62,11 +69,11 @@ const static hh_ppu_loc_palette_table_t hh_g_palette = {
 		{0x1,0x2,0x3},
 		{0x1,0x3,0x2},
 		{0x4,0x8,0x3},
-		{0x7,0xa,0x4},
-		{0x0,0x0,0x0},
-		{0x0,0x0,0x0},
-		{0x0,0x0,0x0},
-		{0x0,0x0,0x0}},
+		{0x7,0xa,0x4},//hp HUD
+		{0xa,0xc,0x5},
+		{0xa,0x3,0x3},
+		{0x0,0x0,0x1},
+		{0xe,0xe,0xe}},
 	{//player //TODO: use one less color && update player indexed sprites
 		{0x0,0x0,0x0},
 		{0x1,0x1,0x1},
