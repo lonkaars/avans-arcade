@@ -7,3 +7,4 @@ tiled.mk
 *.csv
 *.out
 *.tiled-session
+*.tmx

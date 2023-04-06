@@ -34,9 +34,15 @@ void hh_slime_ai(hh_entity* enemy, hh_entity player){
 	hh_gravity_entity(enemy);
 	hh_update_enemy_movement(enemy);
 
+	hh_animate(&enemy->render,
+		HH_TM_SLIME_JUMPABLE_OFFSET ,
+		HH_TM_SLIME_JUMPABLE_OFFSET + 3,1
+	);
+
 }
 
 void hh_jump_slime_ai(hh_entity* enemy, hh_entity player){
+	bool jumped = false;
 	int8_t direction = hh_get_direction(player.pos.x, enemy->pos.x);
 	hh_gravity_entity(enemy);
 	if((player.pos.x - enemy->pos.x) >= -hunt_player && (player.pos.x - enemy->pos.x) <= hunt_player){
@@ -44,10 +50,15 @@ void hh_jump_slime_ai(hh_entity* enemy, hh_entity player){
 		// TODO: fix this if statement and make it cleaner. this makes the enemy jump when the player mets the condition
 		if((player.pos.y - enemy->pos.y) < -16 && (player.pos.y - enemy->pos.y) >= -100 && (player.pos.x - enemy->pos.x) >= -10 && (player.pos.x - enemy->pos.x) <= 10){
 			hh_jump_entity(enemy);
+			jumped = true;
 		}
 	}
-
+	hh_animate(&enemy->render,
+		HH_TM_SLIME_JUMPABLE_OFFSET + (jumped?4:0),
+		HH_TM_SLIME_JUMPABLE_OFFSET + (enemy->render.fam.tilemap_index>=HH_TM_SLIME_JUMPABLE_OFFSET+5 ? 7 : 3),1
+	);
 	hh_update_enemy_movement(enemy);
+
 
 }
 #define terror_owl_attack_timer 100

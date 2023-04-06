@@ -4,7 +4,7 @@
 
 #include "game_loop/ui.h"
 
-void hh_shop(hh_e_game_state* hh_game_state, hh_level_entity* level_shop){
+hh_e_upgrades hh_shop(hh_e_game_state* hh_game_state, hh_g_all_levels* levels, int rng_seed){
 	static hh_e_shop_states hh_e_shop = hh_e_shop_show;
 	static hh_e_upgrades upgrades[HH_SHOP_UPG_DISPLAY] = {0};
 	static uint8_t selected = 0;
@@ -17,12 +17,15 @@ void hh_shop(hh_e_game_state* hh_game_state, hh_level_entity* level_shop){
 		// hh_clear_sprite();
 		// TODO: make function to show shop
 		//hh_setup_shop();
-		hh_setup_screen(*level_shop);
-		hh_shop_init(&upgrades);
+		hh_setup_screen(levels->shop);
+		hh_shop_upg_init(&upgrades, rng_seed);
 		selected = HH_SHOP_UPG_DISPLAY/2;
 		hh_shop_display(selected, &upgrades);
 		int idx = 16;
-		hh_ui_show_char(&idx,"aBYz09",(vec2){32,32});
+		// hh_ui_show_char(&idx,"abyz09",(vec2){32,32});
+		char* c[3];
+		itoa(c,levels->current_level);
+		hh_ui_show_char(&idx,c,(vec2){304-16-8,0});
 
 		hh_e_shop = hh_e_shop_main;
 		break;
@@ -39,6 +42,7 @@ void hh_shop(hh_e_game_state* hh_game_state, hh_level_entity* level_shop){
 		if(g_hh_controller_p1.button_primary){
 			//apply selected upgrade
 			// hh_e_shop = hh_e_shop_end;
+			return upgrades[selected];
 		}
 		if(g_hh_controller_p1.button_secondary){//Quick exit
 			hh_e_shop = hh_e_shop_end;
@@ -52,15 +56,21 @@ void hh_shop(hh_e_game_state* hh_game_state, hh_level_entity* level_shop){
 		hh_e_shop = hh_e_shop_show;
 		break;
 	}
+	return hh_e_NULL;
 }
 
 uint8_t hh_shop_translate_upgrades(hh_e_upgrades upg) {
-	return upg+10;
+	return HH_TM_UPGRADES_OFFSET+upg;
 }
 
-void hh_shop_init(hh_e_upgrades* in) {
+void hh_shop_upg_init(hh_e_upgrades* in, int seed) {
+	srand(seed);
 	for (int i = 0; i < HH_SHOP_UPG_DISPLAY; i++) {
-		in[i] = i%HH_SHOP_UPG_COUNT;
+		hh_e_upgrades rng = rand()%(HH_SHOP_UPG_COUNT);
+		while (rng == in[i-1]){
+			rng = rand()%(HH_SHOP_UPG_COUNT);
+		}
+		in[i] = rng;
 	}
 }
 
@@ -74,18 +84,10 @@ void hh_shop_display(uint8_t selected, hh_e_upgrades* upgrades) {
 		(hh_s_ppu_loc_fam_entry){
 			.horizontal_flip = false, .vertical_flip = false,
 			.position_x = i*space+start.x, .position_y = start.y + (i==selected?-up:0),
-			.palette_index = 7,
+			.palette_index = HH_PAL_IDX_UPGRADE,
 			.tilemap_index = hh_shop_translate_upgrades(upgrades[i])
 		});
 	}
 }
 
-void hh_shift_selected(uint8_t *pos, bool dir, uint8_t min, uint8_t max) {
-	if (dir) {
-		*pos = MIN(*pos+1,max);
-	} else {
-		*pos = MAX(*pos-1,min);
-	}
-	// printf("b: %d sel: %d\n",dir, *pos);
-}
 
