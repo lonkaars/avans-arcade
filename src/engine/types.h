@@ -26,8 +26,14 @@ typedef struct {
 	hh_s_ppu_loc_fam_entry fam; //screen
 	uint16_t frame0;
 	uint16_t palette;
+	uint16_t cooldown;
 	
 }hh_s_rendering;
+
+typedef struct {
+	uint8_t* start, len;
+}hh_s_animations;
+
 
 typedef struct {
 	vec2 pos, vel, size;

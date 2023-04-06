@@ -50,3 +50,10 @@ void itoa(char *c, int i) {
 	c[1] = '\0';
 }
 
+void hh_shift_selected(uint8_t *pos, bool dir, uint8_t min, uint8_t max) {
+	if (dir) {
+		*pos = MIN(*pos+1,max);
+	} else {
+		*pos = MAX(*pos-1,min);
+	}
+}

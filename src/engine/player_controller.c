@@ -37,6 +37,10 @@ void hh_player_actions(hh_entity* player){
 
 
 	*player =  hh_background_collision ( *player, player_new);
+	
+	if (direction_x != 0) {
+		player->render.fam.horizontal_flip = (direction_x > 0 ?0:1);
+	}
 
 }
 

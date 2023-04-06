@@ -48,6 +48,8 @@ void hh_demo_setup() {
 }
 
 void hh_demo_loop(unsigned long frame) {
+	static uint64_t hh_rng_seed = 0;
+	hh_rng_seed++;
 
 	
 	switch (hh_game_states)
@@ -59,7 +61,7 @@ void hh_demo_loop(unsigned long frame) {
 		}	
 		break;
 	case hh_e_state_shop:
-		hh_shop(&hh_game_states, &hh_game.shop, hh_game.current_level);
+		hh_e_upgrades upg = hh_shop(&hh_game_states, &hh_game, hh_rng_seed);
 		break;
 	case hh_e_state_gameplay:
 		hh_gameplay(&hh_game, &hh_game_states);

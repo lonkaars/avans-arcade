@@ -10,7 +10,7 @@ void hh_gameplay(hh_g_all_levels* game, hh_e_game_state* hh_game_state){
 	static hh_entity* bullets;
 	static hh_entity player1={
 		.hp = 4,
-		.speed = 6,
+		.speed = 3,
 		.is_grounded = false,
 		.is_hit = false,
 		.radius = 8,
@@ -48,7 +48,8 @@ void hh_gameplay(hh_g_all_levels* game, hh_e_game_state* hh_game_state){
 				.vertical_flip = false,
 				.palette_index = 2,
 				.tilemap_index = HH_TM_SLIME_OFFSET,
-			}
+			},
+			.cooldown = 0
 		}
 	};
 	static int total_bullets = 15;

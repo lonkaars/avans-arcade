@@ -173,7 +173,9 @@ void hh_jump_entity(hh_entity* object_1){
 }
 void hh_gravity_entity(hh_entity* object_1){
 	if (object_1->is_grounded == false) {
-		object_1->vel.y += 1; //gravity
+		if(object_1->vel.y < 15) {
+			object_1->vel.y += 1; //gravity
+		}
 	}
 }
 
@@ -181,6 +183,7 @@ void hh_movement_entity(hh_entity* object_1, int8_t* direction){
 	if(direction != 0){
 		if(object_1->vel.x > -1 * object_1->speed && object_1->vel.x < object_1->speed) {
 			object_1->vel.x = object_1->vel.x + direction;
+			object_1->render.fam.horizontal_flip=(object_1->vel.x>0?0:1);// flips direction of object_1
 		} else {
 			if (object_1->vel.x > 0) {
 				object_1->vel.x--;
