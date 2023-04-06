@@ -19,5 +19,5 @@ BEGIN {
 END {
 	print "#define HH_TM_SIZE "offset
 	print "#define HH_TM_GROUPS "groups
-	print "const static uint8_t hh_palette_lut[]={"arr", NULL};"
+	print "const static int hh_palette_lut[]={"arr", NULL};"
 }

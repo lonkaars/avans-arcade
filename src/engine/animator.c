@@ -39,3 +39,11 @@ void hh_update_sprite(uint16_t *idx, hh_entity* in, vec_cor cam) {
 		}
 	}
 }
+
+void hh_show_quad(uint16_t *idx, hh_s_rendering* in) {
+	hh_s_ppu_loc_fam_entry temp = in->fam;
+	temp.position_y = CLAMP(in->fam.position_y, -16, HH_PPU_SCREEN_HEIGHT);
+	temp.position_x = CLAMP(in->fam.position_x, -16, HH_PPU_SCREEN_WIDTH);
+	hh_ppu_update_foreground(++*idx, temp);
+	temp.tilemap_index++;
+}

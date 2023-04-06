@@ -26,7 +26,6 @@ typedef struct {
 	hh_s_ppu_loc_fam_entry fam; //screen
 	uint16_t frame0;
 	uint16_t palette;
-	uint16_t ppu_foreground_index;
 	
 }hh_s_rendering;
 

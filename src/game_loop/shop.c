@@ -2,6 +2,8 @@
 #include "engine/maths.h"
 #include "ppu/ppu.h"
 
+#include "game_loop/ui.h"
+
 void hh_shop(hh_e_game_state* hh_game_state, hh_level_entity* level_shop){
 	static hh_e_shop_states hh_e_shop = hh_e_shop_show;
 	static hh_e_upgrades upgrades[HH_SHOP_UPG_DISPLAY] = {0};
@@ -19,6 +21,9 @@ void hh_shop(hh_e_game_state* hh_game_state, hh_level_entity* level_shop){
 		hh_shop_init(&upgrades);
 		selected = HH_SHOP_UPG_DISPLAY/2;
 		hh_shop_display(selected, &upgrades);
+		int idx = 16;
+		hh_ui_show_char(&idx,"aBYz09",(vec2){32,32});
+
 		hh_e_shop = hh_e_shop_main;
 		break;
 	case hh_e_shop_main:
@@ -65,7 +70,7 @@ void hh_shop_display(uint8_t selected, hh_e_upgrades* upgrades) {
 					space = 24+8;
 
 	for (int i = 0; i < HH_SHOP_UPG_DISPLAY; i++) {
-		hh_ppu_update_foreground(i+16,
+		hh_ppu_update_foreground(i,
 		(hh_s_ppu_loc_fam_entry){
 			.horizontal_flip = false, .vertical_flip = false,
 			.position_x = i*space+start.x, .position_y = start.y + (i==selected?-up:0),
