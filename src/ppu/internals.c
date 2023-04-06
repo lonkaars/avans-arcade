@@ -4,8 +4,9 @@
 #include "ppu/internals.h"
 #include "ppu/types.h"
 
-uint8_t g_hh_ppu_vram_buffer[HH_PPU_COMMAND_BUFFER_SIZE * 2] = { 0 };
-uint8_t* g_hh_ppu_vram_buffer_ptr = g_hh_ppu_vram_buffer;
+bool g_hh_ppu_vram_buffer_swap = false;
+uint8_t g_hh_ppu_vram_buffer_raw[HH_PPU_COMMAND_BUFFER_SIZE * 2] = { 0 };
+uint8_t* g_hh_ppu_vram_buffer_ptr = g_hh_ppu_vram_buffer_raw;
 size_t g_hh_ppu_vram_buffer_size = 0;
 
 bool hh_ppu_vram_valid_address(hh_ppu_addr_t addr) {
@@ -96,19 +97,18 @@ hh_s_ppu_vram_data hh_ppu_2nat_color(hh_ppu_rgb_color_t rgb) {
 
 void hh_ppu_vram_buffer(uint8_t data[4]) {
 	size_t head = g_hh_ppu_vram_buffer_size;
-	g_hh_ppu_vram_buffer[head+0] = data[0];
-	g_hh_ppu_vram_buffer[head+1] = data[1];
-	g_hh_ppu_vram_buffer[head+2] = data[2];
-	g_hh_ppu_vram_buffer[head+3] = data[3];
+	g_hh_ppu_vram_buffer_ptr[head+0] = data[0]; // NOTE: this only works because sizeof(buffer) is divisible by 4
+	g_hh_ppu_vram_buffer_ptr[head+1] = data[1];
+	g_hh_ppu_vram_buffer_ptr[head+2] = data[2];
+	g_hh_ppu_vram_buffer_ptr[head+3] = data[3];
 	g_hh_ppu_vram_buffer_size += 4;
 }
 
 void hh_ppu_vram_flush() {
-	static bool buffer_swap = false;
-	buffer_swap = !buffer_swap;
 	hh_ppu_vram_buffer((uint8_t[4]){ 0xff, 0xff, 0xff, 0xff });
 	hh_ppu_vram_dwrite(g_hh_ppu_vram_buffer_ptr, g_hh_ppu_vram_buffer_size);
 	g_hh_ppu_vram_buffer_size = 0;
-	g_hh_ppu_vram_buffer_ptr = g_hh_ppu_vram_buffer + (buffer_swap * HH_PPU_COMMAND_BUFFER_SIZE);
+	g_hh_ppu_vram_buffer_ptr = g_hh_ppu_vram_buffer_raw + g_hh_ppu_vram_buffer_swap * HH_PPU_COMMAND_BUFFER_SIZE;
+	g_hh_ppu_vram_buffer_swap = !g_hh_ppu_vram_buffer_swap;
 }
 

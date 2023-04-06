@@ -11,6 +11,8 @@
 #include "ppu/ppu.h"
 #include "stm32/consts.h"
 
+bool g_hh_first_flush_done = false;
+
 UART_HandleTypeDef huart2 = {
 	.Instance = USART2,
 	.Init.BaudRate = 115200,
@@ -24,18 +26,10 @@ UART_HandleTypeDef huart2 = {
 	.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT,
 };
 
-GPIO_InitTypeDef spi_gpio = {
-	.Pin = HH_IO_SPI_PINS,
-	.Mode = GPIO_MODE_AF_PP,
-	.Pull = GPIO_NOPULL,
-	.Speed = GPIO_SPEED_FREQ_HIGH,
-	.Alternate = GPIO_AF0_SPI1,
-};
-
 SPI_HandleTypeDef hspi1 = {
 	.Instance = SPI1,
 	.Init.Mode = SPI_MODE_MASTER,
-	.Init.Direction = SPI_DIRECTION_1LINE,
+	.Init.Direction = SPI_DIRECTION_2LINES,
 	.Init.DataSize = SPI_DATASIZE_8BIT,
 	.Init.CLKPolarity = SPI_POLARITY_LOW,
 	.Init.CLKPhase = SPI_PHASE_1EDGE,
@@ -47,6 +41,17 @@ SPI_HandleTypeDef hspi1 = {
 	.Init.CRCPolynomial = 7,
 	.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE,
 	.Init.NSSPMode = SPI_NSS_PULSE_DISABLE,
+};
+
+DMA_HandleTypeDef hdma_spi1_tx = {
+	.Instance = DMA1_Channel3,
+	.Init.Direction = DMA_MEMORY_TO_PERIPH,
+	.Init.PeriphInc = DMA_PINC_DISABLE,
+	.Init.MemInc = DMA_MINC_ENABLE,
+	.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE,
+	.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE,
+	.Init.Mode = DMA_NORMAL,
+	.Init.Priority = DMA_PRIORITY_HIGH,
 };
 
 TIM_HandleTypeDef htim3 = {
@@ -64,6 +69,8 @@ static void hh_io_usart2_setup();
 static void hh_io_gpio_setup();
 static void hh_io_clock_setup();
 static void hh_io_setup_error_handler();
+static void hh_interrupt_setup();
+static void hh_io_dma_setup();
 
 void hh_setup() {
 	HAL_Init();
@@ -71,17 +78,26 @@ void hh_setup() {
 	hh_io_clock_setup();
 	hh_io_usart2_setup();
 	hh_io_gpio_setup();
+	hh_io_dma_setup();
 	hh_io_spi_setup();
 	hh_io_tim_setup();
 
 	hh_ppu_init();
 	hh_demo_setup();
+
+	hh_ppu_flush();
 }
 
 void hh_exit() {
 	hh_ppu_deinit();
 
 	HAL_DeInit();
+}
+
+void hh_io_dma_setup() {
+	__HAL_RCC_DMA1_CLK_ENABLE();
+	HAL_NVIC_SetPriority(DMA1_Ch2_3_DMA2_Ch1_2_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(DMA1_Ch2_3_DMA2_Ch1_2_IRQn);
 }
 
 void hh_io_clock_setup() {
@@ -142,9 +158,9 @@ static void gpio_init(GPIO_TypeDef* port, uint16_t pin, uint32_t mode, uint32_t 
 }
 
 void hh_io_gpio_setup() {
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	__HAL_RCC_GPIOC_CLK_ENABLE();
 
 	// SPI reset line
 	gpio_init(HH_IO_SPI_SR_PORT, HH_IO_SPI_SR_PIN, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
@@ -173,37 +189,49 @@ void hh_io_gpio_setup() {
 }
 
 void HAL_MspInit() {
-  __HAL_RCC_SYSCFG_CLK_ENABLE();
-  __HAL_RCC_PWR_CLK_ENABLE();
+	__HAL_RCC_SYSCFG_CLK_ENABLE();
+	__HAL_RCC_PWR_CLK_ENABLE();
 	HAL_NVIC_SetPriority(PendSV_IRQn, 3, 0);
 }
 
 void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi) {
-  if(hspi->Instance != SPI1) return;
+	if(hspi->Instance != SPI1) return;
 
 	__HAL_RCC_SPI1_CLK_ENABLE();
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 
-	HAL_GPIO_Init(HH_IO_SPI_PORT, &spi_gpio);
+	HAL_GPIO_Init(HH_IO_SPI_PORT, &(GPIO_InitTypeDef) {
+		.Pin = HH_IO_SPI_PINS,
+		.Mode = GPIO_MODE_AF_PP,
+		.Pull = GPIO_PULLDOWN,
+		.Speed = GPIO_SPEED_FREQ_HIGH,
+		.Alternate = GPIO_AF0_SPI1,
+	});
+
+	if (HAL_OK != HAL_DMA_Init(&hdma_spi1_tx))
+		return hh_io_setup_error_handler();
+	__HAL_DMA1_REMAP(HAL_DMA1_CH3_SPI1_TX);
+	__HAL_LINKDMA(hspi, hdmatx, hdma_spi1_tx);
 }
 
 void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi) {
-  if(hspi->Instance != SPI1) return;
+	if(hspi->Instance != SPI1) return;
 
 	__HAL_RCC_SPI1_CLK_DISABLE();
 	__HAL_RCC_GPIOA_CLK_DISABLE();
 
 	HAL_GPIO_DeInit(HH_IO_SPI_PORT, HH_IO_SPI_PINS);
+	HAL_DMA_DeInit(hspi->hdmatx);
 }
 
 void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base) {
-  if(htim_base->Instance != TIM3) return;
+	if(htim_base->Instance != TIM3) return;
 
 	__HAL_RCC_TIM3_CLK_ENABLE();
 }
 
 void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base) {
-  if(htim_base->Instance != TIM3) return;
+	if(htim_base->Instance != TIM3) return;
 
 	__HAL_RCC_TIM3_CLK_DISABLE();
 }
@@ -229,6 +257,7 @@ void EXTI4_15_IRQHandler() {
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+	if (!g_hh_first_flush_done) return;
 	if (GPIO_Pin == HH_IO_PPU_HBLANK_PIN) {
 		g_hh_hcount++;
 	}
@@ -237,4 +266,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 		g_hh_vcount++;
 		hh_ppu_vblank_interrupt();
 	}
+}
+
+void DMA1_Ch2_3_DMA2_Ch1_2_IRQHandler() {
+	HAL_DMA_IRQHandler(&hdma_spi1_tx);
+}
+
+void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef* hspi) {
+	if(hspi->Instance != SPI1) return;
+	g_hh_first_flush_done = true;
 }

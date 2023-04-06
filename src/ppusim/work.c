@@ -6,6 +6,8 @@
 #include "ppusim/pixel.h"
 #include "ppusim/sim.h"
 #include "ppusim/work.h"
+#include "ppusim/mem.h"
+#include "ppu/internals.h"
 
 pthread_t *g_hh_ppusim_threads;
 unsigned g_hh_ppusim_core_count;
@@ -23,6 +25,10 @@ void *hh_ppusim_draw_thread(void *arg) {
 }
 
 void hh_ppusim_draw_frame(SDL_Renderer *renderer) {
+	hh_ppu_data_t *aux = &g_hh_ppusim_vram[HH_PPU_VRAM_AUX_OFFSET];
+	bool reset = HH_RESIZE(aux[1], 2, 2);
+	if (reset) memset(g_hh_ppusim_vram, 0x0000, 0xffff * sizeof(hh_ppu_data_t));
+
 	for (unsigned core = 0; core < g_hh_ppusim_core_count; core++) pthread_create(&g_hh_ppusim_threads[core], NULL, hh_ppusim_draw_thread, (void *)(unsigned long)core);
 	for (unsigned core = 0; core < g_hh_ppusim_core_count; core++) pthread_join(g_hh_ppusim_threads[core], NULL);
 

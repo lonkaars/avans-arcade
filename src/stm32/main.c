@@ -5,5 +5,5 @@
 void hh_ppu_load_tilemap() {}
 
 void hh_loop() {
-	while(1);
+	while(g_hh_run);
 }
