@@ -16,6 +16,7 @@ INPUT += background/air.hex \
 			foreground/gozer.hex \
 			foreground/slime.hex \
 			foreground/slime_jumpable.hex \
+			foreground/bird.hex \
 			foreground/boss1.hex \
 			foreground/font.hex 
 			# world.hex

@@ -47,6 +47,7 @@ LOCAL_SRCS += main.c \
 							game_loop/shop.c \
 							game_loop/gameplay.c \
 							game_loop/game_over.c \
+							game_loop/high_score.c \
 							game_loop/starting_screen.c \
 							game_loop/ui.c
 

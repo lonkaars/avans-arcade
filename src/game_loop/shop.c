@@ -1,8 +1,4 @@
 #include "shop.h"
-#include "engine/maths.h"
-#include "ppu/ppu.h"
-
-#include "game_loop/ui.h"
 
 hh_e_upgrades hh_shop(hh_e_game_state* hh_game_state, hh_g_all_levels* levels, int rng_seed){
 	static hh_e_shop_states hh_e_shop = hh_e_shop_show;

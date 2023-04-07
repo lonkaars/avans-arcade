@@ -4,7 +4,10 @@
 #include "engine/draw_screen.h"
 #include "engine/level_const.h"
 #include "engine/sprite_controller.h"
+#include "engine/maths.h"
+#include "ppu/ppu.h"
 
+#include "game_loop/ui.h"
 
 #include <stdint.h>
 #include <stdbool.h>
