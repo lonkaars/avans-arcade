@@ -105,6 +105,7 @@ void hh_ppu_vram_buffer(uint8_t data[4]) {
 }
 
 void hh_ppu_vram_flush() {
+	if (g_hh_ppu_vram_buffer_size == 0) return;
 	hh_ppu_vram_buffer((uint8_t[4]){ 0xff, 0xff, 0xff, 0xff });
 	hh_ppu_vram_dwrite(g_hh_ppu_vram_buffer_ptr, g_hh_ppu_vram_buffer_size);
 	g_hh_ppu_vram_buffer_size = 0;

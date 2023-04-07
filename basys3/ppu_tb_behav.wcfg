@@ -13,15 +13,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
-      <ZoomEndTime time="2,716.000001 us"></ZoomEndTime>
-      <Cursor1Time time="450.650000 us"></Cursor1Time>
+      <ZoomStartTime time="929,912.593 ns"></ZoomStartTime>
+      <ZoomEndTime time="931,046.594 ns"></ZoomEndTime>
+      <Cursor1Time time="930,263.593 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="257"></NameColumnWidth>
-      <ValueColumnWidth column_width="194"></ValueColumnWidth>
+      <ValueColumnWidth column_width="186"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="9" />
+   <WVObjectSize size="10" />
    <wvobject type="group" fp_name="group136">
       <obj_property name="label">clks</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -43,10 +43,7 @@
    <wvobject type="group" fp_name="group150">
       <obj_property name="label">ppu top</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject type="logic" fp_name="/ppu_tb/uut/RESET">
-         <obj_property name="ElementShortName">RESET</obj_property>
-         <obj_property name="ObjectShortName">RESET</obj_property>
-      </wvobject>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="logic" fp_name="/ppu_tb/uut/WEN">
          <obj_property name="ElementShortName">WEN</obj_property>
          <obj_property name="ObjectShortName">WEN</obj_property>
@@ -59,30 +56,6 @@
          <obj_property name="ElementShortName">DATA[15:0]</obj_property>
          <obj_property name="ObjectShortName">DATA[15:0]</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/R">
-         <obj_property name="ElementShortName">R[3:0]</obj_property>
-         <obj_property name="ObjectShortName">R[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/G">
-         <obj_property name="ElementShortName">G[3:0]</obj_property>
-         <obj_property name="ObjectShortName">G[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/B">
-         <obj_property name="ElementShortName">B[3:0]</obj_property>
-         <obj_property name="ObjectShortName">B[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/ppu_tb/uut/VSYNC">
-         <obj_property name="ElementShortName">VSYNC</obj_property>
-         <obj_property name="ObjectShortName">VSYNC</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/ppu_tb/uut/HSYNC">
-         <obj_property name="ElementShortName">HSYNC</obj_property>
-         <obj_property name="ObjectShortName">HSYNC</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/ppu_tb/uut/VBLANK">
-         <obj_property name="ElementShortName">VBLANK</obj_property>
-         <obj_property name="ObjectShortName">VBLANK</obj_property>
-      </wvobject>
       <wvobject type="logic" fp_name="/ppu_tb/uut/SYSCLK">
          <obj_property name="ElementShortName">SYSCLK</obj_property>
          <obj_property name="ObjectShortName">SYSCLK</obj_property>
@@ -90,22 +63,6 @@
       <wvobject type="logic" fp_name="/ppu_tb/uut/SYSRST">
          <obj_property name="ElementShortName">SYSRST</obj_property>
          <obj_property name="ObjectShortName">SYSRST</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/ppu_tb/uut/PL_SPRITE_FG">
-         <obj_property name="ElementShortName">PL_SPRITE_FG</obj_property>
-         <obj_property name="ObjectShortName">PL_SPRITE_FG</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/ppu_tb/uut/PL_SPRITE_BG">
-         <obj_property name="ElementShortName">PL_SPRITE_BG</obj_property>
-         <obj_property name="ObjectShortName">PL_SPRITE_BG</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/ppu_tb/uut/PL_DONE">
-         <obj_property name="ElementShortName">PL_DONE</obj_property>
-         <obj_property name="ObjectShortName">PL_DONE</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/ppu_tb/uut/PL_READY">
-         <obj_property name="ElementShortName">PL_READY</obj_property>
-         <obj_property name="ObjectShortName">PL_READY</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/ppu_tb/uut/TMM_WEN">
          <obj_property name="ElementShortName">TMM_WEN</obj_property>
@@ -211,22 +168,6 @@
          <obj_property name="ElementShortName">FG_FETCH</obj_property>
          <obj_property name="ObjectShortName">FG_FETCH</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/ppu_tb/uut/NVSYNC">
-         <obj_property name="ElementShortName">NVSYNC</obj_property>
-         <obj_property name="ObjectShortName">NVSYNC</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/ppu_tb/uut/NHSYNC">
-         <obj_property name="ElementShortName">NHSYNC</obj_property>
-         <obj_property name="ObjectShortName">NHSYNC</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/ppu_tb/uut/THBLANK">
-         <obj_property name="ElementShortName">THBLANK</obj_property>
-         <obj_property name="ObjectShortName">THBLANK</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/ppu_tb/uut/TVBLANK">
-         <obj_property name="ElementShortName">TVBLANK</obj_property>
-         <obj_property name="ObjectShortName">TVBLANK</obj_property>
-      </wvobject>
       <wvobject type="logic" fp_name="/ppu_tb/uut/PCEG_RESET">
          <obj_property name="ElementShortName">PCEG_RESET</obj_property>
          <obj_property name="ObjectShortName">PCEG_RESET</obj_property>
@@ -235,6 +176,7 @@
    <wvobject type="group" fp_name="group149">
       <obj_property name="label">background sprite</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="logic" fp_name="/ppu_tb/uut/background_sprite/CLK">
          <obj_property name="ElementShortName">CLK</obj_property>
          <obj_property name="ObjectShortName">CLK</obj_property>
@@ -378,6 +320,7 @@
    <wvobject type="group" fp_name="group142">
       <obj_property name="label">display coordinates</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/T_POS_X">
          <obj_property name="ElementShortName">T_POS_X[8:0]</obj_property>
          <obj_property name="ObjectShortName">T_POS_X[8:0]</obj_property>
@@ -446,6 +389,7 @@
    <wvobject type="group" fp_name="group115">
       <obj_property name="label">pipeline stages</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="logic" fp_name="/ppu_tb/uut/pipeline_clock_edge_generator/CLK">
          <obj_property name="ElementShortName">CLK</obj_property>
          <obj_property name="ObjectShortName">CLK</obj_property>
@@ -466,13 +410,9 @@
          <obj_property name="ElementShortName">SPRITE_FG_HIT</obj_property>
          <obj_property name="ObjectShortName">SPRITE_FG_HIT</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/ppu_tb/uut/pipeline_clock_edge_generator/DONE">
-         <obj_property name="ElementShortName">DONE</obj_property>
-         <obj_property name="ObjectShortName">DONE</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/ppu_tb/uut/pipeline_clock_edge_generator/READY">
-         <obj_property name="ElementShortName">READY</obj_property>
-         <obj_property name="ObjectShortName">READY</obj_property>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/pipeline_clock_edge_generator/DISPCTL_BWEN">
+         <obj_property name="ElementShortName">DISPCTL_BWEN</obj_property>
+         <obj_property name="ObjectShortName">DISPCTL_BWEN</obj_property>
       </wvobject>
       <wvobject type="other" fp_name="/ppu_tb/uut/pipeline_clock_edge_generator/CLK_IDX_T">
          <obj_property name="ElementShortName">CLK_IDX_T</obj_property>
@@ -581,6 +521,7 @@
       <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/CIDX">
          <obj_property name="ElementShortName">CIDX[5:0]</obj_property>
          <obj_property name="ObjectShortName">CIDX[5:0]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/HIT">
          <obj_property name="ElementShortName">HIT</obj_property>
@@ -733,6 +674,7 @@
       <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/CIDX">
          <obj_property name="ElementShortName">CIDX[5:0]</obj_property>
          <obj_property name="ObjectShortName">CIDX[5:0]</obj_property>
+         <obj_property name="isExpanded"></obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/R_TMM_ADDR">
          <obj_property name="ElementShortName">R_TMM_ADDR[15:0]</obj_property>
@@ -862,6 +804,154 @@
       <wvobject type="array" fp_name="/ppu_tb/uut/compositor/TMP_FG_EN">
          <obj_property name="ElementShortName">TMP_FG_EN[127:0]</obj_property>
          <obj_property name="ObjectShortName">TMP_FG_EN[127:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group250">
+      <obj_property name="label">dispctl</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/SYSCLK">
+         <obj_property name="ElementShortName">SYSCLK</obj_property>
+         <obj_property name="ObjectShortName">SYSCLK</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/RESET">
+         <obj_property name="ElementShortName">RESET</obj_property>
+         <obj_property name="ObjectShortName">RESET</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/X">
+         <obj_property name="ElementShortName">X[8:0]</obj_property>
+         <obj_property name="ObjectShortName">X[8:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/Y">
+         <obj_property name="ElementShortName">Y[7:0]</obj_property>
+         <obj_property name="ObjectShortName">Y[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/RI">
+         <obj_property name="ElementShortName">RI[3:0]</obj_property>
+         <obj_property name="ObjectShortName">RI[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/GI">
+         <obj_property name="ElementShortName">GI[3:0]</obj_property>
+         <obj_property name="ObjectShortName">GI[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/BI">
+         <obj_property name="ElementShortName">BI[3:0]</obj_property>
+         <obj_property name="ObjectShortName">BI[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/BWEN">
+         <obj_property name="ElementShortName">BWEN</obj_property>
+         <obj_property name="ObjectShortName">BWEN</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/RO">
+         <obj_property name="ElementShortName">RO[3:0]</obj_property>
+         <obj_property name="ObjectShortName">RO[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/GO">
+         <obj_property name="ElementShortName">GO[3:0]</obj_property>
+         <obj_property name="ObjectShortName">GO[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/BO">
+         <obj_property name="ElementShortName">BO[3:0]</obj_property>
+         <obj_property name="ObjectShortName">BO[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/NVSYNC">
+         <obj_property name="ElementShortName">NVSYNC</obj_property>
+         <obj_property name="ObjectShortName">NVSYNC</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/NHSYNC">
+         <obj_property name="ElementShortName">NHSYNC</obj_property>
+         <obj_property name="ObjectShortName">NHSYNC</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/THBLANK">
+         <obj_property name="ElementShortName">THBLANK</obj_property>
+         <obj_property name="ObjectShortName">THBLANK</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/TVBLANK">
+         <obj_property name="ElementShortName">TVBLANK</obj_property>
+         <obj_property name="ObjectShortName">TVBLANK</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/ACTIVE">
+         <obj_property name="ElementShortName">ACTIVE</obj_property>
+         <obj_property name="ObjectShortName">ACTIVE</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/NPIXCLK">
+         <obj_property name="ElementShortName">NPIXCLK</obj_property>
+         <obj_property name="ObjectShortName">NPIXCLK</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/TPIXCLK">
+         <obj_property name="ElementShortName">TPIXCLK</obj_property>
+         <obj_property name="ObjectShortName">TPIXCLK</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/NHCOUNT">
+         <obj_property name="ElementShortName">NHCOUNT[18:0]</obj_property>
+         <obj_property name="ObjectShortName">NHCOUNT[18:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/NVCOUNT">
+         <obj_property name="ElementShortName">NVCOUNT[18:0]</obj_property>
+         <obj_property name="ObjectShortName">NVCOUNT[18:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/ADDR_I">
+         <obj_property name="ElementShortName">ADDR_I[9:0]</obj_property>
+         <obj_property name="ObjectShortName">ADDR_I[9:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/ADDR_O">
+         <obj_property name="ElementShortName">ADDR_O[9:0]</obj_property>
+         <obj_property name="ObjectShortName">ADDR_O[9:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/DATA_I">
+         <obj_property name="ElementShortName">DATA_I[11:0]</obj_property>
+         <obj_property name="ObjectShortName">DATA_I[11:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/DATA_O">
+         <obj_property name="ElementShortName">DATA_O[11:0]</obj_property>
+         <obj_property name="ObjectShortName">DATA_O[11:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/T_POS_X">
+         <obj_property name="ElementShortName">T_POS_X[8:0]</obj_property>
+         <obj_property name="ObjectShortName">T_POS_X[8:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/T_POS_Y">
+         <obj_property name="ElementShortName">T_POS_Y[7:0]</obj_property>
+         <obj_property name="ObjectShortName">T_POS_Y[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/U_POS_X">
+         <obj_property name="ElementShortName">U_POS_X[8:0]</obj_property>
+         <obj_property name="ObjectShortName">U_POS_X[8:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/U_POS_Y">
+         <obj_property name="ElementShortName">U_POS_Y[7:0]</obj_property>
+         <obj_property name="ObjectShortName">U_POS_Y[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/N_POS_X">
+         <obj_property name="ElementShortName">N_POS_X[9:0]</obj_property>
+         <obj_property name="ObjectShortName">N_POS_X[9:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/N_POS_Y">
+         <obj_property name="ElementShortName">N_POS_Y[8:0]</obj_property>
+         <obj_property name="ObjectShortName">N_POS_Y[8:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/NACTIVE">
+         <obj_property name="ElementShortName">NACTIVE</obj_property>
+         <obj_property name="ObjectShortName">NACTIVE</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/NHACTIVE">
+         <obj_property name="ElementShortName">NHACTIVE</obj_property>
+         <obj_property name="ObjectShortName">NHACTIVE</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/NVACTIVE">
+         <obj_property name="ElementShortName">NVACTIVE</obj_property>
+         <obj_property name="ObjectShortName">NVACTIVE</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/TACTIVE">
+         <obj_property name="ElementShortName">TACTIVE</obj_property>
+         <obj_property name="ObjectShortName">TACTIVE</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/THACTIVE">
+         <obj_property name="ElementShortName">THACTIVE</obj_property>
+         <obj_property name="ObjectShortName">THACTIVE</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/ppu_tb/uut/display_controller/TVACTIVE">
+         <obj_property name="ElementShortName">TVACTIVE</obj_property>
+         <obj_property name="ObjectShortName">TVACTIVE</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>

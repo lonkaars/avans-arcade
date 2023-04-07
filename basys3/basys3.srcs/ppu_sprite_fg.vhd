@@ -83,6 +83,9 @@ architecture Behavioral of ppu_sprite_fg is
 	signal TILEMAP_WORD_OFFSET : integer := 0; -- word offset from tile start address in TMM
 	signal TMM_DATA_COL_IDX : std_logic_vector(PPU_PALETTE_COLOR_WIDTH-1 downto 0); -- color of palette
 
+	
+	signal PL_STAGE_NOW : ppu_sprite_fg_pl_state;
+	signal PL_HIT_NOW : ppu_sprite_fg_hit_pl_state;
 begin
 	-- FAM memory
 	FAM : component er_ram
@@ -134,10 +137,10 @@ begin
 	inaccurate_occlusion_shims: if IDX >= PPU_ACCURATE_FG_SPRITE_COUNT generate
 		-- state machine for synchronizing pipeline stages
 	begin
-		HIT <= (SPRITE_ACTIVE) when PL_HIT = PL_HIT_INACCURATE else
-					 (SPRITE_ACTIVE and (or TMM_DATA_COL_IDX)) when PL_HIT = PL_HIT_ACCURATE else '0';
+		HIT <= (SPRITE_ACTIVE) when PL_HIT_NOW = PL_HIT_INACCURATE else
+					 (SPRITE_ACTIVE and (or TMM_DATA_COL_IDX)) when PL_HIT_NOW = PL_HIT_ACCURATE else '0';
 		-- only fetch if OE is high, and during the second pipeline stage
-		TMM_ADDR <= R_TMM_ADDR when OE = '1' and PL_STAGE = PL_FG_TMM_ADDR else (others => 'Z');
+		TMM_ADDR <= R_TMM_ADDR when OE = '1' and PL_STAGE_NOW = PL_FG_TMM_ADDR else (others => 'Z');
 		T_TMM_ADDR <= std_logic_vector(TILEMAP_WORD + to_unsigned(TILEMAP_WORD_OFFSET, PPU_TMM_ADDR_WIDTH)); -- TMM address
 
 		-- TMM DATA
@@ -149,6 +152,16 @@ begin
 													R_TMM_DATA(14 downto 12) when 4,
 													(others => '0') when others;
 
+		-- rising edge clock process (buffer pipeline stage)
+		process(CLK, RESET)
+		begin
+			if rising_edge(CLK) then
+				PL_HIT_NOW <= PL_HIT;
+				PL_STAGE_NOW <= PL_STAGE;
+			end if;
+		end process;
+
+		-- falling edge clock process (read buffered pipeline stage)
 		process(CLK, RESET)
 		begin
 			if RESET = '1' then
@@ -157,8 +170,8 @@ begin
 				R_TMM_DATA <= (others => '0');
 			elsif OE = '0' then
 				null; -- don't read/write if current sprite is not the top sprite
-			elsif rising_edge(CLK) then
-				case PL_STAGE is
+			elsif falling_edge(CLK) then
+				case PL_STAGE_NOW is
 					when PL_FG_TMM_ADDR =>
 						R_TMM_ADDR <= T_TMM_ADDR;
 					when PL_FG_TMM_DATA =>

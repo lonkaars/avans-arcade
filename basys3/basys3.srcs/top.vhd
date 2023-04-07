@@ -56,7 +56,8 @@ begin
 		DO => SPI_DATA,
 		WEN => PPU_WEN);
 
-	DBG_LEDS_OUT <= SPI_DATA_ADDR when DBG_DISP_ADDR = '1' else SPI_DATA_DATA;
+	-- DBG_LEDS_OUT <= SPI_DATA_ADDR when DBG_DISP_ADDR = '1' else SPI_DATA_DATA;
+	DBG_LEDS_OUT <= (others => '0');
 
 	picture_processing_unit: component ppu port map(
 		CLK100 => SYSCLK,

@@ -39,11 +39,14 @@ void hh_demo_setup() {
 		g_hh_demo_balls[i].palette_index = i+1;
 		g_hh_demo_balls[i].tilemap_index = 1;
 	}
-	hh_ppu_flush();
+	// hh_ppu_flush();
 }
 
 void hh_demo_loop(unsigned long frame) {
 	// if (frame % 300 == 0) hh_demo_setup();
+	//
+	// if (frame > 1) return;
+	// frame = 40;
 
 	// set background pattern position
 	hh_ppu_update_background_pos((frame / 5) % HH_PPU_SPRITE_WIDTH, (frame / 20) % HH_PPU_SPRITE_HEIGHT);

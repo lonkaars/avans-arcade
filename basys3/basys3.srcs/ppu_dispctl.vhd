@@ -11,7 +11,7 @@ entity ppu_dispctl is port(
 	X : out std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- tiny screen pixel x
 	Y : out std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- tiny screen pixel y
 	RI,GI,BI : in std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- color in
-	PREADY : in std_logic; -- current pixel ready (pixel color is stable)
+	BWEN : in std_logic; -- scanline buffer write enable
 
 	RO,GO,BO : out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- VGA color out
 	NVSYNC, NHSYNC : out std_logic; -- VGA sync out
@@ -32,11 +32,8 @@ architecture Behavioral of ppu_dispctl is
 		addra : in std_logic_vector(PPU_DISPCTL_SLBUF_ADDR_WIDTH-1 downto 0);
 		dina : in std_logic_vector(PPU_RGB_COLOR_OUTPUT_DEPTH-1 downto 0);
 		clkb : in std_logic;
-		rstb : in std_logic;
 		addrb : in std_logic_vector(PPU_DISPCTL_SLBUF_ADDR_WIDTH-1 downto 0);
-		doutb : out std_logic_vector(PPU_RGB_COLOR_OUTPUT_DEPTH-1 downto 0);
-		rsta_busy : out std_logic;
-		rstb_busy : out std_logic);
+		doutb : out std_logic_vector(PPU_RGB_COLOR_OUTPUT_DEPTH-1 downto 0));
 	end component;
 	signal NPIXCLK, TPIXCLK : std_logic;
 	signal NHCOUNT, NVCOUNT : unsigned(PPU_VGA_SIGNAL_PIXEL_WIDTH-1 downto 0) := (others => '0');
@@ -144,15 +141,12 @@ begin
 
 	scanline_buffer : component ppu_dispctl_slbuf port map(
 		clka => SYSCLK,
-		wea => (others => PREADY),
+		wea => (others => BWEN),
 		addra => ADDR_I,
 		dina => DATA_I,
 		clkb => SYSCLK,
-		rstb => RESET,
 		addrb => ADDR_O,
-		doutb => DATA_O,
-		rsta_busy => open,
-		rstb_busy => open);
+		doutb => DATA_O);
 
 	pixel_clock: component ppu_dispctl_pixclk port map(
     sysclk => SYSCLK,

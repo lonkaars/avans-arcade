@@ -24,8 +24,7 @@ architecture Behavioral of ppu is
 		SPRITE_BG : out ppu_sprite_bg_pl_state := PL_BG_IDLE; -- sprite info fetch + sprite pixel fetch
 		SPRITE_FG : out ppu_sprite_fg_pl_state := PL_FG_IDLE; -- sprite pixel fetch
 		SPRITE_FG_HIT : out ppu_sprite_fg_hit_pl_state := PL_HIT_INACCURATE; -- foreground hit accuracy
-		DONE : out std_logic; -- last pipeline stage done
-		READY : out std_logic); -- rgb buffer propagation ready
+		DISPCTL_BWEN : out std_logic := '0'); -- display controller scanline buffer write enable
 	end component;
 	component ppu_addr_dec port( -- address decoder
 		WEN : in std_logic; -- EXT write enable
@@ -47,11 +46,8 @@ architecture Behavioral of ppu is
 		addra : in std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
 		dina : in std_logic_vector(PPU_BAM_DATA_WIDTH-1 downto 0);
 		clkb : in std_logic;
-		rstb : in std_logic;
 		addrb : in std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0);
-		doutb : out std_logic_vector(PPU_BAM_DATA_WIDTH-1 downto 0);
-		rsta_busy : out std_logic;
-		rstb_busy : out std_logic);
+		doutb : out std_logic_vector(PPU_BAM_DATA_WIDTH-1 downto 0));
 	end component;
 	component ppu_tmm port( -- TMM block memory
 		clka : in std_logic;
@@ -59,11 +55,8 @@ architecture Behavioral of ppu is
 		addra : in std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
 		dina : in std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0);
 		clkb : in std_logic;
-		rstb : in std_logic;
 		addrb : in std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
-		doutb : out std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0);
-		rsta_busy : out std_logic;
-		rstb_busy : out std_logic);
+		doutb : out std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0));
 	end component;
 	component ppu_aux port(
 		CLK : in std_logic; -- system clock
@@ -155,7 +148,7 @@ architecture Behavioral of ppu is
 		X : out std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- tiny screen pixel x
 		Y : out std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- tiny screen pixel y
 		RI,GI,BI : in std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- color in
-		PREADY : in std_logic; -- current pixel ready (pixel color is stable)
+		BWEN : in std_logic; -- scanline buffer write enable
 
 		RO,GO,BO : out std_logic_vector(PPU_COLOR_OUTPUT_DEPTH-1 downto 0); -- VGA color out
 		NVSYNC, NHSYNC : out std_logic; -- VGA sync out
@@ -165,10 +158,10 @@ architecture Behavioral of ppu is
 
 	-- signals
 	signal SYSCLK, SYSRST : std_logic; -- system clock and reset
-	signal PL_DONE, PL_READY : std_logic; -- pipeline stages
 	signal PL_SPRITE_BG : ppu_sprite_bg_pl_state;
 	signal PL_SPRITE_FG : ppu_sprite_fg_pl_state;
 	signal PL_SPRITE_FG_HIT : ppu_sprite_fg_hit_pl_state;
+	signal PL_DISPCTL_BWEN : std_logic;
 	signal TMM_WEN, BAM_WEN, FAM_WEN, PAL_WEN, AUX_WEN : std_logic;
 	signal TMM_W_ADDR, TMM_R_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0); -- read/write TMM addr (dual port)
 	signal BAM_W_ADDR, BAM_R_ADDR : std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0); -- read/write BAM addr (dual port)
@@ -206,8 +199,7 @@ begin
 		SPRITE_FG => PL_SPRITE_FG,
 		SPRITE_BG => PL_SPRITE_BG,
 		SPRITE_FG_HIT => PL_SPRITE_FG_HIT,
-		DONE => PL_DONE,
-		READY => PL_READY);
+		DISPCTL_BWEN => PL_DISPCTL_BWEN);
 
 	address_decoder : component ppu_addr_dec port map(
 		WEN => WEN,
@@ -229,22 +221,16 @@ begin
 		addra => BAM_W_ADDR,
 		dina => DATA(PPU_BAM_DATA_WIDTH-1 downto 0),
 		clkb => SYSCLK,
-		rstb => SYSRST,
 		addrb => BAM_R_ADDR,
-		doutb => BAM_R_DATA,
-		rsta_busy => open,
-		rstb_busy => open);
+		doutb => BAM_R_DATA);
 	tilemap_memory : component ppu_tmm port map(
 		clka => SYSCLK,
 		wea => (others => TMM_WEN),
 		addra => TMM_W_ADDR,
 		dina => DATA(PPU_TMM_DATA_WIDTH-1 downto 0),
 		clkb => SYSCLK,
-		rstb => SYSRST,
 		addrb => TMM_R_ADDR,
-		doutb => TMM_R_DATA,
-		rsta_busy => open,
-		rstb_busy => open);
+		doutb => TMM_R_DATA);
 
 	aux : component ppu_aux port map(
 		CLK => SYSCLK,
@@ -328,7 +314,7 @@ begin
 	display_controller : component ppu_dispctl port map(
 		SYSCLK => SYSCLK,
 		RESET => SYSRST,
-		PREADY => PL_READY,
+		BWEN => PL_DISPCTL_BWEN,
 		X => X,
 		Y => Y,
 		RI => UR,

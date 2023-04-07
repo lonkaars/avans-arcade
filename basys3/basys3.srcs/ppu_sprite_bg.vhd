@@ -114,7 +114,7 @@ begin
 			R_BAM_DATA <= (others => '0');
 			R_TMM_ADDR <= (others => '0');
 			R_TMM_DATA <= (others => '0');
-		elsif rising_edge(CLK) then
+		elsif falling_edge(CLK) then
 			BAM_ADDR_EN <= true when PL_STAGE = PL_BG_BAM_ADDR else false;
 			TMM_ADDR_EN <= true when PL_STAGE = PL_BG_TMM_ADDR else false;
 			-- R_BAM_ADDR <= T_BAM_ADDR;
