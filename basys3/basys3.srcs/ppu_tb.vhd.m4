@@ -49,7 +49,10 @@ begin
 	
 	process
 	begin
-		-- undivert(`test-image-ppu.tb.vhd') -- m4 macro expansion (see makefile)
+		RESET <= '1';
+		wait for 50 ns;
+		RESET <= '0';
+		-- undivert(`test-foreground-sprite-ppu.tb.vhd') -- m4 macro expansion (see makefile)
 		wait; -- stop after one loop (process loops in simulator)
 	end process;
 end Behavioral;

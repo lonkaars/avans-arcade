@@ -7,7 +7,6 @@ use ieee.numeric_std.all;
 use work.ppu_consts.all;
 use work.ppu_pceg_consts.all;
 
--- TODO: add input stable / output stable pipeline stages if this doesn't work with propagation delays
 entity ppu_sprite_bg is port(
 	-- inputs
 	CLK : in std_logic; -- system clock

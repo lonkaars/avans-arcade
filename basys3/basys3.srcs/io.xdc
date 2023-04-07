@@ -91,3 +91,6 @@ set_property PACKAGE_PIN U19 [get_ports {DBG_LEDS_OUT[2]}]
 set_property PACKAGE_PIN E19 [get_ports {DBG_LEDS_OUT[1]}]
 set_property PACKAGE_PIN U16 [get_ports {DBG_LEDS_OUT[0]}]
 
+
+set_property CONFIG_VOLTAGE 3.3 [current_design]
+set_property CFGBVS VCCO [current_design]

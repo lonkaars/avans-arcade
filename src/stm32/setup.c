@@ -69,7 +69,6 @@ static void hh_io_usart2_setup();
 static void hh_io_gpio_setup();
 static void hh_io_clock_setup();
 static void hh_io_setup_error_handler();
-static void hh_interrupt_setup();
 static void hh_io_dma_setup();
 
 void hh_setup() {

@@ -8,6 +8,7 @@ entity ppu_pceg is port(
 	RESET : in std_logic; -- async reset
 	SPRITE_BG : out ppu_sprite_bg_pl_state := PL_BG_IDLE; -- sprite info fetch + sprite pixel fetch
 	SPRITE_FG : out ppu_sprite_fg_pl_state := PL_FG_IDLE; -- sprite pixel fetch
+	SPRITE_FG_HIT : out ppu_sprite_fg_hit_pl_state := PL_HIT_INACCURATE; -- foreground hit accuracy
 	DONE : out std_logic; -- last pipeline stage done
 	READY : out std_logic); -- rgb buffer propagation ready
 end ppu_pceg;
@@ -32,6 +33,7 @@ begin
 					READY <= '0';
 					SPRITE_BG <= PL_BG_IDLE;
 					SPRITE_FG <= PL_FG_IDLE;
+					SPRITE_FG_HIT <= PL_HIT_INACCURATE;
 				when 1 =>
 					SPRITE_BG <= PL_BG_BAM_ADDR;
 					SPRITE_FG <= PL_FG_TMM_ADDR;
@@ -44,6 +46,7 @@ begin
 				when 5 =>
 					SPRITE_BG <= PL_BG_TMM_ADDR;
 					SPRITE_FG <= PL_FG_IDLE;
+					SPRITE_FG_HIT <= PL_HIT_ACCURATE;
 				when 6 => null;
 				when 7 =>
 					SPRITE_BG <= PL_BG_IDLE;

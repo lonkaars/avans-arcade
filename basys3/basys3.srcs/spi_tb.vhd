@@ -38,7 +38,779 @@ begin
 
 	process
 	begin
-		-- -- 0xdc00: 0f0f
+		-- -- 0xdc00: 0000
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+--
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+-- 0xffff: ffff
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+--
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+-- 0xdc00: 0808
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+--
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+-- 0xffff: ffff
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+--
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+-- 0xdc00: 0f0f
 SPI_DATA <= '1';
 wait for 50 ns;
 SPI_CLK <= '1';
@@ -202,6 +974,199 @@ wait for 50 ns;
 SPI_CLK <= '0';
 
 SPI_DATA <= '0';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+-- 0xffff: ffff
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+--
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
+wait for 50 ns;
+SPI_CLK <= '1';
+wait for 50 ns;
+SPI_CLK <= '0';
+
+SPI_DATA <= '1';
 wait for 50 ns;
 SPI_CLK <= '1';
 wait for 50 ns;

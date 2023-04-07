@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "ppu/internals.h"
 #include "ppusim/mem.h"
@@ -39,9 +40,10 @@ static void hh_ppu_dbg_memprint(hh_ppu_addr_t addr, hh_ppu_data_t data) {
 		}
 		case 3: {
 			unsigned short i = addr - HH_PPU_VRAM_PAL_OFFSET;
-			printf(" (pal[%02i] = #%x%x%x%x%x%x)", i, (data >> 0) & 0xf, (data >> 0) & 0xf, 
+			printf(" (pal[%02i] = #%x%x%x%x%x%x)", i,
+					(data >> 8) & 0xf, (data >> 8) & 0xf, 
 					(data >> 4) & 0xf, (data >> 4) & 0xf, 
-					(data >> 8) & 0xf, (data >> 8) & 0xf);
+					(data >> 0) & 0xf, (data >> 0) & 0xf);
 			break;
 		}
 		case 4: {
@@ -68,6 +70,11 @@ void hh_ppu_vram_dwrite(uint8_t* data, size_t size) {
 #endif
 		if (!hh_ppu_vram_valid_address(ppu_addr)) continue;
 		g_hh_ppusim_vram[ppu_addr] = ppu_data;
+
+		if (ppu_addr == HH_PPU_VRAM_AUX_OFFSET + 1) {
+			bool reset = HH_RESIZE(ppu_data, 2, 2);
+			if (reset) memset(g_hh_ppusim_vram, 0x0000, 0xffff * sizeof(hh_ppu_data_t));
+		}
 	}
 }
 

@@ -23,6 +23,7 @@ architecture Behavioral of ppu is
 		RESET : in std_logic; -- async reset
 		SPRITE_BG : out ppu_sprite_bg_pl_state := PL_BG_IDLE; -- sprite info fetch + sprite pixel fetch
 		SPRITE_FG : out ppu_sprite_fg_pl_state := PL_FG_IDLE; -- sprite pixel fetch
+		SPRITE_FG_HIT : out ppu_sprite_fg_hit_pl_state := PL_HIT_INACCURATE; -- foreground hit accuracy
 		DONE : out std_logic; -- last pipeline stage done
 		READY : out std_logic); -- rgb buffer propagation ready
 	end component;
@@ -109,6 +110,7 @@ architecture Behavioral of ppu is
 			CLK : in std_logic; -- system clock
 			RESET : in std_logic; -- reset internal memory and clock counters
 			PL_STAGE : in ppu_sprite_fg_pl_state; -- pipeline stage
+			PL_HIT : in ppu_sprite_fg_hit_pl_state;
 			OE : in std_logic; -- output enable (of CIDX)
 			X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 			Y : in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
@@ -166,6 +168,7 @@ architecture Behavioral of ppu is
 	signal PL_DONE, PL_READY : std_logic; -- pipeline stages
 	signal PL_SPRITE_BG : ppu_sprite_bg_pl_state;
 	signal PL_SPRITE_FG : ppu_sprite_fg_pl_state;
+	signal PL_SPRITE_FG_HIT : ppu_sprite_fg_hit_pl_state;
 	signal TMM_WEN, BAM_WEN, FAM_WEN, PAL_WEN, AUX_WEN : std_logic;
 	signal TMM_W_ADDR, TMM_R_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0); -- read/write TMM addr (dual port)
 	signal BAM_W_ADDR, BAM_R_ADDR : std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0); -- read/write BAM addr (dual port)
@@ -202,6 +205,7 @@ begin
 		RESET => PCEG_RESET,
 		SPRITE_FG => PL_SPRITE_FG,
 		SPRITE_BG => PL_SPRITE_BG,
+		SPRITE_FG_HIT => PL_SPRITE_FG_HIT,
 		DONE => PL_DONE,
 		READY => PL_READY);
 
@@ -289,6 +293,7 @@ begin
 				CLK => SYSCLK,
 				RESET => SYSRST,
 				PL_STAGE => PL_SPRITE_FG,
+				PL_HIT => PL_SPRITE_FG_HIT,
 				OE => FG_EN(FG_IDX),
 				X => X,
 				Y => Y,

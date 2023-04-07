@@ -1,0 +1,5 @@
+[libraries]
+work.files = [
+	'basys3/basys3.srcs/ppu_consts.vhd',
+	'basys3/basys3.srcs/ppu_pceg_consts.vhd',
+]

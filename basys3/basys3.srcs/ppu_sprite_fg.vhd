@@ -1,13 +1,10 @@
 library ieee;
-library work;
-
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 use work.ppu_consts.all;
 use work.ppu_pceg_consts.all;
 
--- TODO: add input stable / output stable pipeline stages if this doesn't work with propagation delays
 entity ppu_sprite_fg is -- foreground sprite
 	generic (
 		IDX : natural := 0); -- sprite index number
@@ -16,6 +13,7 @@ entity ppu_sprite_fg is -- foreground sprite
 		CLK : in std_logic; -- system clock
 		RESET : in std_logic; -- reset internal memory and clock counters
 		PL_STAGE : in ppu_sprite_fg_pl_state; -- pipeline stage
+		PL_HIT : in ppu_sprite_fg_hit_pl_state;
 		OE : in std_logic; -- output enable (of CIDX)
 		X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 		Y : in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
@@ -72,7 +70,7 @@ architecture Behavioral of ppu_sprite_fg is
 	alias FAM_REG_FLIP_V is INT_FAM(30); -- Flip vertically
 	alias FAM_REG_POS_H is INT_FAM(29 downto 21); -- horizontal position (offset by -16)
 	alias FAM_REG_POS_V is INT_FAM(20 downto 13); -- vertical position (offset by -16)
-	alias FAM_REG_COL_IDX is INT_FAM(12 downto 10); -- Palette index for tile
+	alias FAM_REG_PAL_IDX is INT_FAM(12 downto 10); -- Palette index for tile
 	alias FAM_REG_TILE_IDX is INT_FAM(9 downto 0); -- Tilemap index
 
 	signal SPRITE_ACTIVE : std_logic := '0'; -- is pixel in bounding box of sprite
@@ -83,7 +81,7 @@ architecture Behavioral of ppu_sprite_fg is
 	signal TRANS_TILE_PIDX : integer := 0; -- index of pixel within tile (reading order)
 	signal TILEMAP_WORD : unsigned(PPU_TMM_ADDR_WIDTH-1 downto 0) := (others => '0');
 	signal TILEMAP_WORD_OFFSET : integer := 0; -- word offset from tile start address in TMM
-	signal TMM_DATA_PAL_IDX : std_logic_vector(PPU_PALETTE_COLOR_WIDTH-1 downto 0); -- color of palette
+	signal TMM_DATA_COL_IDX : std_logic_vector(PPU_PALETTE_COLOR_WIDTH-1 downto 0); -- color of palette
 
 begin
 	-- FAM memory
@@ -102,7 +100,7 @@ begin
 			REG => INT_FAM);
 
 	-- CIDX combination
-	T_CIDX <= FAM_REG_COL_IDX & TMM_DATA_PAL_IDX;
+	T_CIDX <= FAM_REG_PAL_IDX & TMM_DATA_COL_IDX;
 	-- output drivers
 	CIDX <= T_CIDX when OE = '1' else (others => 'Z');
 	-- TMM memory
@@ -136,14 +134,15 @@ begin
 	inaccurate_occlusion_shims: if IDX >= PPU_ACCURATE_FG_SPRITE_COUNT generate
 		-- state machine for synchronizing pipeline stages
 	begin
-		HIT <= SPRITE_ACTIVE;
+		HIT <= (SPRITE_ACTIVE) when PL_HIT = PL_HIT_INACCURATE else
+					 (SPRITE_ACTIVE and (or TMM_DATA_COL_IDX)) when PL_HIT = PL_HIT_ACCURATE else '0';
 		-- only fetch if OE is high, and during the second pipeline stage
 		TMM_ADDR <= R_TMM_ADDR when OE = '1' and PL_STAGE = PL_FG_TMM_ADDR else (others => 'Z');
 		T_TMM_ADDR <= std_logic_vector(TILEMAP_WORD + to_unsigned(TILEMAP_WORD_OFFSET, PPU_TMM_ADDR_WIDTH)); -- TMM address
 
 		-- TMM DATA
 		with PIXEL_BIT_OFFSET select
-			TMM_DATA_PAL_IDX <= R_TMM_DATA(2 downto 0) when 0,
+			TMM_DATA_COL_IDX <= R_TMM_DATA(2 downto 0) when 0,
 													R_TMM_DATA(5 downto 3) when 1,
 													R_TMM_DATA(8 downto 6) when 2,
 													R_TMM_DATA(11 downto 9) when 3,
@@ -156,6 +155,8 @@ begin
 				-- reset internal pipeline registers
 				R_TMM_ADDR <= (others => '0');
 				R_TMM_DATA <= (others => '0');
+			elsif OE = '0' then
+				null; -- don't read/write if current sprite is not the top sprite
 			elsif rising_edge(CLK) then
 				case PL_STAGE is
 					when PL_FG_TMM_ADDR =>
@@ -175,10 +176,10 @@ begin
 		signal TMM_CACHE_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0) := (others => '0');
 		signal TMM_CACHE : std_logic_vector((PPU_SPRITE_WORD_COUNT * PPU_TMM_DATA_WIDTH)-1 downto 0);
 	begin
-		HIT <= SPRITE_ACTIVE and (nor TMM_DATA_PAL_IDX);
+		HIT <= SPRITE_ACTIVE and (or TMM_DATA_COL_IDX);
 
 		-- palette color at pixel
-		TMM_DATA_PAL_IDX <= TMM_CACHE(TRANS_TILE_PIDX * integer(PPU_PALETTE_COLOR_WIDTH) + integer(PPU_PALETTE_COLOR_WIDTH)-1 downto TRANS_TILE_PIDX * integer(PPU_PALETTE_COLOR_WIDTH));
+		TMM_DATA_COL_IDX <= TMM_CACHE(TRANS_TILE_PIDX * integer(PPU_PALETTE_COLOR_WIDTH) + integer(PPU_PALETTE_COLOR_WIDTH)-1 downto TRANS_TILE_PIDX * integer(PPU_PALETTE_COLOR_WIDTH));
 
 		TMM_ADDR <= T_TMM_ADDR when TMM_CACHE_UPDATE_TURN else (others => 'Z');
 

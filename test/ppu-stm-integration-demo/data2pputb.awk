@@ -7,7 +7,7 @@ BEGIN {
 1 {
 	printf "\t\tADDR <= x\""$1"\";\n"
 	printf "\t\tDATA <= x\""$2"\";\n"
-	printf "\t\twait for 10 ns;\n"
+	printf "\t\twait for 40 ns;\n"
 	printf "\n"
 }
 END {

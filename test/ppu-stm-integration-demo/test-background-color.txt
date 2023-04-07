@@ -1,1 +1,6 @@
+dc00: 0000
+ffff: ffff
+dc00: 0808
+ffff: ffff
 dc00: 0f0f
+ffff: ffff

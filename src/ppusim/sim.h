@@ -1,7 +1,7 @@
 #pragma once
 
 /** @brief pixel-perfect upscale factor for PPUSIM */
-#define HH_PPUSIM_UPSCALE_FACTOR 3
+#define HH_PPUSIM_UPSCALE_FACTOR 1
 /** @brief max framerate for PPUSIM */
 #define HH_PPUSIM_FRAMERATE 60
 

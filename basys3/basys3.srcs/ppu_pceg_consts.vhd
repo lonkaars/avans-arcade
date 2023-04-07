@@ -14,5 +14,8 @@ package ppu_pceg_consts is
 		PL_FG_IDLE,
 		PL_FG_TMM_ADDR,
 		PL_FG_TMM_DATA);
+	type ppu_sprite_fg_hit_pl_state is (
+		PL_HIT_INACCURATE,
+		PL_HIT_ACCURATE);
 end package ppu_pceg_consts;
 

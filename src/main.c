@@ -17,16 +17,16 @@ volatile unsigned short g_hh_hcount;
 
 void hh_ppu_vblank_interrupt() {
 	static unsigned long frame = 0;
-	static bool done = false;
 #ifdef HH_TARGET_STM32
 	hh_ppu_flush();
 	hh_input_read();
 	hh_demo_loop(frame);
 #endif
 #ifdef HH_TARGET_DESKTOP
+	static bool done = false;
 	//hh_ppu_vram_dwrite((uint8_t*) HH_PPUINTDEMO_ARR, HH_PPUINTDEMO_LENGTH);
 	for (unsigned int limit = 0; limit < 1000; limit++) {
-		if (frame * 4 > HH_PPUINTDEMO_LENGTH) {
+		if (frame * 4 >= HH_PPUINTDEMO_LENGTH) {
 			if (!done) printf("done\n");
 			done = true;
 			return;

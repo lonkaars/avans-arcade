@@ -6,6 +6,8 @@
 
 void hh_ppu_init() {
 	hh_ppu_update_aux((hh_s_ppu_loc_aux) { .sysreset = 1 });
+	hh_ppu_vram_buffer((uint8_t[4]) { 0xff, 0xff, 0xff, 0xff });
+	hh_ppu_flush();
 }
 
 void hh_ppu_deinit() {}

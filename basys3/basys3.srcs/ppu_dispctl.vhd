@@ -129,7 +129,7 @@ begin
 			if TMP_NHCOUNT = PPU_VGA_H_PORCH_BACK + PPU_VGA_H_ACTIVE + PPU_VGA_H_SYNC then TMP_NHSYNC := '0'; end if;
 		end if;
 
-		if falling_edge(TPIXCLK) then -- NOTE: falling edge used because of clock offset of 90 (should be 270)
+		if rising_edge(TPIXCLK) then
 			T_POS_X <= TMP_T_POS_X;
 
 			if TMP_NACTIVE = '1' then

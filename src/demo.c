@@ -10,8 +10,8 @@ hh_s_ppu_loc_fam_entry g_hh_demo_balls[HH_DEMO_BALL_COUNT];
 
 void hh_demo_setup() {
 	// load sprites
-	hh_ppu_update_sprite(0, HH_DBG_SPRITE_BALL);
-	hh_ppu_update_sprite(1, HH_DBG_SPRITE_CHECKERBOARD);
+	hh_ppu_update_sprite(1, HH_DBG_SPRITE_BALL);
+	hh_ppu_update_sprite(2, HH_DBG_SPRITE_CHECKERBOARD);
 
 	// background pattern
 	hh_ppu_update_color(0, 0, (hh_ppu_rgb_color_t) {0x1, 0x1, 0x3});
@@ -21,7 +21,7 @@ void hh_demo_setup() {
 			.horizontal_flip = false,
 			.vertical_flip = false,
 			.palette_index = 0,
-			.tilemap_index = 1,
+			.tilemap_index = 2,
 		});
 	}
 
@@ -37,11 +37,14 @@ void hh_demo_setup() {
 		g_hh_demo_balls[i].horizontal_flip = false;
 		g_hh_demo_balls[i].vertical_flip = false;
 		g_hh_demo_balls[i].palette_index = i+1;
-		g_hh_demo_balls[i].tilemap_index = 0;
+		g_hh_demo_balls[i].tilemap_index = 1;
 	}
+	hh_ppu_flush();
 }
 
 void hh_demo_loop(unsigned long frame) {
+	// if (frame % 300 == 0) hh_demo_setup();
+
 	// set background pattern position
 	hh_ppu_update_background_pos((frame / 5) % HH_PPU_SPRITE_WIDTH, (frame / 20) % HH_PPU_SPRITE_HEIGHT);
 
@@ -50,7 +53,6 @@ void hh_demo_loop(unsigned long frame) {
 		g_hh_demo_balls[i].position_y = HH_PPU_SCREEN_HEIGHT/2 - HH_PPU_SPRITE_HEIGHT/2 + (int)(30 * (double)sin((2*(double)frame / 10) + (double)i * 12));
 		hh_ppu_update_foreground(i+16, g_hh_demo_balls[i]);
 	}
-
 	return;
 	/* 
 	hh_ppu_update_foreground(32, (hh_s_ppu_loc_fam_entry) {

@@ -22,7 +22,7 @@ architecture Behavioral of spi is
 	constant COUNTER_RESET_VALUE : integer := PPU_RAM_BUS_ADDR_WIDTH + PPU_RAM_BUS_DATA_WIDTH - 1;
 begin
 	process (SYSCLK)
-		variable i : integer range 0 to COUNTER_RESET_VALUE := COUNTER_RESET_VALUE; -- counter for data position
+		variable i : integer range 0 to COUNTER_RESET_VALUE := COUNTER_RESET_VALUE; -- received bits counter
 		variable data_r : std_logic_vector(PPU_RAM_BUS_ADDR_WIDTH+PPU_RAM_BUS_DATA_WIDTH-1 downto 0) := (others => '1'); -- data register
 	begin
 		if RESET = '1' then
@@ -53,7 +53,8 @@ begin
 			srFF2 <= srFF1;
 
 			if (clkFF3 = '0' and clkFF2 = '1') then
-				data_r(i) := dataFF2;
+				-- data_r(i) := dataFF2;
+				data_r := data_r(data_r'high-1 downto data_r'low) & dataFF2;
 
 				if i = 0 then
 					i := COUNTER_RESET_VALUE;

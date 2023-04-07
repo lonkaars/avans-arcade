@@ -239,7 +239,9 @@ Important notes:
 
 This diagram describes which components use which lines during pipeline stages
 0-9. The pipeline stage counter is reset after every pixel, and is run on the
-system clock (100 MHz).
+system clock (100 MHz). Underlined labels indicate when a signal is written,
+and normal text is used to indicate a signal read. Labels with a dotted outline
+are used for timing, but don't directly read/write any signals.
 
 ## Registers
 
