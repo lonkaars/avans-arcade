@@ -14,6 +14,7 @@
 #include "engine/level_const.h"
 
 #include "game_loop/starting_screen.h"
+#include "game_loop/high_score.h"
 #include "game_loop/gameplay.h"
 #include "game_loop/shop.h"
 
@@ -76,7 +77,8 @@ void hh_demo_loop(unsigned long frame) {
 		// todo:
 		// fucntion: show all previously scored points
 		// function: button pressed goto starting screen
-		hh_game_states = hh_e_state_starting_screen;
+		hh_high_score(&hh_game_states);
+		// hh_game_states = hh_e_state_starting_screen;
 		break;
 	default:
 			hh_game_states = hh_e_state_starting_screen;

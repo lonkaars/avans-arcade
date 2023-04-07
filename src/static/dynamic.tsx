@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.10.1" name="dynamic" tilewidth="16" tileheight="16" tilecount="129" columns="0">
+<tileset version="1.10" tiledversion="1.10.1" name="dynamic" tilewidth="16" tileheight="16" tilecount="137" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="107">
   <image width="16" height="16" source="tiled/font_35.png"/>
@@ -106,6 +106,9 @@
  <tile id="33">
   <image width="16" height="16" source="tiled/font_01.png"/>
  </tile>
+ <tile id="34">
+  <image width="16" height="16" source="tiled/font_00.png"/>
+ </tile>
  <tile id="108">
   <image width="16" height="16" source="tiled/boss1_05.png"/>
  </tile>
@@ -124,8 +127,8 @@
  <tile id="113">
   <image width="16" height="16" source="tiled/boss1_00.png"/>
  </tile>
- <tile id="34">
-  <image width="16" height="16" source="tiled/font_00.png"/>
+ <tile id="129">
+  <image width="16" height="16" source="tiled/bird_00.png"/>
  </tile>
  <tile id="114">
   <image width="16" height="16" source="tiled/slime_jumpable_07.png"/>
@@ -175,6 +178,9 @@
  <tile id="42">
   <image width="16" height="16" source="tiled/bullet_01.png"/>
  </tile>
+ <tile id="43">
+  <image width="16" height="16" source="tiled/bullet_00.png"/>
+ </tile>
  <tile id="122">
   <image width="16" height="16" source="tiled/upgrades_04.png"/>
  </tile>
@@ -195,9 +201,6 @@
  </tile>
  <tile id="128">
   <image width="16" height="16" source="tiled/hud_heart_00.png"/>
- </tile>
- <tile id="43">
-  <image width="16" height="16" source="tiled/bullet_00.png"/>
  </tile>
  <tile id="44">
   <image width="16" height="16" source="tiled/title_screen_letteres_large_13.png"/>
@@ -241,6 +244,27 @@
  <tile id="57">
   <image width="16" height="16" source="tiled/title_screen_letteres_large_00.png"/>
  </tile>
+ <tile id="130">
+  <image width="16" height="16" source="tiled/title_screen_icon_12.png"/>
+ </tile>
+ <tile id="131">
+  <image width="16" height="16" source="tiled/title_screen_icon_11.png"/>
+ </tile>
+ <tile id="132">
+  <image width="16" height="16" source="tiled/title_screen_icon_10.png"/>
+ </tile>
+ <tile id="133">
+  <image width="16" height="16" source="tiled/title_screen_icon_09.png"/>
+ </tile>
+ <tile id="134">
+  <image width="16" height="16" source="tiled/title_screen_icon_08.png"/>
+ </tile>
+ <tile id="135">
+  <image width="16" height="16" source="tiled/title_screen_icon_07.png"/>
+ </tile>
+ <tile id="136">
+  <image width="16" height="16" source="tiled/title_screen_icon_06.png"/>
+ </tile>
  <tile id="58">
   <image width="16" height="16" source="tiled/title_screen_icon_05.png"/>
  </tile>
@@ -259,29 +283,29 @@
  <tile id="63">
   <image width="16" height="16" source="tiled/title_screen_icon_00.png"/>
  </tile>
- <tile id="64">
-  <image width="16" height="16" source="tiled/shop_stall_11.png"/>
+ <tile id="66">
+  <image width="16" height="16" source="tiled/shop_stall_09.png"/>
  </tile>
  <tile id="65">
   <image width="16" height="16" source="tiled/shop_stall_10.png"/>
  </tile>
- <tile id="66">
-  <image width="16" height="16" source="tiled/shop_stall_09.png"/>
- </tile>
- <tile id="67">
-  <image width="16" height="16" source="tiled/shop_stall_08.png"/>
- </tile>
- <tile id="68">
-  <image width="16" height="16" source="tiled/shop_stall_07.png"/>
- </tile>
- <tile id="69">
-  <image width="16" height="16" source="tiled/shop_stall_06.png"/>
+ <tile id="64">
+  <image width="16" height="16" source="tiled/shop_stall_11.png"/>
  </tile>
  <tile id="70">
   <image width="16" height="16" source="tiled/shop_stall_05.png"/>
  </tile>
+ <tile id="69">
+  <image width="16" height="16" source="tiled/shop_stall_06.png"/>
+ </tile>
+ <tile id="67">
+  <image width="16" height="16" source="tiled/shop_stall_08.png"/>
+ </tile>
  <tile id="71">
   <image width="16" height="16" source="tiled/shop_stall_04.png"/>
+ </tile>
+ <tile id="68">
+  <image width="16" height="16" source="tiled/shop_stall_07.png"/>
  </tile>
  <tile id="72">
   <image width="16" height="16" source="tiled/shop_stall_03.png"/>
@@ -301,32 +325,32 @@
  <tile id="77">
   <image width="16" height="16" source="tiled/crates_00.png"/>
  </tile>
- <tile id="78">
-  <image width="16" height="16" source="tiled/bricks_27.png"/>
+ <tile id="80">
+  <image width="16" height="16" source="tiled/bricks_25.png"/>
  </tile>
  <tile id="79">
   <image width="16" height="16" source="tiled/bricks_26.png"/>
  </tile>
- <tile id="80">
-  <image width="16" height="16" source="tiled/bricks_25.png"/>
- </tile>
- <tile id="81">
-  <image width="16" height="16" source="tiled/bricks_24.png"/>
+ <tile id="78">
+  <image width="16" height="16" source="tiled/bricks_27.png"/>
  </tile>
  <tile id="82">
   <image width="16" height="16" source="tiled/bricks_23.png"/>
  </tile>
- <tile id="83">
-  <image width="16" height="16" source="tiled/bricks_22.png"/>
+ <tile id="86">
+  <image width="16" height="16" source="tiled/bricks_19.png"/>
  </tile>
- <tile id="84">
-  <image width="16" height="16" source="tiled/bricks_21.png"/>
+ <tile id="81">
+  <image width="16" height="16" source="tiled/bricks_24.png"/>
  </tile>
  <tile id="85">
   <image width="16" height="16" source="tiled/bricks_20.png"/>
  </tile>
- <tile id="86">
-  <image width="16" height="16" source="tiled/bricks_19.png"/>
+ <tile id="84">
+  <image width="16" height="16" source="tiled/bricks_21.png"/>
+ </tile>
+ <tile id="83">
+  <image width="16" height="16" source="tiled/bricks_22.png"/>
  </tile>
  <tile id="87">
   <image width="16" height="16" source="tiled/bricks_18.png"/>
@@ -349,41 +373,41 @@
  <tile id="93">
   <image width="16" height="16" source="tiled/bricks_12.png"/>
  </tile>
- <tile id="94">
-  <image width="16" height="16" source="tiled/bricks_11.png"/>
+ <tile id="96">
+  <image width="16" height="16" source="tiled/bricks_09.png"/>
  </tile>
  <tile id="95">
   <image width="16" height="16" source="tiled/bricks_10.png"/>
  </tile>
- <tile id="96">
-  <image width="16" height="16" source="tiled/bricks_09.png"/>
- </tile>
- <tile id="97">
-  <image width="16" height="16" source="tiled/bricks_08.png"/>
- </tile>
- <tile id="98">
-  <image width="16" height="16" source="tiled/bricks_07.png"/>
+ <tile id="94">
+  <image width="16" height="16" source="tiled/bricks_11.png"/>
  </tile>
  <tile id="99">
   <image width="16" height="16" source="tiled/bricks_06.png"/>
  </tile>
- <tile id="100">
-  <image width="16" height="16" source="tiled/bricks_05.png"/>
+ <tile id="98">
+  <image width="16" height="16" source="tiled/bricks_07.png"/>
  </tile>
- <tile id="101">
-  <image width="16" height="16" source="tiled/bricks_04.png"/>
+ <tile id="97">
+  <image width="16" height="16" source="tiled/bricks_08.png"/>
  </tile>
  <tile id="102">
   <image width="16" height="16" source="tiled/bricks_03.png"/>
  </tile>
- <tile id="103">
-  <image width="16" height="16" source="tiled/bricks_02.png"/>
+ <tile id="101">
+  <image width="16" height="16" source="tiled/bricks_04.png"/>
+ </tile>
+ <tile id="100">
+  <image width="16" height="16" source="tiled/bricks_05.png"/>
+ </tile>
+ <tile id="105">
+  <image width="16" height="16" source="tiled/bricks_00.png"/>
  </tile>
  <tile id="104">
   <image width="16" height="16" source="tiled/bricks_01.png"/>
  </tile>
- <tile id="105">
-  <image width="16" height="16" source="tiled/bricks_00.png"/>
+ <tile id="103">
+  <image width="16" height="16" source="tiled/bricks_02.png"/>
  </tile>
  <tile id="106">
   <image width="16" height="16" source="tiled/air_00.png"/>
