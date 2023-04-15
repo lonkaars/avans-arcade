@@ -52,8 +52,8 @@ void hh_demo_loop(unsigned long frame) {
 	hh_ppu_update_background_pos((frame / 5) % HH_PPU_SPRITE_WIDTH, (frame / 20) % HH_PPU_SPRITE_HEIGHT);
 
 	for (unsigned i = 0; i < HH_DEMO_BALL_COUNT; i++) {
-		g_hh_demo_balls[i].position_x = HH_PPU_SCREEN_WIDTH/2  - HH_PPU_SPRITE_WIDTH/2  + (int)(60 * (double)sin((1*(double)frame / 10) + (double)i * 12));
-		g_hh_demo_balls[i].position_y = HH_PPU_SCREEN_HEIGHT/2 - HH_PPU_SPRITE_HEIGHT/2 + (int)(30 * (double)sin((2*(double)frame / 10) + (double)i * 12));
+		g_hh_demo_balls[i].position_x = HH_PPU_SCREEN_WIDTH/2  - HH_PPU_SPRITE_WIDTH/2  + (int)(60 * (double)sin(1*((double)frame + 3*(double)i) / 10));
+		g_hh_demo_balls[i].position_y = HH_PPU_SCREEN_HEIGHT/2 - HH_PPU_SPRITE_HEIGHT/2 + (int)(30 * (double)sin(2*((double)frame + 3*(double) i) / 10));
 		hh_ppu_update_foreground(i+16, g_hh_demo_balls[i]);
 	}
 	return;
