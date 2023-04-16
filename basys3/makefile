@@ -1,4 +1,4 @@
-OFL := ~/.conda/envs/xc7/bin/openFPGALoader
+OFL := openFPGALoader
 
 TOP := basys3.runs/impl_4/top.bit
 BOARD := basys3
