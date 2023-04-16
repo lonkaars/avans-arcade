@@ -9,6 +9,7 @@
 hh_s_ppu_loc_fam_entry g_hh_demo_balls[HH_DEMO_BALL_COUNT];
 
 void hh_demo_setup() {
+	return;
 	// load sprites
 	hh_ppu_update_sprite(1, HH_DBG_SPRITE_BALL);
 	hh_ppu_update_sprite(2, HH_DBG_SPRITE_CHECKERBOARD);
@@ -43,6 +44,7 @@ void hh_demo_setup() {
 }
 
 void hh_demo_loop(unsigned long frame) {
+	return;
 	// if (frame % 300 == 0) hh_demo_setup();
 	//
 	// if (frame > 1) return;

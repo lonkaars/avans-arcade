@@ -6,6 +6,7 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use unisim.vcomponents.all;
 use work.ppu_consts.all;
+use work.ppu_pceg_consts.all;
 
 entity ppu_sprite_bg_tb is
 end ppu_sprite_bg_tb;
@@ -13,8 +14,9 @@ end ppu_sprite_bg_tb;
 architecture Behavioral of ppu_sprite_bg_tb is
 	component ppu_sprite_bg port(
 		-- inputs
-		CLK : in std_logic; -- pipeline clock
+		CLK : in std_logic; -- system clock
 		RESET : in std_logic; -- reset clock counter
+		PL_STAGE : in ppu_sprite_bg_pl_state; -- pipeline stage
 		OE : in std_logic; -- output enable (of CIDX)
 		X : in std_logic_vector(PPU_POS_H_WIDTH-1 downto 0); -- current screen pixel x
 		Y : in std_logic_vector(PPU_POS_V_WIDTH-1 downto 0); -- current screen pixel y
@@ -44,10 +46,12 @@ architecture Behavioral of ppu_sprite_bg_tb is
 	signal TMM_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0);
 	signal TMM_DATA : std_logic_vector(PPU_TMM_DATA_WIDTH-1 downto 0) := (others => '0');
 	signal CIDX : std_logic_vector(PPU_PALETTE_CIDX_WIDTH-1 downto 0); -- output color
+	signal PL_STAGE : ppu_sprite_bg_pl_state;
 begin
 	uut : ppu_sprite_bg port map(
 		CLK => CLK,
 		RESET => RESET,
+		PL_STAGE => PL_BG_IDLE,
 		OE => OE,
 		X => X,
 		Y => Y,

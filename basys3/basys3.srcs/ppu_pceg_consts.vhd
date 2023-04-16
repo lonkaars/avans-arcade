@@ -1,6 +1,5 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use work.ppu_consts.all;
 
 package ppu_pceg_consts is
 	constant PPU_PCEG_TOTAL_STAGES : natural := 16;

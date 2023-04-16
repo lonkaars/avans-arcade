@@ -110,28 +110,33 @@ begin
 	begin
 		if RESET = '1' then
 			-- reset internal pipeline registers
-			R_BAM_ADDR <= (others => '0');
 			R_BAM_DATA <= (others => '0');
-			R_TMM_ADDR <= (others => '0');
 			R_TMM_DATA <= (others => '0');
 		elsif falling_edge(CLK) then
-			BAM_ADDR_EN <= true when PL_STAGE = PL_BG_BAM_ADDR else false;
-			TMM_ADDR_EN <= true when PL_STAGE = PL_BG_TMM_ADDR else false;
-			-- R_BAM_ADDR <= T_BAM_ADDR;
-			-- R_BAM_DATA <= T_BAM_DATA;
-			-- R_TMM_ADDR <= T_TMM_ADDR;
-			-- R_TMM_DATA <= T_TMM_DATA;
 			case PL_STAGE is
-				when PL_BG_BAM_ADDR =>
-					R_BAM_ADDR <= T_BAM_ADDR;
 				when PL_BG_BAM_DATA =>
 					R_BAM_DATA <= T_BAM_DATA;
-				when PL_BG_TMM_ADDR =>
-					R_TMM_ADDR <= T_TMM_ADDR;
 				when PL_BG_TMM_DATA =>
 					R_TMM_DATA <= T_TMM_DATA;
 				when others => null;
 			end case;
+		end if;
+	end process;
+
+	process(CLK, RESET)
+	begin
+		if RESET = '1' then
+			BAM_ADDR_EN <= false;
+
+			R_BAM_ADDR <= (others => '0');
+			R_TMM_ADDR <= (others => '0');
+			TMM_ADDR_EN <= false;
+		elsif rising_edge(CLK) then
+			BAM_ADDR_EN <= true when PL_STAGE = PL_BG_BAM_ADDR else false;
+			TMM_ADDR_EN <= true when PL_STAGE = PL_BG_TMM_ADDR else false;
+
+			R_BAM_ADDR <= T_BAM_ADDR;
+			R_TMM_ADDR <= T_TMM_ADDR;
 		end if;
 	end process;
 end Behavioral;

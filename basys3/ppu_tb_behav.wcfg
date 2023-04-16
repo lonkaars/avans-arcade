@@ -13,13 +13,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="929,912.593 ns"></ZoomStartTime>
-      <ZoomEndTime time="931,046.594 ns"></ZoomEndTime>
-      <Cursor1Time time="930,263.593 ns"></Cursor1Time>
+      <ZoomStartTime time="930,315.700 ns"></ZoomStartTime>
+      <ZoomEndTime time="930,719.701 ns"></ZoomEndTime>
+      <Cursor1Time time="930,414.700 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="257"></NameColumnWidth>
-      <ValueColumnWidth column_width="186"></ValueColumnWidth>
+      <ValueColumnWidth column_width="174"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="10" />
    <wvobject type="group" fp_name="group136">
@@ -43,7 +43,6 @@
    <wvobject type="group" fp_name="group150">
       <obj_property name="label">ppu top</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject type="logic" fp_name="/ppu_tb/uut/WEN">
          <obj_property name="ElementShortName">WEN</obj_property>
          <obj_property name="ObjectShortName">WEN</obj_property>
@@ -176,7 +175,6 @@
    <wvobject type="group" fp_name="group149">
       <obj_property name="label">background sprite</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject type="logic" fp_name="/ppu_tb/uut/background_sprite/CLK">
          <obj_property name="ElementShortName">CLK</obj_property>
          <obj_property name="ObjectShortName">CLK</obj_property>
@@ -189,114 +187,136 @@
          <obj_property name="ElementShortName">PL_STAGE</obj_property>
          <obj_property name="ObjectShortName">PL_STAGE</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/X">
-         <obj_property name="ElementShortName">X[8:0]</obj_property>
-         <obj_property name="ObjectShortName">X[8:0]</obj_property>
+      <wvobject type="group" fp_name="group518">
+         <obj_property name="label">BAM</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/T_BAM_ADDR">
+            <obj_property name="ElementShortName">T_BAM_ADDR[10:0]</obj_property>
+            <obj_property name="ObjectShortName">T_BAM_ADDR[10:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/R_BAM_ADDR">
+            <obj_property name="ElementShortName">R_BAM_ADDR[10:0]</obj_property>
+            <obj_property name="ObjectShortName">R_BAM_ADDR[10:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/BAM_ADDR">
+            <obj_property name="ElementShortName">BAM_ADDR[10:0]</obj_property>
+            <obj_property name="ObjectShortName">BAM_ADDR[10:0]</obj_property>
+         </wvobject>
+         <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/BAM_ADDR_EN">
+            <obj_property name="ElementShortName">BAM_ADDR_EN</obj_property>
+            <obj_property name="ObjectShortName">BAM_ADDR_EN</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/BAM_DATA">
+            <obj_property name="ElementShortName">BAM_DATA[14:0]</obj_property>
+            <obj_property name="ObjectShortName">BAM_DATA[14:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/T_BAM_DATA">
+            <obj_property name="ElementShortName">T_BAM_DATA[14:0]</obj_property>
+            <obj_property name="ObjectShortName">T_BAM_DATA[14:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/R_BAM_DATA">
+            <obj_property name="ElementShortName">R_BAM_DATA[14:0]</obj_property>
+            <obj_property name="ObjectShortName">R_BAM_DATA[14:0]</obj_property>
+         </wvobject>
       </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/Y">
-         <obj_property name="ElementShortName">Y[7:0]</obj_property>
-         <obj_property name="ObjectShortName">Y[7:0]</obj_property>
+      <wvobject type="group" fp_name="group519">
+         <obj_property name="label">TMM</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/T_TMM_ADDR">
+            <obj_property name="ElementShortName">T_TMM_ADDR[15:0]</obj_property>
+            <obj_property name="ObjectShortName">T_TMM_ADDR[15:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/R_TMM_ADDR">
+            <obj_property name="ElementShortName">R_TMM_ADDR[15:0]</obj_property>
+            <obj_property name="ObjectShortName">R_TMM_ADDR[15:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TMM_ADDR">
+            <obj_property name="ElementShortName">TMM_ADDR[15:0]</obj_property>
+            <obj_property name="ObjectShortName">TMM_ADDR[15:0]</obj_property>
+         </wvobject>
+         <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/TMM_ADDR_EN">
+            <obj_property name="ElementShortName">TMM_ADDR_EN</obj_property>
+            <obj_property name="ObjectShortName">TMM_ADDR_EN</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TMM_DATA">
+            <obj_property name="ElementShortName">TMM_DATA[14:0]</obj_property>
+            <obj_property name="ObjectShortName">TMM_DATA[14:0]</obj_property>
+            <obj_property name="Radix">HEXRADIX</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/T_TMM_DATA">
+            <obj_property name="ElementShortName">T_TMM_DATA[14:0]</obj_property>
+            <obj_property name="ObjectShortName">T_TMM_DATA[14:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/R_TMM_DATA">
+            <obj_property name="ElementShortName">R_TMM_DATA[14:0]</obj_property>
+            <obj_property name="ObjectShortName">R_TMM_DATA[14:0]</obj_property>
+         </wvobject>
       </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/BG_SHIFT_X">
-         <obj_property name="ElementShortName">BG_SHIFT_X[8:0]</obj_property>
-         <obj_property name="ObjectShortName">BG_SHIFT_X[8:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/BG_SHIFT_Y">
-         <obj_property name="ElementShortName">BG_SHIFT_Y[7:0]</obj_property>
-         <obj_property name="ObjectShortName">BG_SHIFT_Y[7:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/BAM_ADDR">
-         <obj_property name="ElementShortName">BAM_ADDR[10:0]</obj_property>
-         <obj_property name="ObjectShortName">BAM_ADDR[10:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/BAM_DATA">
-         <obj_property name="ElementShortName">BAM_DATA[14:0]</obj_property>
-         <obj_property name="ObjectShortName">BAM_DATA[14:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TMM_ADDR">
-         <obj_property name="ElementShortName">TMM_ADDR[15:0]</obj_property>
-         <obj_property name="ObjectShortName">TMM_ADDR[15:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TMM_DATA">
-         <obj_property name="ElementShortName">TMM_DATA[14:0]</obj_property>
-         <obj_property name="ObjectShortName">TMM_DATA[14:0]</obj_property>
-         <obj_property name="Radix">HEXRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/T_BAM_ADDR">
-         <obj_property name="ElementShortName">T_BAM_ADDR[10:0]</obj_property>
-         <obj_property name="ObjectShortName">T_BAM_ADDR[10:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/R_BAM_ADDR">
-         <obj_property name="ElementShortName">R_BAM_ADDR[10:0]</obj_property>
-         <obj_property name="ObjectShortName">R_BAM_ADDR[10:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/T_BAM_DATA">
-         <obj_property name="ElementShortName">T_BAM_DATA[14:0]</obj_property>
-         <obj_property name="ObjectShortName">T_BAM_DATA[14:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/R_BAM_DATA">
-         <obj_property name="ElementShortName">R_BAM_DATA[14:0]</obj_property>
-         <obj_property name="ObjectShortName">R_BAM_DATA[14:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/T_TMM_ADDR">
-         <obj_property name="ElementShortName">T_TMM_ADDR[15:0]</obj_property>
-         <obj_property name="ObjectShortName">T_TMM_ADDR[15:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/R_TMM_ADDR">
-         <obj_property name="ElementShortName">R_TMM_ADDR[15:0]</obj_property>
-         <obj_property name="ObjectShortName">R_TMM_ADDR[15:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/T_TMM_DATA">
-         <obj_property name="ElementShortName">T_TMM_DATA[14:0]</obj_property>
-         <obj_property name="ObjectShortName">T_TMM_DATA[14:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/R_TMM_DATA">
-         <obj_property name="ElementShortName">R_TMM_DATA[14:0]</obj_property>
-         <obj_property name="ObjectShortName">R_TMM_DATA[14:0]</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/PIXEL_ABS_X">
-         <obj_property name="ElementShortName">PIXEL_ABS_X</obj_property>
-         <obj_property name="ObjectShortName">PIXEL_ABS_X</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/PIXEL_ABS_Y">
-         <obj_property name="ElementShortName">PIXEL_ABS_Y</obj_property>
-         <obj_property name="ObjectShortName">PIXEL_ABS_Y</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/TILE_IDX_X">
-         <obj_property name="ElementShortName">TILE_IDX_X</obj_property>
-         <obj_property name="ObjectShortName">TILE_IDX_X</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/TILE_IDX_Y">
-         <obj_property name="ElementShortName">TILE_IDX_Y</obj_property>
-         <obj_property name="ObjectShortName">TILE_IDX_Y</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TILE_PIDX_X">
-         <obj_property name="ElementShortName">TILE_PIDX_X[3:0]</obj_property>
-         <obj_property name="ObjectShortName">TILE_PIDX_X[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TRANS_TILE_PIDX_X">
-         <obj_property name="ElementShortName">TRANS_TILE_PIDX_X[3:0]</obj_property>
-         <obj_property name="ObjectShortName">TRANS_TILE_PIDX_X[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TILE_PIDX_Y">
-         <obj_property name="ElementShortName">TILE_PIDX_Y[3:0]</obj_property>
-         <obj_property name="ObjectShortName">TILE_PIDX_Y[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TRANS_TILE_PIDX_Y">
-         <obj_property name="ElementShortName">TRANS_TILE_PIDX_Y[3:0]</obj_property>
-         <obj_property name="ObjectShortName">TRANS_TILE_PIDX_Y[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/TRANS_TILE_PIDX">
-         <obj_property name="ElementShortName">TRANS_TILE_PIDX</obj_property>
-         <obj_property name="ObjectShortName">TRANS_TILE_PIDX</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/TILEMAP_WORD_OFFSET">
-         <obj_property name="ElementShortName">TILEMAP_WORD_OFFSET</obj_property>
-         <obj_property name="ObjectShortName">TILEMAP_WORD_OFFSET</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/PIXEL_BIT_OFFSET">
-         <obj_property name="ElementShortName">PIXEL_BIT_OFFSET</obj_property>
-         <obj_property name="ObjectShortName">PIXEL_BIT_OFFSET</obj_property>
+      <wvobject type="group" fp_name="group520">
+         <obj_property name="label">PIXEL</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/X">
+            <obj_property name="ElementShortName">X[8:0]</obj_property>
+            <obj_property name="ObjectShortName">X[8:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/Y">
+            <obj_property name="ElementShortName">Y[7:0]</obj_property>
+            <obj_property name="ObjectShortName">Y[7:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/BG_SHIFT_X">
+            <obj_property name="ElementShortName">BG_SHIFT_X[8:0]</obj_property>
+            <obj_property name="ObjectShortName">BG_SHIFT_X[8:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/BG_SHIFT_Y">
+            <obj_property name="ElementShortName">BG_SHIFT_Y[7:0]</obj_property>
+            <obj_property name="ObjectShortName">BG_SHIFT_Y[7:0]</obj_property>
+         </wvobject>
+         <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/PIXEL_ABS_X">
+            <obj_property name="ElementShortName">PIXEL_ABS_X</obj_property>
+            <obj_property name="ObjectShortName">PIXEL_ABS_X</obj_property>
+         </wvobject>
+         <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/PIXEL_ABS_Y">
+            <obj_property name="ElementShortName">PIXEL_ABS_Y</obj_property>
+            <obj_property name="ObjectShortName">PIXEL_ABS_Y</obj_property>
+         </wvobject>
+         <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/TILE_IDX_X">
+            <obj_property name="ElementShortName">TILE_IDX_X</obj_property>
+            <obj_property name="ObjectShortName">TILE_IDX_X</obj_property>
+         </wvobject>
+         <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/TILE_IDX_Y">
+            <obj_property name="ElementShortName">TILE_IDX_Y</obj_property>
+            <obj_property name="ObjectShortName">TILE_IDX_Y</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TILE_PIDX_X">
+            <obj_property name="ElementShortName">TILE_PIDX_X[3:0]</obj_property>
+            <obj_property name="ObjectShortName">TILE_PIDX_X[3:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TRANS_TILE_PIDX_X">
+            <obj_property name="ElementShortName">TRANS_TILE_PIDX_X[3:0]</obj_property>
+            <obj_property name="ObjectShortName">TRANS_TILE_PIDX_X[3:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TILE_PIDX_Y">
+            <obj_property name="ElementShortName">TILE_PIDX_Y[3:0]</obj_property>
+            <obj_property name="ObjectShortName">TILE_PIDX_Y[3:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TRANS_TILE_PIDX_Y">
+            <obj_property name="ElementShortName">TRANS_TILE_PIDX_Y[3:0]</obj_property>
+            <obj_property name="ObjectShortName">TRANS_TILE_PIDX_Y[3:0]</obj_property>
+         </wvobject>
+         <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/TRANS_TILE_PIDX">
+            <obj_property name="ElementShortName">TRANS_TILE_PIDX</obj_property>
+            <obj_property name="ObjectShortName">TRANS_TILE_PIDX</obj_property>
+         </wvobject>
+         <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/TILEMAP_WORD_OFFSET">
+            <obj_property name="ElementShortName">TILEMAP_WORD_OFFSET</obj_property>
+            <obj_property name="ObjectShortName">TILEMAP_WORD_OFFSET</obj_property>
+         </wvobject>
+         <wvobject type="other" fp_name="/ppu_tb/uut/background_sprite/PIXEL_BIT_OFFSET">
+            <obj_property name="ElementShortName">PIXEL_BIT_OFFSET</obj_property>
+            <obj_property name="ObjectShortName">PIXEL_BIT_OFFSET</obj_property>
+         </wvobject>
       </wvobject>
       <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/TMM_DATA_PAL_IDX">
          <obj_property name="ElementShortName">TMM_DATA_PAL_IDX[2:0]</obj_property>
@@ -309,18 +329,15 @@
       <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/CIDX">
          <obj_property name="ElementShortName">CIDX[5:0]</obj_property>
          <obj_property name="ObjectShortName">CIDX[5:0]</obj_property>
-         <obj_property name="isExpanded"></obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/ppu_tb/uut/background_sprite/T_CIDX">
          <obj_property name="ElementShortName">T_CIDX[5:0]</obj_property>
          <obj_property name="ObjectShortName">T_CIDX[5:0]</obj_property>
-         <obj_property name="isExpanded"></obj_property>
       </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group142">
       <obj_property name="label">display coordinates</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject type="array" fp_name="/ppu_tb/uut/display_controller/T_POS_X">
          <obj_property name="ElementShortName">T_POS_X[8:0]</obj_property>
          <obj_property name="ObjectShortName">T_POS_X[8:0]</obj_property>
@@ -462,6 +479,7 @@
    <wvobject type="group" fp_name="group165">
       <obj_property name="label">sprite[0]</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="logic" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/CLK">
          <obj_property name="ElementShortName">CLK</obj_property>
          <obj_property name="ObjectShortName">CLK</obj_property>
@@ -481,6 +499,35 @@
       <wvobject type="logic" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/OE">
          <obj_property name="ElementShortName">OE</obj_property>
          <obj_property name="ObjectShortName">OE</obj_property>
+      </wvobject>
+      <wvobject type="group" fp_name="group1008">
+         <obj_property name="label">TMM</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/TMM_ADDR">
+            <obj_property name="ElementShortName">TMM_ADDR[15:0]</obj_property>
+            <obj_property name="ObjectShortName">TMM_ADDR[15:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/TMM_DATA">
+            <obj_property name="ElementShortName">TMM_DATA[14:0]</obj_property>
+            <obj_property name="ObjectShortName">TMM_DATA[14:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/T_TMM_ADDR">
+            <obj_property name="ElementShortName">T_TMM_ADDR[15:0]</obj_property>
+            <obj_property name="ObjectShortName">T_TMM_ADDR[15:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/R_TMM_ADDR">
+            <obj_property name="ElementShortName">R_TMM_ADDR[15:0]</obj_property>
+            <obj_property name="ObjectShortName">R_TMM_ADDR[15:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/T_TMM_DATA">
+            <obj_property name="ElementShortName">T_TMM_DATA[14:0]</obj_property>
+            <obj_property name="ObjectShortName">T_TMM_DATA[14:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/R_TMM_DATA">
+            <obj_property name="ElementShortName">R_TMM_DATA[14:0]</obj_property>
+            <obj_property name="ObjectShortName">R_TMM_DATA[14:0]</obj_property>
+         </wvobject>
       </wvobject>
       <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/X">
          <obj_property name="ElementShortName">X[8:0]</obj_property>
@@ -510,38 +557,13 @@
          <obj_property name="ElementShortName">FAM_DATA[15:0]</obj_property>
          <obj_property name="ObjectShortName">FAM_DATA[15:0]</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/TMM_ADDR">
-         <obj_property name="ElementShortName">TMM_ADDR[15:0]</obj_property>
-         <obj_property name="ObjectShortName">TMM_ADDR[15:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/TMM_DATA">
-         <obj_property name="ElementShortName">TMM_DATA[14:0]</obj_property>
-         <obj_property name="ObjectShortName">TMM_DATA[14:0]</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/CIDX">
          <obj_property name="ElementShortName">CIDX[5:0]</obj_property>
          <obj_property name="ObjectShortName">CIDX[5:0]</obj_property>
-         <obj_property name="isExpanded"></obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/HIT">
          <obj_property name="ElementShortName">HIT</obj_property>
          <obj_property name="ObjectShortName">HIT</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/T_TMM_ADDR">
-         <obj_property name="ElementShortName">T_TMM_ADDR[15:0]</obj_property>
-         <obj_property name="ObjectShortName">T_TMM_ADDR[15:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/R_TMM_ADDR">
-         <obj_property name="ElementShortName">R_TMM_ADDR[15:0]</obj_property>
-         <obj_property name="ObjectShortName">R_TMM_ADDR[15:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/T_TMM_DATA">
-         <obj_property name="ElementShortName">T_TMM_DATA[14:0]</obj_property>
-         <obj_property name="ObjectShortName">T_TMM_DATA[14:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/R_TMM_DATA">
-         <obj_property name="ElementShortName">R_TMM_DATA[14:0]</obj_property>
-         <obj_property name="ObjectShortName">R_TMM_DATA[14:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(0)\/foreground_sprite/T_CIDX">
          <obj_property name="ElementShortName">T_CIDX[5:0]</obj_property>
@@ -607,6 +629,7 @@
    <wvobject type="group" fp_name="group166">
       <obj_property name="label">sprite[16]</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="logic" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/CLK">
          <obj_property name="ElementShortName">CLK</obj_property>
          <obj_property name="ObjectShortName">CLK</obj_property>
@@ -630,6 +653,39 @@
       <wvobject type="logic" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/HIT">
          <obj_property name="ElementShortName">HIT</obj_property>
          <obj_property name="ObjectShortName">HIT</obj_property>
+      </wvobject>
+      <wvobject type="group" fp_name="group1018">
+         <obj_property name="label">TMM</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/T_TMM_ADDR">
+            <obj_property name="ElementShortName">T_TMM_ADDR[15:0]</obj_property>
+            <obj_property name="ObjectShortName">T_TMM_ADDR[15:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/R_TMM_ADDR">
+            <obj_property name="ElementShortName">R_TMM_ADDR[15:0]</obj_property>
+            <obj_property name="ObjectShortName">R_TMM_ADDR[15:0]</obj_property>
+         </wvobject>
+         <wvobject type="other" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/TMM_ADDR_EN">
+            <obj_property name="ElementShortName">TMM_ADDR_EN</obj_property>
+            <obj_property name="ObjectShortName">TMM_ADDR_EN</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/TMM_ADDR">
+            <obj_property name="ElementShortName">TMM_ADDR[15:0]</obj_property>
+            <obj_property name="ObjectShortName">TMM_ADDR[15:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/TMM_DATA">
+            <obj_property name="ElementShortName">TMM_DATA[14:0]</obj_property>
+            <obj_property name="ObjectShortName">TMM_DATA[14:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/T_TMM_DATA">
+            <obj_property name="ElementShortName">T_TMM_DATA[14:0]</obj_property>
+            <obj_property name="ObjectShortName">T_TMM_DATA[14:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/R_TMM_DATA">
+            <obj_property name="ElementShortName">R_TMM_DATA[14:0]</obj_property>
+            <obj_property name="ObjectShortName">R_TMM_DATA[14:0]</obj_property>
+         </wvobject>
       </wvobject>
       <wvobject type="logic" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/SPRITE_ACTIVE">
          <obj_property name="ElementShortName">SPRITE_ACTIVE</obj_property>
@@ -663,34 +719,9 @@
          <obj_property name="ElementShortName">FAM_DATA[15:0]</obj_property>
          <obj_property name="ObjectShortName">FAM_DATA[15:0]</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/TMM_ADDR">
-         <obj_property name="ElementShortName">TMM_ADDR[15:0]</obj_property>
-         <obj_property name="ObjectShortName">TMM_ADDR[15:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/TMM_DATA">
-         <obj_property name="ElementShortName">TMM_DATA[14:0]</obj_property>
-         <obj_property name="ObjectShortName">TMM_DATA[14:0]</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/CIDX">
          <obj_property name="ElementShortName">CIDX[5:0]</obj_property>
          <obj_property name="ObjectShortName">CIDX[5:0]</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/R_TMM_ADDR">
-         <obj_property name="ElementShortName">R_TMM_ADDR[15:0]</obj_property>
-         <obj_property name="ObjectShortName">R_TMM_ADDR[15:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/R_TMM_DATA">
-         <obj_property name="ElementShortName">R_TMM_DATA[14:0]</obj_property>
-         <obj_property name="ObjectShortName">R_TMM_DATA[14:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/T_TMM_ADDR">
-         <obj_property name="ElementShortName">T_TMM_ADDR[15:0]</obj_property>
-         <obj_property name="ObjectShortName">T_TMM_ADDR[15:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/T_TMM_DATA">
-         <obj_property name="ElementShortName">T_TMM_DATA[14:0]</obj_property>
-         <obj_property name="ObjectShortName">T_TMM_DATA[14:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/ppu_tb/uut/\foreground_sprites(16)\/foreground_sprite/T_CIDX">
          <obj_property name="ElementShortName">T_CIDX[5:0]</obj_property>

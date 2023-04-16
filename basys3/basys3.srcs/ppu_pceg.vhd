@@ -25,9 +25,16 @@ begin
 			SPRITE_FG <= PL_FG_IDLE;
 			DISPCTL_BWEN <= '0';
 		elsif falling_edge(CLK) then
+			-- increment clock counter
+			CLK_IDX := CLK_IDX + 1;
+			if CLK_IDX = PPU_PCEG_TOTAL_STAGES then
+				CLK_IDX := 0;
+			end if;
+
+			CLK_IDX_T <= CLK_IDX;
+
 			case CLK_IDX is
 				when 0 =>
-					DISPCTL_BWEN <= '0';
 					SPRITE_BG <= PL_BG_IDLE;
 					SPRITE_FG <= PL_FG_IDLE;
 					SPRITE_FG_HIT <= PL_HIT_INACCURATE;
@@ -38,27 +45,26 @@ begin
 					SPRITE_BG <= PL_BG_BAM_DATA;
 					SPRITE_FG <= PL_FG_TMM_DATA;
 				when 3 =>
-					SPRITE_BG <= PL_BG_TMM_ADDR;
+					SPRITE_BG <= PL_BG_IDLE;
 					SPRITE_FG <= PL_FG_IDLE;
 					SPRITE_FG_HIT <= PL_HIT_ACCURATE;
-				when 4 =>
-					SPRITE_BG <= PL_BG_TMM_DATA;
-				when 5 =>
-					SPRITE_BG <= PL_BG_IDLE;
+				when 4 => null;
+				when 5 => null;
 				when 6 =>
-					DISPCTL_BWEN <= '1';
+					SPRITE_BG <= PL_BG_TMM_ADDR;
 				when 7 =>
+					SPRITE_BG <= PL_BG_TMM_DATA;
+				when 8 =>
+					SPRITE_BG <= PL_BG_IDLE;
+				when 9 => null;
+				when 10 => null;
+				when 11 =>
+					DISPCTL_BWEN <= '1';
+				when 12 => null;
+				when 13 =>
 					DISPCTL_BWEN <= '0';
 				when others => null;
 			end case;
-
-			-- increment clock counter
-			CLK_IDX := CLK_IDX + 1;
-			if CLK_IDX = PPU_PCEG_TOTAL_STAGES then
-				CLK_IDX := 0;
-			end if;
-
-			CLK_IDX_T <= CLK_IDX;
 		end if;
 	end process;
 end Behavioral;
