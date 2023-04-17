@@ -67,17 +67,16 @@ components.
 
 # STM32 software
 
-The game engine is designed to run a 2D platformer game. The game engine has to manage all the different game states. To do this it will utilize a finite state machine (FSM). The game engine will also cover de input handling from the player, the game logic for example enemy handling or the powerup handling it will also send out data to the APU (Audio processing unit) so that the right sounds will be played. 
+The STM32-based game engine is designed to run all the game logic and game loop, except for the drawing of graphics. This decision was made due to the capabilities offered by the STM32 microcontroller. The game engine is based on a switch case, which allows for the reuse of functions and the management of transitions. The enemy AI is also managed through switch cases, allowing for the creation of multiple structs that maintain information about the type of enemy and select the correct AI movement for the entity. Additionally, the STM32 sends audio data to the audio processing unit (APU) to provide more headroom for functionality for both the PPU and APU.
 
-FSM is a useful tool for managing game states and transitions. The game has many different states such as: title screen, shop and gameplay state. Each state represents a particular configuration from the with different logic and variables.  
 
-The state machine is designed to have the following states:
-1.	Initialization: The initialization state will be responsible for initializing all game-related variables and subsystems, including the FPGA-based picture processing unit.
-2.	Title Screen: The title screen state will display the game's title screen and wait for user input to start the game or access the options menu.
-3.	Options: The options state will allow the user to configure game settings, such as sound and graphics options.
-4.	Game Play: The game play state will be responsible for running the game logic and updating the game state.
-5.	Game Over: The game over state will display the game over screen and wait for user input to restart the game or return to the title screen.
+The STM32 microcontroller is responsible for running all the game logic and game loop, except for the drawing of graphics. The game engine is based on a switch case, which allows for the reuse of functions and easy management of transitions. This design decision was made to take advantage of the STM32's capabilities and ensure efficient operation. The switch case design also provides a scalable framework that can be extended and customized as needed.
 
+
+The enemy AI is managed using switch cases in the game engine. Multiple structs are created to maintain information about the type of enemy, allowing the switch case to select the correct AI movement for the entity. This approach provides a flexible and modular system that can be adapted to different enemy types and behaviors. Additionally, the use of switch cases ensures that the game engine runs efficiently and that nothing happens when it shouldn't.
+
+
+The STM32 sends audio data to the APU, which allows for more headroom for functionality for both the PPU and APU. By offloading the audio processing to a separate unit, the STM32 can focus on running game logic and game loop without overburdening the system. This design decision also ensures that the game runs smoothly and that there is no lag or slowdown due to audio processing.
 ## Input
 
 The playable character has 4 actions that it can perform:
