@@ -56,6 +56,10 @@ architecture Behavioral of ppu_sprite_fg is
 			DATA : in std_logic_vector(DATA_W-1 downto 0); -- data input
 			REG : out std_logic_vector((ADDR_RANGE*DATA_W)-1 downto 0)); -- exposed register output
 	end component;
+	component ppu_two_lut port( -- PPU tilemap word offset LUT (divide 8-bit number by 5)
+		pidx : in integer range 0 to 255; -- dividend
+		two : out integer range 0 to 255); -- result
+	end component;
 
 	-- TMM in/out temp + registers
 	signal T_TMM_ADDR, R_TMM_ADDR : std_logic_vector(PPU_TMM_ADDR_WIDTH-1 downto 0) := (others => '0');
@@ -78,9 +82,9 @@ architecture Behavioral of ppu_sprite_fg is
 	signal PIXEL_BIT_OFFSET : integer := 0; -- pixel index within word of TMM
 	signal TILE_PIDX_X, TRANS_TILE_PIDX_X : unsigned(PPU_SPRITE_POS_H_WIDTH-1 downto 0) := (others => '0'); -- xy position of pixel within tile (local tile coords)
 	signal TILE_PIDX_Y, TRANS_TILE_PIDX_Y : unsigned(PPU_SPRITE_POS_V_WIDTH-1 downto 0) := (others => '0'); -- xy position of pixel within tile (local tile coords)
-	signal TRANS_TILE_PIDX : integer := 0; -- index of pixel within tile (reading order)
+	signal TRANS_TILE_PIDX : integer range 0 to 255 := 0; -- index of pixel within tile (reading order)
 	signal TILEMAP_WORD : unsigned(PPU_TMM_ADDR_WIDTH-1 downto 0) := (others => '0');
-	signal TILEMAP_WORD_OFFSET : integer := 0; -- word offset from tile start address in TMM
+	signal TILEMAP_WORD_OFFSET : integer range 0 to 255 := 0; -- word offset from tile start address in TMM
 	signal TMM_DATA_COL_IDX : std_logic_vector(PPU_PALETTE_COLOR_WIDTH-1 downto 0); -- color of palette
 	
 	signal TMM_ADDR_EN : boolean := false;
@@ -129,7 +133,8 @@ begin
 	-- pixel index
 	TRANS_TILE_PIDX <= integer(PPU_SPRITE_WIDTH) * to_integer(TRANS_TILE_PIDX_Y) + to_integer(TRANS_TILE_PIDX_X);
 	TILEMAP_WORD <= resize(unsigned(FAM_REG_TILE_IDX) * PPU_SPRITE_WORD_COUNT, TILEMAP_WORD'length); -- TMM sprite starting word
-	TILEMAP_WORD_OFFSET <= TRANS_TILE_PIDX / PPU_PIXELS_PER_TILE_WORD; -- word offset from starting word of sprite
+	div: component ppu_two_lut port map(pidx => TRANS_TILE_PIDX, two => TILEMAP_WORD_OFFSET);
+	-- TILEMAP_WORD_OFFSET <= TRANS_TILE_PIDX / PPU_PIXELS_PER_TILE_WORD; -- word offset from starting word of sprite
 	PIXEL_BIT_OFFSET <= TRANS_TILE_PIDX mod PPU_PIXELS_PER_TILE_WORD; -- pixel bit offset
 
 	inaccurate_occlusion_shims: if IDX >= PPU_ACCURATE_FG_SPRITE_COUNT generate

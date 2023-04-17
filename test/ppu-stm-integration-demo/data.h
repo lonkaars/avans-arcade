@@ -9,4 +9,5 @@
 // #include "capture-debug-4.h"
 #include "test-foreground-sprite.h"
 // #include "capture-debug-5.h"
+// #include "capture-debug-6.h"
 

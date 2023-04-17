@@ -1,6 +1,4 @@
 library ieee;
-library work;
-
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
@@ -38,6 +36,10 @@ architecture Behavioral of ppu_sprite_bg is
 		XO : out unsigned(PPU_SPRITE_POS_H_WIDTH-1 downto 0); -- new pixel position relative to tile
 		YO : out unsigned(PPU_SPRITE_POS_V_WIDTH-1 downto 0)); -- new pixel position relative to tile
 	end component;
+	component ppu_two_lut port( -- PPU tilemap word offset LUT (divide 8-bit number by 5)
+		pidx : in integer range 0 to 255; -- dividend
+		two : out integer range 0 to 255); -- result
+	end component;
 
 	-- BAM and TMM in/out temp + registers
 	signal T_BAM_ADDR, R_BAM_ADDR : std_logic_vector(PPU_BAM_ADDR_WIDTH-1 downto 0) := (others => '0');
@@ -56,8 +58,8 @@ architecture Behavioral of ppu_sprite_bg is
 	signal TILE_IDX_X, TILE_IDX_Y : integer := 0; -- background canvas tile grid xy
 	signal TILE_PIDX_X, TRANS_TILE_PIDX_X : unsigned(PPU_SPRITE_POS_H_WIDTH-1 downto 0) := (others => '0'); -- x position of pixel within tile (local tile coords)
 	signal TILE_PIDX_Y, TRANS_TILE_PIDX_Y : unsigned(PPU_SPRITE_POS_V_WIDTH-1 downto 0) := (others => '0'); -- y position of pixel within tile (local tile coords)
-	signal TRANS_TILE_PIDX : integer := 0; -- index of pixel within tile (reading order)
-	signal TILEMAP_WORD_OFFSET : integer := 0; -- word offset from tile start address in TMM
+	signal TRANS_TILE_PIDX : integer range 0 to 255 := 0; -- index of pixel within tile (reading order)
+	signal TILEMAP_WORD_OFFSET : integer range 0 to 255 := 0; -- word offset from tile start address in TMM
 	signal PIXEL_BIT_OFFSET : integer := 0; -- pixel index within word of TMM
 	signal TMM_DATA_PAL_IDX : std_logic_vector(PPU_PALETTE_COLOR_WIDTH-1 downto 0); -- color of palette
 	signal T_CIDX : std_logic_vector(PPU_PALETTE_CIDX_WIDTH-1 downto 0) := (others => '0'); -- output color buffer/register
@@ -92,7 +94,8 @@ begin
 
 	-- TMM address calculations
 	TRANS_TILE_PIDX <= integer(PPU_SPRITE_WIDTH) * to_integer(TRANS_TILE_PIDX_Y) + to_integer(TRANS_TILE_PIDX_X); -- pixel index of sprite
-	TILEMAP_WORD_OFFSET <= TRANS_TILE_PIDX / PPU_PIXELS_PER_TILE_WORD; -- word offset from starting word of sprite
+	div: component ppu_two_lut port map(pidx => TRANS_TILE_PIDX, two => TILEMAP_WORD_OFFSET);
+	-- TILEMAP_WORD_OFFSET <= TRANS_TILE_PIDX / PPU_PIXELS_PER_TILE_WORD; -- word offset from starting word of sprite
 	PIXEL_BIT_OFFSET <= TRANS_TILE_PIDX mod PPU_PIXELS_PER_TILE_WORD; -- pixel bit offset
 	T_TMM_ADDR <= std_logic_vector(to_unsigned(PPU_SPRITE_WORD_COUNT * to_integer(unsigned(BAM_DATA_TILE_IDX)) + TILEMAP_WORD_OFFSET, PPU_TMM_ADDR_WIDTH)); -- TMM address
 
