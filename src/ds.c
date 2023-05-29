@@ -4,7 +4,7 @@
 
 void hh_setup() {
 	hh_ppu_init();
-	// hh_demo_setup();
+	hh_demo_setup();
 }
 
 void hh_exit() {
