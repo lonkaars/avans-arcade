@@ -56,103 +56,52 @@ void hh_demo_loop(unsigned long frame) {
 		g_hh_demo_balls[i].position_y = HH_PPU_SCREEN_HEIGHT/2 - HH_PPU_SPRITE_HEIGHT/2 + (int)(30 * (double)sin(2*((double)frame + 3*(double) i) / 10));
 		hh_ppu_update_foreground(i+16, g_hh_demo_balls[i]);
 	}
-	return;
-	/* 
 	hh_ppu_update_foreground(32, (hh_s_ppu_loc_fam_entry) {
 		.horizontal_flip = false,
 		.vertical_flip = false,
 		.palette_index = g_hh_controller_p1.dpad_up * 2,
-		.tilemap_index = 0,
-		.position_x = 0,
+		.tilemap_index = 1,
+		.position_x = 16,
 		.position_y = 0,
 	});
 	hh_ppu_update_foreground(33, (hh_s_ppu_loc_fam_entry) {
 		.horizontal_flip = false,
 		.vertical_flip = false,
 		.palette_index = g_hh_controller_p1.dpad_down * 2,
-		.tilemap_index = 0,
+		.tilemap_index = 1,
 		.position_x = 16,
-		.position_y = 0,
+		.position_y = 32,
 	});
 	hh_ppu_update_foreground(34, (hh_s_ppu_loc_fam_entry) {
 		.horizontal_flip = false,
 		.vertical_flip = false,
 		.palette_index = g_hh_controller_p1.dpad_left * 2,
-		.tilemap_index = 0,
-		.position_x = 32,
-		.position_y = 0,
+		.tilemap_index = 1,
+		.position_x = 0,
+		.position_y = 16,
 	});
 	hh_ppu_update_foreground(35, (hh_s_ppu_loc_fam_entry) {
 		.horizontal_flip = false,
 		.vertical_flip = false,
 		.palette_index = g_hh_controller_p1.dpad_right * 2,
-		.tilemap_index = 0,
-		.position_x = 48,
-		.position_y = 0,
+		.tilemap_index = 1,
+		.position_x = 32,
+		.position_y = 16,
 	});
 	hh_ppu_update_foreground(36, (hh_s_ppu_loc_fam_entry) {
 		.horizontal_flip = false,
 		.vertical_flip = false,
 		.palette_index = g_hh_controller_p1.button_primary * 2,
-		.tilemap_index = 0,
-		.position_x = 64,
-		.position_y = 0,
+		.tilemap_index = 1,
+		.position_x = 88,
+		.position_y = 16,
 	});
 	hh_ppu_update_foreground(37, (hh_s_ppu_loc_fam_entry) {
 		.horizontal_flip = false,
 		.vertical_flip = false,
 		.palette_index = g_hh_controller_p1.button_secondary * 2,
-		.tilemap_index = 0,
-		.position_x = 80,
-		.position_y = 0,
-	});
-	hh_ppu_update_foreground(40, (hh_s_ppu_loc_fam_entry) {
-		.horizontal_flip = false,
-		.vertical_flip = false,
-		.palette_index = g_hh_controller_p2.dpad_up * 2,
-		.tilemap_index = 0,
-		.position_x = 0,
-		.position_y = 16,
-	});
-	hh_ppu_update_foreground(41, (hh_s_ppu_loc_fam_entry) {
-		.horizontal_flip = false,
-		.vertical_flip = false,
-		.palette_index = g_hh_controller_p2.dpad_down * 2,
-		.tilemap_index = 0,
-		.position_x = 16,
-		.position_y = 16,
-	});
-	hh_ppu_update_foreground(42, (hh_s_ppu_loc_fam_entry) {
-		.horizontal_flip = false,
-		.vertical_flip = false,
-		.palette_index = g_hh_controller_p2.dpad_left * 2,
-		.tilemap_index = 0,
-		.position_x = 32,
-		.position_y = 16,
-	});
-	hh_ppu_update_foreground(43, (hh_s_ppu_loc_fam_entry) {
-		.horizontal_flip = false,
-		.vertical_flip = false,
-		.palette_index = g_hh_controller_p2.dpad_right * 2,
-		.tilemap_index = 0,
-		.position_x = 48,
-		.position_y = 16,
-	});
-	hh_ppu_update_foreground(44, (hh_s_ppu_loc_fam_entry) {
-		.horizontal_flip = false,
-		.vertical_flip = false,
-		.palette_index = g_hh_controller_p2.button_primary * 2,
-		.tilemap_index = 0,
+		.tilemap_index = 1,
 		.position_x = 64,
 		.position_y = 16,
 	});
-	hh_ppu_update_foreground(45, (hh_s_ppu_loc_fam_entry) {
-		.horizontal_flip = false,
-		.vertical_flip = false,
-		.palette_index = g_hh_controller_p2.button_secondary * 2,
-		.tilemap_index = 0,
-		.position_x = 80,
-		.position_y = 16,
-	});
-	*/
 }
