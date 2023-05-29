@@ -6,7 +6,6 @@
 #include "ppu/ppu.h"
 #include "input.h"
 
-#include "../test/ppu-stm-integration-demo/data.h"
 #ifdef HH_TARGET_DESKTOP
 #include <stdio.h>
 #endif
