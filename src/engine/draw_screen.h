@@ -6,9 +6,9 @@
 #include "ppu/ppu.h"
 #include "engine/level_const.h"
 #include "engine/sprite_controller.h"
-#include <stdio.h>
+// #include <stdio.h>
 #include <stdint.h>
-#include <stdlib.h>
+// #include <stdlib.h>
 #include "engine/camera.h"
 
 /** @brief return a single tile from world */

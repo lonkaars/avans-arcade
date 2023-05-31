@@ -2,9 +2,9 @@
 #ifndef level_const_H
 #define level_const_H
 
-#include <stdio.h>
+// #include <stdio.h>
 #include <stdint.h>
-#include <stdlib.h>
+// #include <stdlib.h>
 #include <stdbool.h>
 #include "engine/maths.h"
 #include "engine/entity.h"

@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "shop.h"
 
 hh_e_upgrades hh_shop(hh_e_game_state* hh_game_state, hh_g_all_levels* levels, int rng_seed, int points){

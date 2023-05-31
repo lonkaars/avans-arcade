@@ -87,16 +87,13 @@ vec_cor hh_draw_screen(vec2 player) {
 	viewport.y = CLAMP(viewport.y, 0, level.size.y * HH_PPU_SPRITE_HEIGHT - HH_PPU_SCREEN_HEIGHT);
 	
 	hh_update_screen((vec2){.y=viewport.y,.x=viewport.x});
-   if (viewport.x == previousViewport.x && viewport.y == previousViewport.y){}
-	else{
-		hh_ppu_update_aux((hh_s_ppu_loc_aux){
-			.bg_shift_x = viewport.x - offset_px,
-			.bg_shift_y = viewport.y - offset_py,
-			.fg_fetch	= 0,
-			.sysreset	= 0,
-		});
-		previousViewport = viewport;
-	}
+	hh_ppu_update_aux((hh_s_ppu_loc_aux){
+		.bg_shift_x = viewport.x - offset_px,
+		.bg_shift_y = viewport.y - offset_py,
+		.fg_fetch	= 0,
+		.sysreset	= 0,
+	});
+	previousViewport = viewport;
 
 	return viewport;
 }

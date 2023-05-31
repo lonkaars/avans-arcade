@@ -73,29 +73,28 @@ void hh_demo_loop(unsigned long frame) {
 	case hh_e_state_starting_screen:
 		bool ret = hh_show_starting_screen();
 		if(ret){
-			hh_game_states = hh_e_state_shop;
+			hh_game_states = hh_e_state_gameplay;
 		}
 		points = 0;	
 		break;
 	case hh_e_state_shop:
-		hh_clear_screen();
-		hh_clear_sprite();
-		// upg = hh_shop(&hh_game_states, &hh_game, hh_rng_seed, points);
+		// hh_clear_sprite();
+		upg = hh_shop(&hh_game_states, &hh_game, hh_rng_seed, points);
 		break;
-	// case hh_e_state_gameplay:
-	// 	hh_gameplay(&hh_game, &hh_game_states, upg, &ptr_points);
+	case hh_e_state_gameplay:
+		hh_gameplay(&hh_game, &hh_game_states, upg, &ptr_points);
 
-	// 	break;
-	// case hh_e_state_game_over:
-	// 	hh_game_over(&hh_game_states);
-	// 	break;
-	// case hh_e_state_high_score:
-	// 	// todo:
-	// 	// fucntion: show all previously scored points
-	// 	// function: button pressed goto starting screen
-	// 	hh_high_score(&hh_game_states);
-	// 	// hh_game_states = hh_e_state_starting_screen;
-	// 	break;
+		break;
+	case hh_e_state_game_over:
+		hh_game_over(&hh_game_states);
+		break;
+	case hh_e_state_high_score:
+		// todo:
+		// fucntion: show all previously scored points
+		// function: button pressed goto starting screen
+		hh_high_score(&hh_game_states);
+		// hh_game_states = hh_e_state_starting_screen;
+		break;
 	default:
 			hh_game_states = hh_e_state_starting_screen;
 		break;

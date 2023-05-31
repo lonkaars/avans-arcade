@@ -27,7 +27,7 @@ OUT_META := $(patsubst %.hex,%.meta, $(INPUT))
 
 .PHONY: all clean
 
-all: tilemap.bin.h tilemap.h
+all: tilemap.bin.h tilemap.h levels.h
 
 %.bin: %.hex
 	sed 's/;.*//g' $< | $(XXD) -r | $(TILEPACK) > $@
@@ -54,4 +54,10 @@ clean:
 	$(RM) -r $(OUT_BIN) $(OUT_META) manifest.txt tilemap.h tilemap.bin tiled.mk tiled
 
 %.bin.h: %.bin
-	hexdump -ve '16/1 "%02x" ""' $< | tr -d ' ' |  sed 's/..../0x\0, /g' | sed 's/, $$/ };/g' | sed 's/^/static const uint16_t HH_PPU_TILEMAP_RAW[] = { /g' > $@
+	hexdump -ve '16/1 "%02x" ""' $< | tr -d ' ' |  sed 's/\(..\)\(..\)/0x\2\1, /g' | sed 's/, $$/ };/g' | sed 's/^/const uint16_t HH_PPU_TILEMAP_RAW[] = { /g' > $@
+
+%.level.h: %.bin
+	xxd -i $< > $@
+
+levels.h: $(patsubst %.bin,%.level.h, $(wildcard level/*.bin))
+	cat $^ > $@

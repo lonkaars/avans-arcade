@@ -17,11 +17,11 @@ DESKTOP = true
 include ds.mk
 endif
 
-SHARED_FLAGS += -g
+# SHARED_FLAGS += -g
 SHARED_FLAGS += -Wall
 SHARED_FLAGS += -Wextra
 SHARED_FLAGS += -I.
-# SHARED_FLAGS += -O1
+SHARED_FLAGS += -O1
 LFLAGS += -lm
 # LFLAGS += -lc
 CFLAGS += $(if $(STM), -DHH_TARGET_STM32, )

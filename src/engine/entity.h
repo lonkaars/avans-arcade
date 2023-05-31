@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <stdio.h>
+// #include <stdio.h>
 
 #include "ppu/types.h"
 #include "engine/maths.h"

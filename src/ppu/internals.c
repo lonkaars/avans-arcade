@@ -96,6 +96,8 @@ hh_s_ppu_vram_data hh_ppu_2nat_color(hh_ppu_rgb_color_t rgb) {
 }
 
 void hh_ppu_vram_buffer(uint8_t data[4]) {
+	hh_ppu_vram_dwrite(data, 4);
+	return;
 	size_t head = g_hh_ppu_vram_buffer_size;
 	g_hh_ppu_vram_buffer_ptr[head+0] = data[0]; // NOTE: this only works because sizeof(buffer) is divisible by 4
 	g_hh_ppu_vram_buffer_ptr[head+1] = data[1];
