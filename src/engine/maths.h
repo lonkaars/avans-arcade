@@ -20,3 +20,4 @@ vec_cor vec_cor2cen(vec_cen in, vec2 halfDistance);
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define CLAMP(N,LOWER,UPPER) (MIN(MAX(LOWER, N), UPPER))
+#define CEILI(numerator, denominator) (numerator / denominator + (numerator % denominator != 0))

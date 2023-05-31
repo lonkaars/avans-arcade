@@ -8,7 +8,7 @@ hh_s_ppu_loc_aux g_hh_aux = { 0 };
 
 void hh_ppu_update_foreground(unsigned index, hh_s_ppu_loc_fam_entry e) {
 	hh_s_ppu_vram_data s = hh_ppu_2nat_fam(e);
-	s.offset			 = HH_PPU_VRAM_FAM_OFFSET + HH_PPU_VRAM_FAM_ENTRY_SIZE * index;
+	s.offset			 = HH_PPU_VRAM_FAM_OFFSET + HH_PPU_VRAM_FAM_ENTRY_SIZE * index + 16;
 	hh_ppu_vram_write(s);
 	free(s.data);
 }

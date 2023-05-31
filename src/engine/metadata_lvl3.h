@@ -1,0 +1,233 @@
+#pragma once
+
+#include "global.h"
+#include "types.h"
+#include <stdlib.h>
+hh_entity hh_mtd_lvl3_enemy[11] = {
+	{
+		.object_type = slime,
+		.is_grounded = false,
+		.is_hit		 = false,
+		.pos		 = (vec2){336, 332},
+		.size		 = (vec2){16, 16},
+		.vel		 = (vec2){0, 0},
+		.hp			 = g_hh_slime_hp,
+		.speed		 = g_hh_slime_speed,
+		.radius		 = g_hh_slime_radius,
+		.render		 = {.frame0	 = HH_TM_SLIME_OFFSET,
+						.palette = 2,
+						.fam =
+							(hh_s_ppu_loc_fam_entry){
+								.horizontal_flip = false,
+								.vertical_flip	 = false,
+								.palette_index	 = 2,
+								.tilemap_index	 = HH_TM_SLIME_OFFSET,
+						}},
+	},
+	{
+		.object_type = slime,
+		.is_grounded = false,
+		.is_hit		 = false,
+		.pos		 = (vec2){927, 322},
+		.size		 = (vec2){16, 16},
+		.vel		 = (vec2){0, 0},
+		.hp			 = g_hh_slime_hp,
+		.speed		 = g_hh_slime_speed,
+		.radius		 = g_hh_slime_radius,
+		.render		 = {.frame0	 = HH_TM_SLIME_OFFSET,
+						.palette = 2,
+						.fam =
+							(hh_s_ppu_loc_fam_entry){
+								.horizontal_flip = false,
+								.vertical_flip	 = false,
+								.palette_index	 = 2,
+								.tilemap_index	 = HH_TM_SLIME_OFFSET,
+						}},
+	},
+	{
+		.object_type = slime,
+		.is_grounded = false,
+		.is_hit		 = false,
+		.pos		 = (vec2){1178, 201},
+		.size		 = (vec2){16, 16},
+		.vel		 = (vec2){0, 0},
+		.hp			 = g_hh_slime_hp,
+		.speed		 = g_hh_slime_speed,
+		.radius		 = g_hh_slime_radius,
+		.render		 = {.frame0	 = HH_TM_SLIME_OFFSET,
+						.palette = 2,
+						.fam =
+							(hh_s_ppu_loc_fam_entry){
+								.horizontal_flip = false,
+								.vertical_flip	 = false,
+								.palette_index	 = 2,
+								.tilemap_index	 = HH_TM_SLIME_OFFSET,
+						}},
+	},
+	{
+		.object_type = slime,
+		.is_grounded = false,
+		.is_hit		 = false,
+		.pos		 = (vec2){1551, 125},
+		.size		 = (vec2){16, 16},
+		.vel		 = (vec2){0, 0},
+		.hp			 = g_hh_slime_hp,
+		.speed		 = g_hh_slime_speed,
+		.radius		 = g_hh_slime_radius,
+		.render		 = {.frame0	 = HH_TM_SLIME_OFFSET,
+						.palette = 2,
+						.fam =
+							(hh_s_ppu_loc_fam_entry){
+								.horizontal_flip = false,
+								.vertical_flip	 = false,
+								.palette_index	 = 2,
+								.tilemap_index	 = HH_TM_SLIME_OFFSET,
+						}},
+	},
+	{
+		.object_type = slime,
+		.is_grounded = false,
+		.is_hit		 = false,
+		.pos		 = (vec2){1777, 101},
+		.size		 = (vec2){16, 16},
+		.vel		 = (vec2){0, 0},
+		.hp			 = g_hh_slime_hp,
+		.speed		 = g_hh_slime_speed,
+		.radius		 = g_hh_slime_radius,
+		.render		 = {.frame0	 = HH_TM_SLIME_OFFSET,
+						.palette = 2,
+						.fam =
+							(hh_s_ppu_loc_fam_entry){
+								.horizontal_flip = false,
+								.vertical_flip	 = false,
+								.palette_index	 = 2,
+								.tilemap_index	 = HH_TM_SLIME_OFFSET,
+						}},
+	},
+	{
+		.object_type = slime,
+		.is_grounded = false,
+		.is_hit		 = false,
+		.pos		 = (vec2){2014, 80},
+		.size		 = (vec2){16, 16},
+		.vel		 = (vec2){0, 0},
+		.hp			 = g_hh_slime_hp,
+		.speed		 = g_hh_slime_speed,
+		.radius		 = g_hh_slime_radius,
+		.render		 = {.frame0	 = HH_TM_SLIME_OFFSET,
+						.palette = 2,
+						.fam =
+							(hh_s_ppu_loc_fam_entry){
+								.horizontal_flip = false,
+								.vertical_flip	 = false,
+								.palette_index	 = 2,
+								.tilemap_index	 = HH_TM_SLIME_OFFSET,
+						}},
+	},
+	{
+		.object_type = slime,
+		.is_grounded = false,
+		.is_hit		 = false,
+		.pos		 = (vec2){2276, 76},
+		.size		 = (vec2){16, 16},
+		.vel		 = (vec2){0, 0},
+		.hp			 = g_hh_slime_hp,
+		.speed		 = g_hh_slime_speed,
+		.radius		 = g_hh_slime_radius,
+		.render		 = {.frame0	 = HH_TM_SLIME_OFFSET,
+						.palette = 2,
+						.fam =
+							(hh_s_ppu_loc_fam_entry){
+								.horizontal_flip = false,
+								.vertical_flip	 = false,
+								.palette_index	 = 2,
+								.tilemap_index	 = HH_TM_SLIME_OFFSET,
+						}},
+	},
+	{
+		.object_type = terror_owl,
+		.is_grounded = false,
+		.is_hit		 = false,
+		.pos		 = (vec2){161, 216},
+		.size		 = (vec2){16, 16},
+		.vel		 = (vec2){0, 0},
+		.hp			 = g_hh_terror_owl_hp,
+		.speed		 = g_hh_terror_owl_speed,
+		.radius		 = g_hh_terror_owl_radius,
+		.render		 = {.frame0	 = HH_TM_SLIME_OFFSET,
+						.palette = 7,
+						.fam =
+							(hh_s_ppu_loc_fam_entry){
+								.horizontal_flip = false,
+								.vertical_flip	 = false,
+								.palette_index	 = 7,
+								.tilemap_index	 = HH_TM_SLIME_OFFSET,
+						}},
+	},
+	{
+		.object_type = jumping_slime,
+		.is_grounded = false,
+		.is_hit		 = false,
+		.pos		 = (vec2){584, 328},
+		.size		 = (vec2){16, 16},
+		.vel		 = (vec2){0, 0},
+		.hp			 = g_hh_slime_hp,
+		.speed		 = g_hh_slime_speed,
+		.radius		 = g_hh_slime_radius,
+		.render		 = {.frame0	 = HH_TM_SLIME_JUMPABLE_OFFSET,
+						.palette = 2,
+						.fam =
+							(hh_s_ppu_loc_fam_entry){
+								.horizontal_flip = false,
+								.vertical_flip	 = false,
+								.palette_index	 = 2,
+								.tilemap_index	 = HH_TM_SLIME_JUMPABLE_OFFSET,
+						}},
+	},
+	{
+		.object_type = jumping_slime,
+		.is_grounded = false,
+		.is_hit		 = false,
+		.pos		 = (vec2){1748, 328},
+		.size		 = (vec2){16, 16},
+		.vel		 = (vec2){0, 0},
+		.hp			 = g_hh_slime_hp,
+		.speed		 = g_hh_slime_speed,
+		.radius		 = g_hh_slime_radius,
+		.render		 = {.frame0	 = HH_TM_SLIME_JUMPABLE_OFFSET,
+						.palette = 2,
+						.fam =
+							(hh_s_ppu_loc_fam_entry){
+								.horizontal_flip = false,
+								.vertical_flip	 = false,
+								.palette_index	 = 2,
+								.tilemap_index	 = HH_TM_SLIME_JUMPABLE_OFFSET,
+						}},
+	},
+	{
+		.object_type = jumping_slime,
+		.is_grounded = false,
+		.is_hit		 = false,
+		.pos		 = (vec2){1817, 326},
+		.size		 = (vec2){16, 16},
+		.vel		 = (vec2){0, 0},
+		.hp			 = g_hh_slime_hp,
+		.speed		 = g_hh_slime_speed,
+		.radius		 = g_hh_slime_radius,
+		.render		 = {.frame0	 = HH_TM_SLIME_JUMPABLE_OFFSET,
+						.palette = 2,
+						.fam =
+							(hh_s_ppu_loc_fam_entry){
+								.horizontal_flip = false,
+								.vertical_flip	 = false,
+								.palette_index	 = 2,
+								.tilemap_index	 = HH_TM_SLIME_JUMPABLE_OFFSET,
+						}},
+	},
+};
+const vec2 lvl3_start_pos_enemy[11] = {
+	{336, 332}, {927, 322}, {1178, 201}, {1551, 125}, {1777, 101}, {2014, 80}, {2276, 76}, {161, 216}, {584, 328}, {1748, 328}, {1817, 326},
+};
+const vec2 hh_lvl3_player_start_pos = (vec2){.x = 116, .y = 312};
+const vec2 lvl3_boss_spawn_point	= (vec2){.x = 2209, .y = 298};
+const int lvl3_enemy_size			= 11;

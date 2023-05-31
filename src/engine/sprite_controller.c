@@ -5,16 +5,28 @@
 #include "ppu/consts.h"
 #include "ppu/ppu.h"
 
+#include "static/tilemap.h"
+
+
 uint8_t hh_get_palette(uint8_t tile_idx) {
-	return hh_g_sprite_palette[tile_idx];
+	for (int i = 0; i < HH_TM_GROUPS; i++) {		
+		if (hh_palette_lut[i] > tile_idx){
+			return hh_g_sprite_palette[i-1];
+		}
+	}	
+	
+	return 0; //not found
+	// return hh_g_sprite_palette[tile_idx];
 }
 
 void hh_setup_palettes(){
+	//TODO: use simpler function
 	for (int idx = 0; idx < HH_PPU_PALETTE_COUNT; idx++) {
 		for (int col = 0; col < HH_PPU_PALETTE_COLOR_COUNT; col++) {
 			hh_ppu_update_color(idx,col,hh_g_palette[idx][col]);
 		}
-	}	
+	}
+	// hh_ppu_update_palette_table(hh_g_palette);
 }
 
 bool hh_colidable(uint8_t tile_idx){

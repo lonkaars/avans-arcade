@@ -27,10 +27,30 @@ LFLAGS += -lm
 CFLAGS += $(if $(STM), -DHH_TARGET_STM32, )
 CFLAGS += $(if $(DESKTOP), -DHH_TARGET_DESKTOP, )
 
-LOCAL_SRCS += ppu/internals.c \
+LOCAL_SRCS += main.c \
+							ppu/internals.c \
+							global.c \
 							ppu/ppu.c \
-							main.c \
-							demo.c
+							demo.c \
+							engine/engine.c \
+							engine/sprite_controller.c \
+							engine/player_controller.c \
+							engine/draw_screen.c \
+							engine/camera.c \
+							engine/maths.c \
+							engine/entity.c \
+							engine/bullet.c \
+							engine/title_screen.c \
+							engine/level_const.c \
+							engine/enemy.c \
+							engine/enemy_ai.c \
+							engine/animator.c \
+							game_loop/shop.c \
+							game_loop/gameplay.c \
+							game_loop/game_over.c \
+							game_loop/high_score.c \
+							game_loop/starting_screen.c \
+							game_loop/ui.c
 
 CFLAGS += $(SHARED_FLAGS)
 LFLAGS += $(SHARED_FLAGS)
@@ -67,7 +87,15 @@ $(TARGET).bin: $(TARGET).elf
 
 PHONY += flash
 flash: $(TARGET).bin
-	st-flash --reset write $(TARGET).bin 0x08000000
+	st-flash --reset write $< 0x08000000
+
+# see definition of g_hh_tilemap_rom in stm32/setup.c
+PHONY += rom
+rom: static/tilemap.bin
+	st-flash --reset write $< 0x08033000
+
+static/tilemap.bin static/tilemap.h &:
+	$(MAKE) -C static all
 
 %-ds.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
@@ -88,4 +116,9 @@ PHONY += clean
 clean:
 	$(RM) $(TARGET).bin $(TARGET).elf $(OBJS)
 
+PHONY += distclean
+distclean: clean
+	$(MAKE) -C static clean
+
 .PHONY: $(PHONY)
+

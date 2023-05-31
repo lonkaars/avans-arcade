@@ -1,107 +1,121 @@
 #include <math.h>
 
 #include "demo.h"
-#include "ppu/ppu.h"
 #include "input.h"
+#include "entity.h"
+#include "ppu/ppu.h"
+#include "tilemap.h"
 #include "ppu/internals.h"
 
-#define HH_DEMO_BALL_COUNT 5
-hh_s_ppu_loc_fam_entry g_hh_demo_balls[HH_DEMO_BALL_COUNT];
+#include "engine/maths.h"
+#include "engine/camera.h"
+#include "engine/entity.h"
+#include "engine/draw_screen.h"
+#include "engine/player_controller.h"
+#include "engine/sprite_controller.h"
+#include "engine/level_const.h"
 
+#include "game_loop/starting_screen.h"
+#include "game_loop/high_score.h"
+#include "game_loop/gameplay.h"
+#include "game_loop/game_over.h"
+#include "game_loop/shop.h"
+
+#include <stdbool.h>
+
+hh_g_all_levels hh_game;
+
+uint16_t g_hh_pos_x = 1000; // 0b0000 0001 0011 0110
+uint16_t g_hh_pos_y;
+uint8_t g_hh_left  = 0;
+uint8_t g_hh_right = 0;
+uint8_t g_hh_up	  = 0;
+uint8_t g_hh_down  = 0;
+uint8_t g_hh_pos_x_bit[2];
+uint8_t g_hh_pos_y_bit[2];
+uint8_t g_hh_data_send[3];
+int g_hh_tile_size = 8;
+int g_hh_tile_y;
+
+typedef struct {
+	vec2 pos;
+	uint8_t idx;
+}hh_s_tiles;
+
+int points = 0;
+int* ptr_points = &points;
+
+hh_e_game_state hh_game_states;
+ hh_entity hh_g_player, hh_g_player_new;
+ hh_e_upgrades upg;
 void hh_demo_setup() {
-	// load sprites
-	hh_ppu_update_sprite(1, HH_DBG_SPRITE_BALL);
-	hh_ppu_update_sprite(2, HH_DBG_SPRITE_CHECKERBOARD);
-
-	// background pattern
-	hh_ppu_update_color(0, 0, (hh_ppu_rgb_color_t) {0x1, 0x1, 0x3});
-	hh_ppu_update_color(0, 1, (hh_ppu_rgb_color_t) {0x4, 0x4, 0x6});
-	for (unsigned i = 0; i < HH_PPU_BG_CANVAS_TILES_H * HH_PPU_BG_CANVAS_TILES_V; i++) {
-		hh_ppu_update_background(i, (hh_s_ppu_loc_bam_entry) {
-			.horizontal_flip = false,
-			.vertical_flip = false,
-			.palette_index = 0,
-			.tilemap_index = 2,
-		});
+	for (unsigned int i = 0; i < HH_PPU_VRAM_TMM_SPRITE_SIZE * HH_TM_SIZE; i++) {
+		hh_ppu_addr_t ppu_addr = HH_PPU_VRAM_TMM_OFFSET + i;
+		hh_ppu_data_t ppu_data = HH_PPU_TILEMAP_RAW[i];
+		hh_ppu_vram_dwrite((uint8_t[4]) {
+			(ppu_addr >> 8) & 0xff,
+			(ppu_addr >> 0) & 0xff,
+			(ppu_data >> 8) & 0xff,
+			(ppu_data >> 0) & 0xff,
+		}, 4);
 	}
-
-	// cool colors
-	hh_ppu_update_color(1, 1, (hh_ppu_rgb_color_t) {0xf, 0x0, 0xf});
-	hh_ppu_update_color(2, 1, (hh_ppu_rgb_color_t) {0xf, 0xf, 0xf});
-	hh_ppu_update_color(3, 1, (hh_ppu_rgb_color_t) {0xf, 0x0, 0x0});
-	hh_ppu_update_color(4, 1, (hh_ppu_rgb_color_t) {0x0, 0xf, 0xf});
-	hh_ppu_update_color(5, 1, (hh_ppu_rgb_color_t) {0x0, 0x0, 0xf});
-
-	// balls
-	for (unsigned i = 0; i < HH_DEMO_BALL_COUNT; i++) {
-		g_hh_demo_balls[i].horizontal_flip = false;
-		g_hh_demo_balls[i].vertical_flip = false;
-		g_hh_demo_balls[i].palette_index = i+1;
-		g_hh_demo_balls[i].tilemap_index = 1;
-	}
-	// hh_ppu_flush();
+	hh_setup_palettes();
+	hh_game = hh_init_game_levels();
 }
 
 void hh_demo_loop(unsigned long frame) {
-	// if (frame % 300 == 0) hh_demo_setup();
-	//
-	// if (frame > 1) return;
-	// frame = 40;
+	static uint64_t hh_rng_seed = 0;
+	hh_rng_seed++;
 
-	// set background pattern position
-	hh_ppu_update_background_pos((frame / 5) % HH_PPU_SPRITE_WIDTH, (frame / 20) % HH_PPU_SPRITE_HEIGHT);
+	
+	switch (hh_game_states)
+	{
+	case hh_e_state_starting_screen:
+		bool ret = hh_show_starting_screen();
+		if(ret){
+			hh_game_states = hh_e_state_shop;
+		}
+		points = 0;	
+		break;
+	case hh_e_state_shop:
+		hh_clear_screen();
+		hh_clear_sprite();
+		// upg = hh_shop(&hh_game_states, &hh_game, hh_rng_seed, points);
+		break;
+	// case hh_e_state_gameplay:
+	// 	hh_gameplay(&hh_game, &hh_game_states, upg, &ptr_points);
 
-	for (unsigned i = 0; i < HH_DEMO_BALL_COUNT; i++) {
-		g_hh_demo_balls[i].position_x = HH_PPU_SCREEN_WIDTH/2  - HH_PPU_SPRITE_WIDTH/2  + (int)(60 * (double)sin(1*((double)frame + 3*(double)i) / 10));
-		g_hh_demo_balls[i].position_y = HH_PPU_SCREEN_HEIGHT/2 - HH_PPU_SPRITE_HEIGHT/2 + (int)(30 * (double)sin(2*((double)frame + 3*(double) i) / 10));
-		hh_ppu_update_foreground(i+16, g_hh_demo_balls[i]);
+	// 	break;
+	// case hh_e_state_game_over:
+	// 	hh_game_over(&hh_game_states);
+	// 	break;
+	// case hh_e_state_high_score:
+	// 	// todo:
+	// 	// fucntion: show all previously scored points
+	// 	// function: button pressed goto starting screen
+	// 	hh_high_score(&hh_game_states);
+	// 	// hh_game_states = hh_e_state_starting_screen;
+	// 	break;
+	default:
+			hh_game_states = hh_e_state_starting_screen;
+		break;
 	}
-	hh_ppu_update_foreground(32, (hh_s_ppu_loc_fam_entry) {
-		.horizontal_flip = false,
-		.vertical_flip = false,
-		.palette_index = g_hh_controller_p1.dpad_up * 2,
-		.tilemap_index = 1,
-		.position_x = 16,
-		.position_y = 0,
-	});
-	hh_ppu_update_foreground(33, (hh_s_ppu_loc_fam_entry) {
-		.horizontal_flip = false,
-		.vertical_flip = false,
-		.palette_index = g_hh_controller_p1.dpad_down * 2,
-		.tilemap_index = 1,
-		.position_x = 16,
-		.position_y = 32,
-	});
-	hh_ppu_update_foreground(34, (hh_s_ppu_loc_fam_entry) {
-		.horizontal_flip = false,
-		.vertical_flip = false,
-		.palette_index = g_hh_controller_p1.dpad_left * 2,
-		.tilemap_index = 1,
-		.position_x = 0,
-		.position_y = 16,
-	});
-	hh_ppu_update_foreground(35, (hh_s_ppu_loc_fam_entry) {
-		.horizontal_flip = false,
-		.vertical_flip = false,
-		.palette_index = g_hh_controller_p1.dpad_right * 2,
-		.tilemap_index = 1,
-		.position_x = 32,
-		.position_y = 16,
-	});
-	hh_ppu_update_foreground(36, (hh_s_ppu_loc_fam_entry) {
-		.horizontal_flip = false,
-		.vertical_flip = false,
-		.palette_index = g_hh_controller_p1.button_primary * 2,
-		.tilemap_index = 1,
-		.position_x = 88,
-		.position_y = 16,
-	});
-	hh_ppu_update_foreground(37, (hh_s_ppu_loc_fam_entry) {
-		.horizontal_flip = false,
-		.vertical_flip = false,
-		.palette_index = g_hh_controller_p1.button_secondary * 2,
-		.tilemap_index = 1,
-		.position_x = 64,
-		.position_y = 16,
-	});
 }
+
+// void send_data(uint8_t address, uint16_t data) {
+// 	uint8_t bit_data[3];
+// 	bit_data[2] = data & 0xff;
+// 	bit_data[1] = (data >> 8);
+// 	bit_data[0] = address; // first byte is address
+//
+// 	hal_gpio_write_pin(gpioa, gpio_pin_9, gpio_pin_reset);
+// 	hal_spi_transmit(&hspi1, bit_data, 3, 100); //2*8 bit data
+// 	hal_gpio_write_pin(gpioa, gpio_pin_9, gpio_pin_set);
+// }
+
+
+
+
+
+
+
