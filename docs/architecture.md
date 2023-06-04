@@ -136,10 +136,12 @@ PPU features:
 - 640x480 background canvas with scrolling
 - NO background scrolling splits
 - 128 total sprites on screen (NO scanline sprite limit)
+  - the first 16 foreground sprites have accurate background occlusion
 - sprites are always drawn on top of the background layer
 - PPU control using DMA (dual-port asynchronous RAM)
 - tiles can be flipped using FAM or BAM
-- vertical and horizontal blank output
+- no frame buffer
+- vertical and horizontal sync and blank output
 
 Notable differences:
 
@@ -147,33 +149,34 @@ Notable differences:
 - NES OAM equivalent is called FAM (foreground attribute register)
 - 320x240 @ 60Hz output
   
-  Since the FPGA board we're using has a VGA port, the PPU outputs VGA. VGA
-  does not support custom resolutions. This resolution was chosen because it's
-  exactly half of the lowest standard VGA resolution 640x480. This allows the
-  PPU to use nearest-neighbor upscaling, which will lead to a simpler hardware
-  implementation.
+  Since we're using VGA, we can't use custom resolutions without an
+  upscaler/downscaler. This resolution was chosen because it's exactly half of
+  the lowest standard VGA resolution 640x480. The native resolution can't be
+  used due to the pipelined pixel fetch logic, which needs at least 5 clock
+  cycles to produce a stable color output.
 - No scanline sprite limit  
   
-  This was a hardware limitation of the original NES, which our PPU design does
-  not have.
+  Unless not imposing any sprite limit makes the hardware implementation
+  impossible, or much more difficult, this is a restriction that will likely
+  lead to frustrating debugging sessions, so will not be replicated in our
+  custom PPU.
 - Sprites are 16x16
   
   Most NES games already tile multiple 8x8 tiles together into "metatiles" to
-  create the illusion of larger sprites. This however is wasteful of the
-  available foreground sprites, so this PPU has 16x16 pixel sprites by default.
+  create the illusion of larger sprites. This was likely done to save on memory
+  costs as RAM was expensive in the '80s, but since we're running on an FPGA
+  cost is irrelevant.
 - Single 1024 sprite tilemap shared between foreground and background sprites
   
   The NES OAM registers contain a bit to select which tilemap to use (of two),
-  which effectively expands each tile's index address by one byte. Instead of
+  which effectively expands each tile's index address by one bit. Instead of
   creating the illusion of two separate memory areas for tiles, having one
-  large tilemap is a simpler solution.
+  large tilemap seems like a more sensible solution.
 - 8 total palettes, with 8 colors each
   
-  More colors allows for nicer looking graphics. Increasing the palette color
-  count is a very memory intensive operation as this inflates the entire
-  tilemap, while increasing the total palette count increases FPGA utilization.
-  Keeping in mind that these palettes can be modified at any point during
-  runtime, an 8x8 palette table is likely big enough.
+  More colors is better. Increasing the palette color count is a very memory
+  intensive operation, while increasing the total amount of palettes is slower
+  when looking up color values for each pixel on real hardware.
 - Sprites can be positioned partially off-screen on all screen edges using only
   the offset bits in the FAM register
   
@@ -182,28 +185,26 @@ Notable differences:
   count from 0. Our PPU's FAM sprite offset bits count from -16, so the sprite
   can shift past the top and left screen edges, as well as the standard bottom
   and right edges.
-- No status line register, only V-blank and H-blank outputs are supplied back
-  to CPU
+- No status line register, only vertical and horizontal blanking/sync outputs
+  are supplied back to CPU
   
-  The NES status line register contains a buggy status line for reaching the
-  max sprite count per scanline, and a status line for detecting collisions
-  between background and foreground sprites. Our PPU doesn't have a scanline
-  limit, and all hitbox detection is done in software. Software hacks involving
-  swapping tiles during a screen draw cycle can still be achieved by counting
-  the V-blank and H-blank pulses using interrupts.
+  The NES status line register contains some handy lines, such as a buggy
+  status line for reaching the max sprite count per scanline, and a status line
+  for detecting collisions between background and foreground sprites. Our PPU
+  doesn't have a scanline limit, and all hitbox detection is done in software.
+  Software hacks involving swapping tiles during a screen draw cycle can still
+  be achieved by counting the V-sync and H-sync pulses using interrupts.
 - No background scrolling splits
   
   This feature allows only part of the background canvas to be scrolled, while
-  another portion stays still. This was used to draw HUD elements on the
+  another portion remains still. This was used to draw HUD elements on the
   background layer for displaying things like health bars or score counters.
-  Since this PPU has a higher foreground sprite limit, the game uses regular
+  Since we are working with a higher foreground sprite limit, we'll use regular
   foreground sprites to display HUD elements.
 - Sprites are always drawn on top of the background layer
   
-  The NES PPU has the capability to draw 'foreground' sprites both behind and
-  in front of the background layer. Our game doesn't need this capability for
-  any visual effects. Leaving this feature out will lead to a simpler hardware
-  design.
+  Our game doesn't need this capability for any visual effects. Leaving this
+  feature out will lead to a simpler hardware design
 - Sprites are positioned relative to the viewport, not the background layer
   
   This leads to a simpler hardware architecture for the foreground sprite
@@ -219,18 +220,20 @@ Notable differences:
 
 Important notes:
 
+- The STM32 can reset the PPU. This line will also be connected to a physical
+  button on the FPGA.
 - The STM32 uses direct memory access to control the PPU.
 - The PPU's native resolution is 320x240. It works in this resolution as if it
   is a valid VGA signal. The STM32 is also only aware of this resolution. This
   resolution is referred to as "tiny" resolution. Because VGA-compatible LCD's
   likely don't support this resolution due to low clock speed, a built-in
-  pixel-perfect 2X upscaler is internally connected before the output. This
+  pixel-perfect 2X upscaler is chained after the PPU's "tiny" output. This
   means that the display sees the resolution as 640x480, but the PPU and STM32
   only work in 320x240.
-- The STM32 receives the TVBLANK and THBLANK lines from the PPU. These are the
-  VBLANK and HBLANK lines from the "tiny" VGA resolution. These lines can be
+- The STM32 receives the TVSYNC and THSYNC lines from the PPU. These are the
+  VSYNC and HSYNC lines from the tiny VGA signal generator. These lines can be
   used to trigger interrupts for counting frames, and to make sure no
-  simultanious reads and writes occur in the PPU.
+  read/write conflicts occur for protected memory regions in the PPU.
 - NVSYNC, NHSYNC and the RGB signals refer to the output of the native VGA
   signal generator.
 
@@ -249,12 +252,12 @@ Important notes:
      sprite with non-transparent color at current pixel in order, fallback to
      background)
      - (Palette lookup) lookup palette color using palette register
-     - (Display controller) output upscaled tiny display signal
+     - (VGA signal generator) output real color to VGA signal generator
 - The pipeline stages with two clock cycles contain an address set and memory
   read step.
-- The pipeline takes 5 clock ticks in total. About 16 are available during each
-  pixel. Since each scanline is buffered in the upscaler, all available clock
-  cycles can be used (if necessary).
+- The pipeline takes 5 clock ticks in total. About 18 are available during each
+  pixel. For optimal display compatibility, the output color signal should be
+  stable before 50% of the pixel clock pulse width (9 clock ticks).
 - Since the "sprite info" and "sprite render" steps are fundamentally different
   for the foreground and background layer, these components will be combined
   into one for each layer respectively. They are separated in the above diagram
@@ -265,7 +268,7 @@ Important notes:
   the RAM in it's own cache memory. The cache updates are fetched during the
   VBLANK time between each frame.
 
-<!--
+<!-- inaccurate and no longer needed
 ### Level 3
 
 This diagram has several flaws, but a significant amount of time has already
@@ -298,6 +301,16 @@ Important notes:
   controlled by the address decoder.
 -->
 
+## Pipeline stage reference
+
+![Pipeline stage diagram](../assets/ppu-pipeline.svg)
+
+This diagram describes which components use which lines during pipeline stages
+0-9. The pipeline stage counter is reset after every pixel, and is run on the
+system clock (100 MHz). Underlined labels indicate when a signal is written,
+and normal text is used to indicate a signal read. Labels with a dotted outline
+are used for timing, but don't directly read/write any signals.
+
 ## Registers
 
 - The PPU's memory bus has 16-bit addresses and 16-bit words.
@@ -328,7 +341,7 @@ there is no address validity checking.
   discarded padding bit per word)
 - Pixel index order is from top-left to bottom-right in (English) reading
   order.
-- Bits `14 downto 3` of the byte with the highest address for a given tile are
+- Bits `14 downto 3` of the word with the highest address for a given tile are
   not used
 - To calculate TMM address $a$ for any given pixel $p$ of tile with index $t$,
   compute $a=52*t+\left\lfloor\frac{p}{5}\right\rfloor$
@@ -407,7 +420,8 @@ Format:
 
 |Range (VHDL)|Description|
 |-|-|
-|`31 downto 18`|(unused)|
+|`31 downto 19`|(unused)|
+|`18`|System reset|
 |`17`|Fetch foreground sprites flag|
 |`16 downto 8`|Horizontal background scroll (offset from left edge)|
 |`7 downto 0`|Vertical background scroll (offset from top edge)|
