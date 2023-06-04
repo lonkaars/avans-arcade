@@ -4,6 +4,9 @@
 
 # Introduction
 
+<!-- TODO: er staan verwijzingen naar meerdere architectuurkeuze in de
+inleiding, hier gaat joan lastig over doen -->
+
 Welcome to Hooded Havoc: Miniboss Mania, an exciting 2D platformer game created by our team Joshua, Loek, Bjorn, Frenk and Niels! This game was developed using the STM32 microcontroller as the game engine and the FPGA as the Picture Processing Unit (PPU).
 
 In Hooded Havoc: Miniboss Mania, you will take on the role of a brave hero who must battle through multiple levels filled with challenging obstacles and formidable minibosses. With smooth gameplay and engaging graphics, you will feel immersed in a world of adventure and excitement.
@@ -24,9 +27,12 @@ So, the objective of Hooded Havoc: Miniboss Mania is not only to provide an exci
 
 ## Problem statement
 
+<!-- TODO: het probleem (communicatie PPU<->STM32 is afgeleid uit de
+architectuurkeuze om die te gebruiken) -->
+
 One potential problem that could arise in the development of Hooded Havoc: Miniboss Mania is related to the PPU and communication between the STM32 and PPU.
 
-The PPU is responsible for rendering the graphics and displaying them on the screen, while the STM32 is responsible for processing the game logic and input from the player. However, if there is a problem with the communication between these two components, it could lead to synchronization issues and graphical glitches that could affect the player's experience.
+The PPU is responsible for rendering the graphics and displaying them on the screen, while the STM32 is responsible for processing the game logic and input from the player. However, if there is a problem with the communication between these two components, it could lead to synchronization issues and graphical glitches that could affect the players' experience.
 
 For example, if the PPU is unable to keep up with the processing speed of the STM32, the graphics may lag or appear distorted, causing the game to become unplayable. Similarly, if there is a delay in communication between the STM32 and PPU, it could result in a mismatch between the game logic and the displayed graphics, leading to confusion for the player.
 
@@ -53,7 +59,8 @@ both familiar and still relatively powerful platforms. Because audio and video
 consist of data streams that require constant output, the audio and graphics
 processing is outsourced to the FPGA. All other game logic processing such as
 world loading, or map and entity interactions is done on the STM32
-microcontroller.
+microcontroller. The STM32 was chosen for this purpose because it's faster to
+debug and develop for, which makes iteratively updating or testing code easier.
 
 Our game also supports an optional second player, as is shown in the following
 diagram.
@@ -67,13 +74,14 @@ components.
 
 # STM32 software
 
-The game engine is designed to run a 2D platformer game. The game engine has to manage all the different game states. To do this it will utilize a finite state machine (FSM). The game engine will also cover de input handling from the player, the game logic for example enemy handling or the powerup handling it will also send out data to the APU (Audio processing unit) so that the right sounds will be played. 
+The game engine is designed to run a 2D platformer game. The game engine has to manage all the different game states. To do this it will utilize a finite state machine (FSM). The game engine will also cover the input handling from the player, the game logic for example enemy handling or the powerup handling it will also send out data to the APU (Audio processing unit) so that the right sounds will be played. <!-- en de stm hoeft niks naar de PPU te sturen? -->
 
-FSM is a useful tool for managing game states and transitions. The game has many different states such as: title screen, shop and gameplay state. Each state represents a particular configuration from the with different logic and variables.  
+FSM is a useful tool for managing game states and transitions. The game has many different states such as: title screen, shop and gameplay state. Each state represents a particular configuration from the <!-- the wat? --> with different logic and variables.  
 
 The state machine is designed to have the following states:
+
 1.	Initialization: The initialization state will be responsible for initializing all game-related variables and subsystems, including the FPGA-based picture processing unit.
-2.	Title Screen: The title screen state will display the game's title screen and wait for user input to start the game or access the options menu.
+2.	Title Screen: The title screen state will display the games' title screen and wait for user input to start the game or access the options menu.
 3.	Options: The options state will allow the user to configure game settings, such as sound and graphics options.
 4.	Game Play: The game play state will be responsible for running the game logic and updating the game state.
 5.	Game Over: The game over state will display the game over screen and wait for user input to restart the game or return to the title screen.
@@ -96,9 +104,10 @@ The layout will be as follows:
 
 ## Input handling
 
-The hardware consist out of a microcontroller and a FPGA.
+The hardware consist out of a microcontroller and an FPGA.
 The microcontroller will process the game logic.
 For this reason the input will be handled by the microcontroller as this will improve playability (stated in research).
+<!-- hoe zorgt de microcontroller ervoor dat de 'playability' verbetert. wat is playability hier??? waar staat dit in de research???? -->
 
 The controller will have six buttons, so six data pins are needed on the microcontroller plus a ground and 3.3V or 5V pin.
 In total there are eight pins needed. 
@@ -114,7 +123,7 @@ To implement the input in the game, the input should be checked at the start of 
 
 ## PPU communication
 
-The SPI module will be configured that sends 8 bits per cycle and at a speed of 1.0 MB/s. The STM32 Cube IDE SPI module does not include a slave select line so a pin has to configured manually to fullfill this purpose. Every data transfer consists out of 4 times 8 bits, so 32 bits in total. The first byte is the address and the other 3 bytes consist the data.
+The SPI module will be configured that sends 8 bits per cycle and at a speed of 1.0 MB/s. The STM32 Cube IDE SPI module does not include a slave select line so a pin has to configured manually to fullfill this purpose. Every data transfer consists out of 4 times 8 bits, so 32 bits in total. The first two bytes are the address and the other two bytes consist of the data at that address.
 
 ## SPI
 
@@ -123,10 +132,10 @@ The FPGA uses 3 JMOD pins to receive the SPI data. The FPGA does not have a IP-C
 # PPU
 
 As mentioned in the [research document](research.md#graphics), the PPU designed
-for this project is heavily inspired by the NES's PPU. Because our game does
+for this project is heavily inspired by the NESs PPU. Because our game does
 need slightly different graphical capabilities, the differences between the NES
 PPU and our custom PPU are highlighted here. Readers of this section are
-expected to know basic operation of the NES's PPU.
+expected to know basic operation of the NESs PPU.
 
 PPU features:
 
@@ -169,7 +178,7 @@ Notable differences:
 - Single 1024 sprite tilemap shared between foreground and background sprites
   
   The NES OAM registers contain a bit to select which tilemap to use (of two),
-  which effectively expands each tile's index address by one bit. Instead of
+  which effectively expands each tiles' index address by one bit. Instead of
   creating the illusion of two separate memory areas for tiles, having one
   large tilemap seems like a more sensible solution.
 - 8 total palettes, with 8 colors each
@@ -182,7 +191,7 @@ Notable differences:
   
   The NES has a separate PPUMASK register to control special color effects, and
   to shift sprites off the left and top screen edges, as the sprite offsets
-  count from 0. Our PPU's FAM sprite offset bits count from -16, so the sprite
+  count from 0. Our PPUs FAM sprite offset bits count from -16, so the sprite
   can shift past the top and left screen edges, as well as the standard bottom
   and right edges.
 - No status line register, only vertical and horizontal blanking/sync outputs
@@ -223,11 +232,11 @@ Important notes:
 - The STM32 can reset the PPU. This line will also be connected to a physical
   button on the FPGA.
 - The STM32 uses direct memory access to control the PPU.
-- The PPU's native resolution is 320x240. It works in this resolution as if it
+- The PPUs native resolution is 320x240. It works in this resolution as if it
   is a valid VGA signal. The STM32 is also only aware of this resolution. This
-  resolution is referred to as "tiny" resolution. Because VGA-compatible LCD's
+  resolution is referred to as "tiny" resolution. Because VGA-compatible LCDs
   likely don't support this resolution due to low clock speed, a built-in
-  pixel-perfect 2X upscaler is chained after the PPU's "tiny" output. This
+  pixel-perfect 2X upscaler is chained after the PPUs "tiny" output. This
   means that the display sees the resolution as 640x480, but the PPU and STM32
   only work in 320x240.
 - The STM32 receives the TVSYNC and THSYNC lines from the PPU. These are the
@@ -265,7 +274,7 @@ Important notes:
 - The AUX, FAM, and PAL registers are implemented in the component that
   directly accesses them, but are exposed to the PPU RAM bus for writing.
 - Each foreground sprite render component holds its own sprite data copy from
-  the RAM in it's own cache memory. The cache updates are fetched during the
+  the RAM in its own cache memory. The cache updates are fetched during the
   VBLANK time between each frame.
 
 <!-- inaccurate and no longer needed
@@ -313,7 +322,7 @@ are used for timing, but don't directly read/write any signals.
 
 ## Registers
 
-- The PPU's memory bus has 16-bit addresses and 16-bit words.
+- The PPUs memory bus has 16-bit addresses and 16-bit words.
 - Some memory regions use physical word sizes smaller than 16-bits, so
   "unneeded" bits will be discarded by the PPU.
 - Apparent size means the amount of addresses in a given memory region. As
@@ -430,7 +439,7 @@ Format:
 
 ## PPU communication
 
-To comunicate with the FPGA via the STM32 a protocol is needed. After [research](research.md#Input) of different possible protocols, SPI was the best option for this problem. As there is only one master and one slave, four data lines are needed at maximum. The STM32 will be the master and the FPGA will be the slave. The STM32 has a configurable SPI module that is easily configurable unlike the FPGA. Futhermore, the MISO line is not needed because the FPGA does not send any big data to the STM32. The slave select line will operate as a write enable.
+To comunicate with the FPGA via the STM32 a protocol is needed, because there are not enough digital lines available to connect all 32 needed communication lines in parallel. After [research](research.md#Input) of different possible protocols, SPI was the best option for this problem, due to its speed. Because the STM32 will only send data, and not need to receive anything back, the STM32 will be the SPI master and the FPGA will be the slave. The STM32 has a configurable SPI module that is easily configurable unlike the FPGA. Futhermore, the MISO line is not needed because the FPGA does not send anything to the STM32. The slave select line will operate as a write enable.
 
 ## SPI
 
