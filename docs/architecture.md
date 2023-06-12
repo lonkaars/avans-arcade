@@ -7,13 +7,9 @@
 <!-- TODO: er staan verwijzingen naar meerdere architectuurkeuze in de
 inleiding, hier gaat joan lastig over doen -->
 
-Welcome to Hooded Havoc: Miniboss Mania, an exciting 2D platformer game created by our team Joshua, Loek, Bjorn, Frenk and Niels! This game was developed using the STM32 microcontroller as the game engine and the FPGA as the Picture Processing Unit (PPU).
+Welcome to Hooded Havoc: Miniboss Mania, an 2D platformer game created by our team Joshua, Loek, Bjorn, Frenk and Niels!
 
 In Hooded Havoc: Miniboss Mania, you will take on the role of a brave hero who must battle through multiple levels filled with challenging obstacles and formidable minibosses. With smooth gameplay and engaging graphics, you will feel immersed in a world of adventure and excitement.
-
-Our use of the STM32 microcontroller and FPGA PPU allowed us to create a unique and innovative gaming experience. The STM32 provides efficient and reliable processing power, while the FPGA ensures that our graphics are rendered smoothly and accurately.
-
-So get ready to embark on a thrilling journey through Hooded Havoc: Miniboss Mania, and see how far you can make it!
 
 ## Objective
 
